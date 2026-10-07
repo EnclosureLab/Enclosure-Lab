@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enclosure Lab | Custom Subwoofer Boxes</title>
+  <meta name="description" content="Custom subwoofer enclosures designed around your subwoofer, vehicle, and goals. Request a custom quote.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span data-brand>Enclosure Lab</span></a>
+    <nav>
+      <a href="#how">How It Works</a>
+      <a href="#quote">Request a Quote</a>
+      <a href="#about">About</a>
+    </nav>
+    <a class="nav-cta" href="#quote">Start a Quote</a>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <p class="eyebrow">CUSTOM AUDIO ENCLOSURES</p>
+      <h1>Your subwoofer.<br><span>Your space.</span><br>Your box.</h1>
+      <p class="hero-copy">Professionally designed custom subwoofer enclosures built around your exact equipment, vehicle, and goals.</p>
+      <div class="hero-actions">
+        <a class="button primary" href="#quote">Request a Quote <span>→</span></a>
+        <a class="button ghost" href="#how">See How It Works</a>
+      </div>
+      <div class="trust-row">
+        <span>✓ Custom-fit designs</span>
+        <span>✓ Built to order</span>
+        <span>✓ Shipped to you</span>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="box-visual">
+        <img src="box-hero.png" alt="Custom dual-subwoofer enclosure" class="box-hero-image">
+      </div>
+      <div class="hero-card-bottom">
+        <div><strong>Designed for you</strong><small>Not a one-size-fits-all box.</small></div>
+        <span class="round-arrow">↗</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="container stats-grid">
+    <div><strong>01</strong><span>Tell us about your sub</span></div>
+    <div><strong>02</strong><span>Tell us about your vehicle</span></div>
+    <div><strong>03</strong><span>We design & quote your enclosure</span></div>
+    <div><strong>04</strong><span>You approve it — we build it</span></div>
+  </div>
+</section>
+
+<section id="how" class="section">
+  <div class="container">
+    <div class="section-heading">
+      <p class="eyebrow">THE PROCESS</p>
+      <h2>From idea to finished enclosure.</h2>
+      <p>We make the custom-box process simple. Give us the details, and we'll take care of the design work.</p>
+    </div>
+    <div class="process-grid">
+      <article><span>01</span><h3>Submit your specs</h3><p>Tell us your subwoofer model, quantity, vehicle, available space, and what you want the box to do.</p></article>
+      <article><span>02</span><h3>Get your quote</h3><p>We'll review your information and send you a custom design recommendation and price.</p></article>
+      <article><span>03</span><h3>Approve the design</h3><p>Once you're happy with the plan, we'll finalize the enclosure details and build it.</p></article>
+      <article><span>04</span><h3>Built & shipped</h3><p>Your enclosure is built to order, finished according to your selection, packaged, and shipped.</p></article>
+    </div>
+  </div>
+</section>
+
+<section id="quote" class="quote-section">
+  <div class="container">
+    <div class="quote-intro">
+      <p class="eyebrow">START YOUR PROJECT</p>
+      <h2>Request a custom quote.</h2>
+      <p>The more information you provide, the more accurately we can design your enclosure.</p>
+    </div>
+    <form id="quoteForm" class="quote-form">
+      <div class="form-section">
+        <div class="form-title"><span>01</span><div><h3>Your information</h3><p>How should we contact you?</p></div></div>
+        <div class="form-grid">
+          <label>Full name<input name="name" required placeholder="John Smith"></label>
+          <label>Email<input name="email" type="email" required placeholder="you@example.com"></label>
+          <label>Phone <span class="optional">optional</span><input name="phone" placeholder="(555) 555-5555"></label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-title"><span>02</span><div><h3>Subwoofer information</h3><p>Give us the exact equipment you're building for.</p></div></div>
+        <div class="form-grid">
+          <label>Subwoofer brand<input name="brand" required placeholder="e.g. Sundown, Resilient Sounds, CT Sounds"></label>
+          <label>Model<input name="model" required placeholder="Exact model"></label>
+          <label>Subwoofer size
+            <select name="size" required><option value="">Select</option><option>8"</option><option>10"</option><option>12"</option><option>15"</option><option>18"</option><option>Other</option></select>
+          </label>
+          <label>Quantity<input name="quantity" type="number" min="1" max="20" value="1" required></label>
+          <label>RMS power per subwoofer <span class="optional">optional</span><input name="rms" placeholder="e.g. 1500W"></label>
+          <label>Subwoofer specifications link <span class="optional">optional</span><input name="specLink" type="url" placeholder="https://..."></label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-title"><span>03</span><div><h3>Vehicle & available space</h3><p>Dimensions help us make the enclosure fit correctly.</p></div></div>
+        <div class="form-grid">
+          <label>Year<input name="year" placeholder="2020"></label>
+          <label>Make<input name="make" placeholder="GMC"></label>
+          <label>Model<input name="vehicle" placeholder="Yukon"></label>
+          <label>Maximum width <span class="optional">optional</span><input name="maxWidth" placeholder='e.g. 38"'></label>
+          <label>Maximum height <span class="optional">optional</span><input name="maxHeight" placeholder='e.g. 18"'></label>
+          <label>Maximum depth <span class="optional">optional</span><input name="maxDepth" placeholder='e.g. 22"'></label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-title"><span>04</span><div><h3>Design preferences</h3><p>Tell us what you're looking for.</p></div></div>
+        <div class="form-grid">
+          <label>Enclosure type
+            <select name="type" required><option value="">Select</option><option>Sealed</option><option>Ported</option><option>4th Order</option><option>6th Order</option><option>Not sure — recommend one</option></select>
+          </label>
+          <label>Primary goal
+            <select name="goal" required><option value="">Select</option><option>Daily listening</option><option>Deep bass</option><option>SPL / loudest possible</option><option>Balanced</option><option>Not sure — recommend one</option></select>
+          </label>
+          <label>Finish
+            <select name="finish"><option>Carpet</option><option>Vinyl</option><option>Paint</option><option>Raw / unfinished</option><option>Not sure</option></select>
+          </label>
+          <label>Port preference <span class="optional">optional</span>
+            <select name="port"><option>I'm open to your recommendation</option><option>Slot port</option><option>Aero / round ports</option><option>Other</option></select>
+          </label>
+          <label class="full">Anything else we should know?<textarea name="notes" rows="5" placeholder="Mounting preferences, amp rack, unusual space constraints, goals, etc."></textarea></label>
+        </div>
+      </div>
+
+      <div class="submit-row">
+        <div><strong>No payment required.</strong><span>We'll review your request and contact you with your custom quote.</span></div>
+        <button class="button primary" type="submit">Submit Quote Request <span>→</span></button>
+      </div>
+      <p id="formStatus" class="form-status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<section id="about" class="section about">
+  <div class="container about-grid">
+    <div><p class="eyebrow">WHY CUSTOM?</p><h2>Built around your equipment — not the other way around.</h2></div>
+    <div><p>Every vehicle and subwoofer combination has different requirements. A custom enclosure lets us account for your available space, subwoofer specifications, desired tuning, and listening goals.</p><p>Use the quote form to start a project. We'll review the details before anything is built.</p></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container footer-grid">
+    <div><a class="brand" href="#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span data-brand>Enclosure Lab</span></a><p data-tagline>Custom subwoofer enclosures, designed and built to order.</p></div>
+    <div><span class="footer-label">CONTACT</span><a data-email-link href="tel:4233558230" data-email>423-355-8230</a></div>
+    <div><span class="footer-label">START A PROJECT</span><a href="#quote">Request a Quote →</a></div>
+  </div>
+  <div class="container copyright">© <span id="year"></span> <span data-brand>Enclosure Lab</span>. All rights reserved.</div>
+</footer>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
