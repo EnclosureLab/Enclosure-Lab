@@ -1,122 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Products | Enclosure Lab</title>
-  <meta name="description" content="Shop Enclosure Lab subwoofers, amplifiers, and custom stickers.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="products.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Products | Enclosure Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;color:#17202b;background:#fff}.wrap{max-width:1160px;width:92%;margin:auto}
+header{height:76px;border-bottom:1px solid #e5e8eb;background:#fff;display:flex;align-items:center}.nav{display:flex;align-items:center;gap:25px}.brand{font-weight:800;font-size:18px;text-decoration:none;color:#17202b}.navlinks{margin-left:auto;display:flex;gap:24px}.navlinks a{color:#66717e;text-decoration:none;font-size:14px;font-weight:600}.cta{background:#17202b;color:#fff!important;padding:11px 16px;border-radius:8px}
+.hero{padding:55px 0 42px;background:#f7f9fb}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.15em;color:#687480;margin:0 0 13px}.hero h1{font-size:clamp(42px,6vw,68px);line-height:1.02;letter-spacing:-.06em;margin:0 0 16px}.hero h1 span{color:#7a8795}.hero p:last-child{margin:0;color:#687480;font-size:17px}
+.shop{padding:35px 0 90px}.categories{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.category{border:1px solid #dfe4e8;border-radius:16px;background:#fff;overflow:hidden;box-shadow:0 10px 30px rgba(20,30,40,.07)}
+.category button{display:block;width:100%;padding:0;border:0;background:#fff;text-align:left;cursor:pointer;color:#17202b}.art{height:190px;background:#111820;display:grid;place-items:center;position:relative}.art.sub:before{content:"";width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#4b555d,#11161b 55%,#050709 72%);border:10px solid #707a82;box-shadow:inset 0 0 0 7px #1b2329,0 16px 25px #0008}.art.sub:after{content:"";position:absolute;width:28px;height:28px;border-radius:50%;background:#879199;box-shadow:0 0 0 5px #222b32}.art.amp:before{content:"";width:190px;height:76px;border-radius:7px;background:linear-gradient(145deg,#4e5962,#10161b);border:2px solid #727d86;box-shadow:0 15px 25px #0008}.art.amp:after{content:"";position:absolute;width:125px;height:3px;background:#aab3b9;box-shadow:0 13px #515d65}.art.stickers{background:#eef1f3}.st{position:absolute;background:#fff;border:2px solid #17202b;padding:17px 30px;font-weight:900;box-shadow:0 8px 16px #0002}.st.one{transform:rotate(-8deg);left:25%}.st.two{transform:rotate(8deg);right:20%;border-radius:50%;padding:24px}.st.three{bottom:24px;transform:rotate(-2deg)}
+.label{padding:17px;display:flex;align-items:center;justify-content:space-between;gap:10px}.label strong{font-size:16px}.label small{display:block;color:#7a8590;font-size:11px;margin-top:4px}.plus{width:34px;height:34px;border:1px solid #dce1e5;border-radius:50%;display:grid;place-items:center;font-size:20px}
+.panel{display:none;padding:22px;background:#f7f9fb;border-top:1px solid #e1e5e9}.category.open .panel{display:block}.category.open .plus{transform:rotate(45deg)}
+.products{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.product{background:#fff;border:1px solid #e0e5e9;border-radius:12px;overflow:hidden}.photo{height:145px;background:linear-gradient(145deg,#edf1f4,#d5dbe0);display:grid;place-items:center;position:relative}.photo span{position:absolute;right:8px;top:8px;background:#17202b;color:#fff;padding:4px 7px;border-radius:5px;font-size:10px;font-weight:800}.subphoto:before{content:"";width:95px;height:95px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#4b555d,#11161b 55%,#050709 72%);border:8px solid #707a82;box-shadow:inset 0 0 0 6px #1b2329,0 12px 18px #0004}.amphoto:before{content:"";width:150px;height:58px;border-radius:6px;background:linear-gradient(145deg,#4e5962,#10161b);border:2px solid #727d86;box-shadow:0 12px 18px #0004}.info{padding:13px}.info h3{font-size:13px;line-height:1.3;margin:0 0 5px}.info p{font-size:10px;color:#7a8590;margin:0 0 9px}.spec{border-top:1px solid #edf0f2;padding-top:8px;display:flex;justify-content:space-between;font-size:10px}.spec b{font-size:11px}
+.stickers{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.sticker-card{background:#fff;border:1px solid #e0e5e9;border-radius:12px;padding:12px}.sticker-img{height:130px;background:#f0f2f4;display:grid;place-items:center;font-weight:900;font-size:25px;border-radius:8px}.sticker-card strong{display:block;font-size:11px;margin:10px 0 4px}.price{font-weight:800;font-size:15px}.order{display:block;background:#17202b;color:#fff;text-decoration:none;text-align:center;padding:9px;border-radius:7px;font-size:11px;font-weight:800;margin-top:10px}
+@media(max-width:950px){.categories{grid-template-columns:1fr}.products{grid-template-columns:repeat(2,1fr)}.stickers{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.navlinks{display:none}.products{grid-template-columns:1fr}.stickers{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-<header class="site-header">
-  <div class="container nav">
-    <a class="brand" href="index.html#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span>Enclosure Lab</span></a>
-    <nav>
-      <a href="index.html#how">How It Works</a>
-      <a href="products.html" class="active">Products</a>
-      <a href="index.html#quote">Request a Quote</a>
-      <a href="index.html#about">About</a>
-    </nav>
-    <a class="nav-cta" href="index.html#quote">Start a Quote</a>
-  </div>
-</header>
-
-
-<main>
-<section class="products-hero">
-  <div class="container">
-    <p class="eyebrow">ENCLOSURE LAB PRODUCTS</p>
-    <h1>Choose what you're<br><span>looking for.</span></h1>
-    <p>Tap a category below to open the products.</p>
-  </div>
-</section>
-
-<section class="product-shop">
-  <div class="container">
-    <div class="category-grid">
-      <details class="category-details">
-        <summary class="category-card">
-          <div class="category-art sub-art" aria-hidden="true">
-            <div class="sub-ring"></div><div class="sub-cone"></div><div class="sub-center"></div>
-          </div>
-          <div class="category-label"><strong>SUBWOOFERS</strong><span>10" · 12" · 15" · 18"</span><b>＋</b></div>
-        </summary>
-        <div class="native-panel"><section class="product-panel" data-panel="subs" hidden>
-        <div class="panel-heading"><div><p class="eyebrow">SUBWOOFERS</p><h2>Choose your subwoofer size.</h2></div><button class="close-panel" type="button">×</button></div>
-        <div class="product-catalog">
-          <article class="catalog-card"><div class="product-photo sub-photo"><span>10"</span><i></i></div><div class="catalog-info"><h3>Rockford Fosgate P2D2-10</h3><p>10-inch subwoofer</p><dl><dt>RMS</dt><dd>300W</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo sub-photo"><span>10"</span><i></i></div><div class="catalog-info"><h3>JL Audio 10W0v3-4</h3><p>10-inch subwoofer</p><dl><dt>RMS</dt><dd>300W</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo sub-photo"><span>12"</span><i></i></div><div class="catalog-info"><h3>JL Audio 12W0v3-4</h3><p>12-inch subwoofer</p><dl><dt>RMS</dt><dd>300W</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo sub-photo"><span>12"</span><i></i></div><div class="catalog-info"><h3>Rockford Fosgate P3D4-12</h3><p>12-inch subwoofer</p><dl><dt>RMS</dt><dd>600W</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo sub-photo large"><span>15"</span><i></i></div><div class="catalog-info"><h3>Skar Audio VXF-15 D4</h3><p>15-inch subwoofer</p><dl><dt>Size</dt><dd>15"</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo sub-photo large"><span>15"</span><i></i></div><div class="catalog-info"><h3>Sundown Audio X-15 v3 D1 Pro</h3><p>15-inch subwoofer</p><dl><dt>Size</dt><dd>15"</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo sub-photo xl"><span>18"</span><i></i></div><div class="catalog-info"><h3>Sundown Audio SA-Series v.2</h3><p>18-inch subwoofer</p><dl><dt>Size</dt><dd>18"</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo sub-photo xl"><span>18"</span><i></i></div><div class="catalog-info"><h3>Sundown Audio M18</h3><p>18-inch subwoofer</p><dl><dt>Size</dt><dd>18"</dd></dl></div></article>
-        </div>
-      </section></div>
-      </details>
-
-      <details class="category-details">
-        <summary class="category-card">
-          <div class="category-art amp-art" aria-hidden="true">
-            <div class="amp-body"><div class="amp-line"></div><div class="amp-knob"></div><div class="amp-knob second"></div></div>
-          </div>
-          <div class="category-label"><strong>AMPLIFIERS</strong><span>600W · 800W · 1,000W · 1,200W · 1,500W</span><b>＋</b></div>
-        </summary>
-        <div class="native-panel"><section class="product-panel" data-panel="amps" hidden>
-        <div class="panel-heading"><div><p class="eyebrow">AMPLIFIERS</p><h2>Choose your power range.</h2></div><button class="close-panel" type="button">×</button></div>
-        <div class="product-catalog amp-catalog">
-          <article class="catalog-card"><div class="product-photo amp-photo"><i></i><span>600W</span></div><div class="catalog-info"><h3>Memphis Audio SRX600.1V</h3><p>Mono amplifier</p><dl><dt>RMS</dt><dd>600W</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo amp-photo"><i></i><span>600W</span></div><div class="catalog-info"><h3>NVX VADM2 v2</h3><p>Amplifier</p><dl><dt>RMS</dt><dd>600W</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo amp-photo"><i></i><span>800W</span></div><div class="catalog-info"><h3>Taramps TS 800X4</h3><p>4-channel amplifier</p><dl><dt>RMS</dt><dd>800W</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo amp-photo"><i></i><span>800W</span></div><div class="catalog-info"><h3>Audiopipe APMOX-800.1</h3><p>Mono amplifier</p><dl><dt>RMS</dt><dd>800W</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo amp-photo"><i></i><span>1,000W</span></div><div class="catalog-info"><h3>CT Sounds CT-1000.1D</h3><p>Mono amplifier</p><dl><dt>RMS</dt><dd>1,000W</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo amp-photo"><i></i><span>1,000W</span></div><div class="catalog-info"><h3>NVX VAD10001 v2</h3><p>Mono amplifier</p><dl><dt>RMS</dt><dd>1,000W</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo amp-photo"><i></i><span>1,200W</span></div><div class="catalog-info"><h3>Memphis Audio SRX1200.1V</h3><p>Mono amplifier</p><dl><dt>RMS</dt><dd>1,200W</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo amp-photo"><i></i><span>1,200W</span></div><div class="catalog-info"><h3>Alpine S-Series</h3><p>Amplifier</p><dl><dt>RMS</dt><dd>1,200W</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo amp-photo"><i></i><span>1,500W</span></div><div class="catalog-info"><h3>NVX NDA15001</h3><p>Mono amplifier</p><dl><dt>RMS</dt><dd>1,500W</dd></dl></div></article>
-          <article class="catalog-card"><div class="product-photo amp-photo"><i></i><span>1,500W</span></div><div class="catalog-info"><h3>JL Audio RD1500/1</h3><p>Mono amplifier</p><dl><dt>RMS</dt><dd>1,500W</dd></dl></div></article>
-        </div>
-      </section></div>
-      </details>
-
-      <details class="category-details">
-        <summary class="category-card">
-          <div class="category-art sticker-art" aria-hidden="true">
-            <div class="sticker s1">EL</div><div class="sticker s2">EL</div><div class="sticker s3">EL</div>
-          </div>
-          <div class="category-label"><strong>CUSTOM STICKERS</strong><span>5 Enclosure Lab designs</span><b>＋</b></div>
-        </summary>
-        <div class="native-panel"><section class="product-panel" data-panel="stickers" hidden>
-        <div class="panel-heading"><div><p class="eyebrow">CUSTOM STICKERS</p><h2>Choose your Enclosure Lab sticker.</h2></div><button class="close-panel" type="button">×</button></div>
-        <div class="sticker-grid">
-          <article class="sticker-product"><div class="sticker-preview sticker-logo">EL <small>ENCLOSURE LAB</small></div><div><strong>Large EL Enclosure Lab</strong><b>$5</b></div><a href="index.html#quote">Order →</a></article>
-          <article class="sticker-product"><div class="sticker-preview sticker-circle"><strong>EL</strong><small>ENCLOSURE LAB</small></div><div><strong>Circular EL Logo</strong><b>$4</b></div><a href="index.html#quote">Order →</a></article>
-          <article class="sticker-product"><div class="sticker-preview sticker-brush">EL <small>ENCLOSURE LAB</small></div><div><strong>Brush Style EL</strong><b>$3</b></div><a href="index.html#quote">Order →</a></article>
-          <article class="sticker-product"><div class="sticker-preview sticker-rectangle">EL | ENCLOSURE LAB</div><div><strong>Rectangle Logo</strong><b>$2</b></div><a href="index.html#quote">Order →</a></article>
-          <article class="sticker-product"><div class="sticker-preview sticker-small">EL <small>Enclosure Lab</small></div><div><strong>Small EL Logo</strong><b>$1</b></div><a href="index.html#quote">Order →</a></article>
-        </div>
-        <p class="sticker-note">Sticker ordering currently sends you to the quote page so we can confirm the design and order details before payment.</p>
-      </section></div>
-      </details>
-    </div>
-  </div>
-</section>
-</main>
-
-<footer>
-  <div class="container footer-grid">
-    <div><a class="brand" href="index.html#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span>Enclosure Lab</span></a><p>Custom subwoofer enclosures, designed and built to order.</p></div>
-    <div><span class="footer-label">CONTACT</span><a href="tel:4233558230">423-355-8230</a></div>
-    <div><span class="footer-label">SHOP</span><a href="products.html">Products →</a></div>
-  </div>
-  <div class="container copyright">© <span id="productYear"></span> Enclosure Lab. All rights reserved.</div>
-</footer>
-
-
-</body>
-</html>
+<header><div class="wrap nav"><a class="brand" href="index.html">Enclosure Lab</a><nav class="navlinks"><a href="index.html#how">How It Works</a><a href="products.html">Products</a><a href="index.html#quote">Request a Quote</a><a href="index.html#about">About</a><a class="cta" href="index.html#quote">Start a Quote</a></nav></div></header>
+<section class="hero"><div class="wrap"><p class="eyebrow">ENCLOSURE LAB PRODUCTS</p><h1>Choose what you're<br><span>looking for.</span></h1><p>Click a category to open the products.</p></div></section>
+<section class="shop"><div class="wrap"><div class="categories">
+<div class="category"><button type="button" onclick="toggleCategory(this)"><div class="art sub"></div><div class="label"><div><strong>SUBWOOFERS</strong><small>10" · 12" · 15" · 18"</small></div><span class="plus">+</span></div></button><div class="panel"><div class="products">
+<article class="product"><div class="photo subphoto"><span>10"</span></div><div class="info"><h3>Rockford Fosgate P2D2-10</h3><p>10-inch subwoofer</p><div class="spec"><span>RMS</span><b>300W</b></div></div></article><article class="product"><div class="photo subphoto"><span>10"</span></div><div class="info"><h3>JL Audio 10W0v3-4</h3><p>10-inch subwoofer</p><div class="spec"><span>RMS</span><b>300W</b></div></div></article><article class="product"><div class="photo subphoto"><span>12"</span></div><div class="info"><h3>JL Audio 12W0v3-4</h3><p>12-inch subwoofer</p><div class="spec"><span>RMS</span><b>300W</b></div></div></article><article class="product"><div class="photo subphoto"><span>12"</span></div><div class="info"><h3>Rockford Fosgate P3D4-12</h3><p>12-inch subwoofer</p><div class="spec"><span>RMS</span><b>600W</b></div></div></article><article class="product"><div class="photo subphoto"><span>15"</span></div><div class="info"><h3>Skar Audio VXF-15 D4</h3><p>15-inch subwoofer</p><div class="spec"><span>RMS</span><b>—</b></div></div></article><article class="product"><div class="photo subphoto"><span>15"</span></div><div class="info"><h3>Sundown Audio X-15 v3 D1 Pro</h3><p>15-inch subwoofer</p><div class="spec"><span>RMS</span><b>—</b></div></div></article><article class="product"><div class="photo subphoto"><span>18"</span></div><div class="info"><h3>Sundown Audio SA-Series v.2</h3><p>18-inch subwoofer</p><div class="spec"><span>RMS</span><b>—</b></div></div></article><article class="product"><div class="photo subphoto"><span>18"</span></div><div class="info"><h3>Sundown Audio M18</h3><p>18-inch subwoofer</p><div class="spec"><span>RMS</span><b>—</b></div></div></article>
+</div></div></div>
+<div class="category"><button type="button" onclick="toggleCategory(this)"><div class="art amp"></div><div class="label"><div><strong>AMPLIFIERS</strong><small>600W · 800W · 1,000W · 1,200W · 1,500W</small></div><span class="plus">+</span></div></button><div class="panel"><div class="products">
+<article class="product"><div class="photo amphoto"><span>600W</span></div><div class="info"><h3>Memphis Audio SRX600.1V</h3><p>Mono amplifier</p><div class="spec"><span>RMS</span><b>600W</b></div></div></article><article class="product"><div class="photo amphoto"><span>600W</span></div><div class="info"><h3>NVX VADM2 v2</h3><p>Amplifier</p><div class="spec"><span>RMS</span><b>600W</b></div></div></article><article class="product"><div class="photo amphoto"><span>800W</span></div><div class="info"><h3>Taramps TS 800X4</h3><p>4-channel amplifier</p><div class="spec"><span>RMS</span><b>800W</b></div></div></article><article class="product"><div class="photo amphoto"><span>800W</span></div><div class="info"><h3>Audiopipe APMOX-800.1</h3><p>Mono amplifier</p><div class="spec"><span>RMS</span><b>800W</b></div></div></article><article class="product"><div class="photo amphoto"><span>1,000W</span></div><div class="info"><h3>CT Sounds CT-1000.1D</h3><p>Mono amplifier</p><div class="spec"><span>RMS</span><b>1,000W</b></div></div></article><article class="product"><div class="photo amphoto"><span>1,000W</span></div><div class="info"><h3>NVX VAD10001 v2</h3><p>Mono amplifier</p><div class="spec"><span>RMS</span><b>1,000W</b></div></div></article><article class="product"><div class="photo amphoto"><span>1,200W</span></div><div class="info"><h3>Memphis Audio SRX1200.1V</h3><p>Mono amplifier</p><div class="spec"><span>RMS</span><b>1,200W</b></div></div></article><article class="product"><div class="photo amphoto"><span>1,200W</span></div><div class="info"><h3>Alpine S-Series</h3><p>Amplifier</p><div class="spec"><span>RMS</span><b>1,200W</b></div></div></article><article class="product"><div class="photo amphoto"><span>1,500W</span></div><div class="info"><h3>NVX NDA15001</h3><p>Mono amplifier</p><div class="spec"><span>RMS</span><b>1,500W</b></div></div></article><article class="product"><div class="photo amphoto"><span>1,500W</span></div><div class="info"><h3>JL Audio RD1500/1</h3><p>Mono amplifier</p><div class="spec"><span>RMS</span><b>1,500W</b></div></div></article>
+</div></div></div>
+<div class="category"><button type="button" onclick="toggleCategory(this)"><div class="art stickers"><span class="st one">EL</span><span class="st two">EL</span><span class="st three">EL | ENCLOSURE LAB</span></div><div class="label"><div><strong>CUSTOM STICKERS</strong><small>5 Enclosure Lab designs</small></div><span class="plus">+</span></div></button><div class="panel"><div class="stickers">
+<article class="sticker-card"><div class="sticker-img">EL</div><strong>Large EL Enclosure Lab</strong><span class="price">$5</span><a class="order" href="index.html#quote">Order →</a></article><article class="sticker-card"><div class="sticker-img">EL</div><strong>Circular EL Logo</strong><span class="price">$4</span><a class="order" href="index.html#quote">Order →</a></article><article class="sticker-card"><div class="sticker-img">EL</div><strong>Brush Style EL</strong><span class="price">$3</span><a class="order" href="index.html#quote">Order →</a></article><article class="sticker-card"><div class="sticker-img">EL</div><strong>Rectangle Logo</strong><span class="price">$2</span><a class="order" href="index.html#quote">Order →</a></article><article class="sticker-card"><div class="sticker-img">EL</div><strong>Small EL Logo</strong><span class="price">$1</span><a class="order" href="index.html#quote">Order →</a></article>
+</div></div></div>
+</div></div></section>
+<script>
+function toggleCategory(button){
+ const category=button.parentElement;
+ document.querySelectorAll('.category').forEach(c=>{if(c!==category)c.classList.remove('open')});
+ category.classList.toggle('open');
+ if(category.classList.contains('open')) category.scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script>
+</body></html>
