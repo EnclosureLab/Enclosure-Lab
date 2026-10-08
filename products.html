@@ -25,42 +25,27 @@
   </div>
 </header>
 
+
 <main>
 <section class="products-hero">
   <div class="container">
     <p class="eyebrow">ENCLOSURE LAB PRODUCTS</p>
     <h1>Choose what you're<br><span>looking for.</span></h1>
-    <p>Click a category to expand it into more specific options.</p>
+    <p>Tap a category below to open the products.</p>
   </div>
 </section>
 
 <section class="product-shop">
   <div class="container">
     <div class="category-grid">
-      <button class="category-card" data-category="subs" aria-expanded="false">
-        <div class="category-art sub-art" aria-hidden="true">
-          <div class="sub-ring"></div><div class="sub-cone"></div><div class="sub-center"></div>
-        </div>
-        <div class="category-label"><strong>SUBWOOFERS</strong><span>10" · 12" · 15" · 18"</span><b>＋</b></div>
-      </button>
-
-      <button class="category-card" data-category="amps" aria-expanded="false">
-        <div class="category-art amp-art" aria-hidden="true">
-          <div class="amp-body"><div class="amp-line"></div><div class="amp-knob"></div><div class="amp-knob second"></div></div>
-        </div>
-        <div class="category-label"><strong>AMPLIFIERS</strong><span>600W · 800W · 1,000W · 1,200W · 1,500W</span><b>＋</b></div>
-      </button>
-
-      <button class="category-card" data-category="stickers" aria-expanded="false">
-        <div class="category-art sticker-art" aria-hidden="true">
-          <div class="sticker s1">EL</div><div class="sticker s2">EL</div><div class="sticker s3">EL</div>
-        </div>
-        <div class="category-label"><strong>CUSTOM STICKERS</strong><span>5 Enclosure Lab designs</span><b>＋</b></div>
-      </button>
-    </div>
-
-    <div class="expanded-panels">
-      <section class="product-panel" data-panel="subs" hidden>
+      <details class="category-details">
+        <summary class="category-card">
+          <div class="category-art sub-art" aria-hidden="true">
+            <div class="sub-ring"></div><div class="sub-cone"></div><div class="sub-center"></div>
+          </div>
+          <div class="category-label"><strong>SUBWOOFERS</strong><span>10" · 12" · 15" · 18"</span><b>＋</b></div>
+        </summary>
+        <div class="native-panel"><section class="product-panel" data-panel="subs" hidden>
         <div class="panel-heading"><div><p class="eyebrow">SUBWOOFERS</p><h2>Choose your subwoofer size.</h2></div><button class="close-panel" type="button">×</button></div>
         <div class="product-catalog">
           <article class="catalog-card"><div class="product-photo sub-photo"><span>10"</span><i></i></div><div class="catalog-info"><h3>Rockford Fosgate P2D2-10</h3><p>10-inch subwoofer</p><dl><dt>RMS</dt><dd>300W</dd></dl></div></article>
@@ -72,9 +57,17 @@
           <article class="catalog-card"><div class="product-photo sub-photo xl"><span>18"</span><i></i></div><div class="catalog-info"><h3>Sundown Audio SA-Series v.2</h3><p>18-inch subwoofer</p><dl><dt>Size</dt><dd>18"</dd></dl></div></article>
           <article class="catalog-card"><div class="product-photo sub-photo xl"><span>18"</span><i></i></div><div class="catalog-info"><h3>Sundown Audio M18</h3><p>18-inch subwoofer</p><dl><dt>Size</dt><dd>18"</dd></dl></div></article>
         </div>
-      </section>
+      </section></div>
+      </details>
 
-      <section class="product-panel" data-panel="amps" hidden>
+      <details class="category-details">
+        <summary class="category-card">
+          <div class="category-art amp-art" aria-hidden="true">
+            <div class="amp-body"><div class="amp-line"></div><div class="amp-knob"></div><div class="amp-knob second"></div></div>
+          </div>
+          <div class="category-label"><strong>AMPLIFIERS</strong><span>600W · 800W · 1,000W · 1,200W · 1,500W</span><b>＋</b></div>
+        </summary>
+        <div class="native-panel"><section class="product-panel" data-panel="amps" hidden>
         <div class="panel-heading"><div><p class="eyebrow">AMPLIFIERS</p><h2>Choose your power range.</h2></div><button class="close-panel" type="button">×</button></div>
         <div class="product-catalog amp-catalog">
           <article class="catalog-card"><div class="product-photo amp-photo"><i></i><span>600W</span></div><div class="catalog-info"><h3>Memphis Audio SRX600.1V</h3><p>Mono amplifier</p><dl><dt>RMS</dt><dd>600W</dd></dl></div></article>
@@ -88,9 +81,17 @@
           <article class="catalog-card"><div class="product-photo amp-photo"><i></i><span>1,500W</span></div><div class="catalog-info"><h3>NVX NDA15001</h3><p>Mono amplifier</p><dl><dt>RMS</dt><dd>1,500W</dd></dl></div></article>
           <article class="catalog-card"><div class="product-photo amp-photo"><i></i><span>1,500W</span></div><div class="catalog-info"><h3>JL Audio RD1500/1</h3><p>Mono amplifier</p><dl><dt>RMS</dt><dd>1,500W</dd></dl></div></article>
         </div>
-      </section>
+      </section></div>
+      </details>
 
-      <section class="product-panel" data-panel="stickers" hidden>
+      <details class="category-details">
+        <summary class="category-card">
+          <div class="category-art sticker-art" aria-hidden="true">
+            <div class="sticker s1">EL</div><div class="sticker s2">EL</div><div class="sticker s3">EL</div>
+          </div>
+          <div class="category-label"><strong>CUSTOM STICKERS</strong><span>5 Enclosure Lab designs</span><b>＋</b></div>
+        </summary>
+        <div class="native-panel"><section class="product-panel" data-panel="stickers" hidden>
         <div class="panel-heading"><div><p class="eyebrow">CUSTOM STICKERS</p><h2>Choose your Enclosure Lab sticker.</h2></div><button class="close-panel" type="button">×</button></div>
         <div class="sticker-grid">
           <article class="sticker-product"><div class="sticker-preview sticker-logo">EL <small>ENCLOSURE LAB</small></div><div><strong>Large EL Enclosure Lab</strong><b>$5</b></div><a href="index.html#quote">Order →</a></article>
@@ -100,7 +101,8 @@
           <article class="sticker-product"><div class="sticker-preview sticker-small">EL <small>Enclosure Lab</small></div><div><strong>Small EL Logo</strong><b>$1</b></div><a href="index.html#quote">Order →</a></article>
         </div>
         <p class="sticker-note">Sticker ordering currently sends you to the quote page so we can confirm the design and order details before payment.</p>
-      </section>
+      </section></div>
+      </details>
     </div>
   </div>
 </section>
@@ -115,46 +117,6 @@
   <div class="container copyright">© <span id="productYear"></span> Enclosure Lab. All rights reserved.</div>
 </footer>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const cards = document.querySelectorAll(".category-card");
-  const panels = document.querySelectorAll(".product-panel");
-  const closeButtons = document.querySelectorAll(".close-panel");
 
-  function openCategory(name) {
-    cards.forEach(card => {
-      const active = card.dataset.category === name;
-      card.classList.toggle("selected", active);
-      card.setAttribute("aria-expanded", active ? "true" : "false");
-      card.querySelector("b").textContent = active ? "−" : "＋";
-    });
-    panels.forEach(panel => {
-      const active = panel.dataset.panel === name;
-      panel.hidden = !active;
-      panel.classList.toggle("open", active);
-    });
-    const panel = document.querySelector(`[data-panel="${name}"]`);
-    if (panel) setTimeout(() => panel.scrollIntoView({behavior:"smooth", block:"start"}), 30);
-  }
-
-  cards.forEach(card => card.addEventListener("click", () => {
-    const isOpen = card.classList.contains("selected");
-    if (isOpen) {
-      cards.forEach(c => { c.classList.remove("selected"); c.setAttribute("aria-expanded","false"); c.querySelector("b").textContent="＋"; });
-      panels.forEach(p => p.hidden = true);
-    } else {
-      openCategory(card.dataset.category);
-    }
-  }));
-
-  closeButtons.forEach(button => button.addEventListener("click", () => {
-    cards.forEach(c => { c.classList.remove("selected"); c.setAttribute("aria-expanded","false"); c.querySelector("b").textContent="＋"; });
-    panels.forEach(p => p.hidden = true);
-    window.scrollTo({top: document.querySelector(".product-shop").offsetTop - 90, behavior:"smooth"});
-  }));
-
-  document.getElementById("productYear").textContent = new Date().getFullYear();
-});
-</script>
 </body>
 </html>
