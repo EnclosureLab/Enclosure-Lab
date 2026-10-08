@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       openCategory(card.dataset.category);
     }
-  });
+  }));
 
   closeButtons.forEach(button => button.addEventListener("click", () => {
     cards.forEach(c => { c.classList.remove("selected"); c.setAttribute("aria-expanded","false"); c.querySelector("b").textContent="＋"; });
