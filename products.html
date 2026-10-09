@@ -45,6 +45,28 @@ header{height:76px;border-bottom:1px solid #e5e8eb;background:#fff;display:flex;
 .category:nth-child(2) .products::-webkit-scrollbar-track{background:#e9edf0;border-radius:99px}
 .category:nth-child(1) .products::-webkit-scrollbar-thumb,
 .category:nth-child(2) .products::-webkit-scrollbar-thumb{background:#aab3bb;border-radius:99px}
+
+/* Keep sticker options in one horizontal, swipeable row */
+.stickers{
+  display:flex;
+  flex-wrap:nowrap;
+  gap:12px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:2px 2px 14px;
+  scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:#aab3bb #e9edf0;
+}
+.stickers .sticker-card{
+  flex:0 0 190px;
+  min-width:0;
+  scroll-snap-align:start;
+}
+.stickers::-webkit-scrollbar{height:8px}
+.stickers::-webkit-scrollbar-track{background:#e9edf0;border-radius:99px}
+.stickers::-webkit-scrollbar-thumb{background:#aab3bb;border-radius:99px}
 </style>
 </head>
 <body>
