@@ -117,9 +117,3 @@ button.order.add-sticker:hover {
   background: #f1f3f5 !important;
   border-color: #17202b !important;
 }
-
-
-/* Fix branded amplifier category art: use only the uploaded image, not the old CSS mockup */
-.art.amp.brand-image{height:220px!important;min-height:220px!important;max-height:220px!important;display:block!important;position:relative!important;overflow:hidden!important;padding:0!important;background:#101820!important;}
-.art.amp.brand-image::before,.art.amp.brand-image::after{content:none!important;display:none!important;}
-.art.amp.brand-image img{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important;object-position:center!important;margin:0!important;padding:0!important;border:0!important;z-index:1!important;}
