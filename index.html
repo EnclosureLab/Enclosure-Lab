@@ -173,8 +173,8 @@
  const toggle=document.querySelector(".mobile-menu-toggle");
  const nav=document.querySelector(".site-header .nav nav");
  if(!toggle||!nav)return;
- toggle.addEventListener("click",()=>{const open=nav.classList.toggle("mobile-open");toggle.setAttribute("aria-expanded",String(open));toggle.setAttribute("aria-label",open?"Close navigation menu":"Open navigation menu");toggle.textContent=open?"×":"☰";});
- nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("mobile-open");toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-label","Open navigation menu");toggle.textContent="☰";}));
+ toggle.addEventListener("click",()=>{const open=nav.classList.toggle("mobile-open");nav.style.display=open?"flex":"none";nav.style.visibility=open?"visible":"hidden";nav.style.pointerEvents=open?"auto":"none";toggle.setAttribute("aria-expanded",String(open));toggle.setAttribute("aria-label",open?"Close navigation menu":"Open navigation menu");toggle.textContent=open?"×":"☰";});
+ nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("mobile-open");nav.style.display="none";nav.style.visibility="hidden";nav.style.pointerEvents="none";toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-label","Open navigation menu");toggle.textContent="☰";}));
 })();
 </script>
 </body>
