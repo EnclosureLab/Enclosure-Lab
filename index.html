@@ -14,12 +14,13 @@
 <header class="site-header">
   <div class="container nav">
     <a class="brand" href="#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span data-brand>Enclosure Lab</span></a>
-    <nav>
+    <nav id="mobileNavigation">
       <a href="#how">How It Works</a>\n      <a href="products.html">Products</a>
       <a href="#quote">Request a Quote</a>
       <a href="#about">About</a>
     </nav>
     <a class="nav-cta" href="#quote">Start a Quote</a>
+    <button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileNavigation">☰</button>
   </div>
 </header>
 
@@ -167,5 +168,14 @@
 
 <script src="config.js"></script>
 <script src="script.js"></script>
+<script>
+(() => {
+ const toggle=document.querySelector(".mobile-menu-toggle");
+ const nav=document.querySelector(".site-header .nav nav");
+ if(!toggle||!nav)return;
+ toggle.addEventListener("click",()=>{const open=nav.classList.toggle("mobile-open");toggle.setAttribute("aria-expanded",String(open));toggle.setAttribute("aria-label",open?"Close navigation menu":"Open navigation menu");toggle.textContent=open?"×":"☰";});
+ nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("mobile-open");toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-label","Open navigation menu");toggle.textContent="☰";}));
+})();
+</script>
 </body>
 </html>
