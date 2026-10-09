@@ -18,7 +18,34 @@ header{height:76px;border-bottom:1px solid #e5e8eb;background:#fff;display:flex;
 .stickers{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.sticker-card{background:#fff;border:1px solid #e0e5e9;border-radius:12px;padding:12px}.sticker-img{height:130px;background:#f0f2f4;display:grid;place-items:center;font-weight:900;font-size:25px;border-radius:8px}.sticker-card strong{display:block;font-size:11px;margin:10px 0 4px}.price{font-weight:800;font-size:15px}.order{display:block;background:#17202b;color:#fff;text-decoration:none;text-align:center;padding:9px;border-radius:7px;font-size:11px;font-weight:800;margin-top:10px}
 @media(max-width:950px){.categories{grid-template-columns:1fr}.products{grid-template-columns:repeat(2,1fr)}.stickers{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.navlinks{display:none}.products{grid-template-columns:1fr}.stickers{grid-template-columns:1fr}}
-.brand-signoff{padding:55px 0 80px;background:#fff;text-align:center;border-top:1px solid #edf0f2}.bottom-logo{width:min(520px,78%);height:auto;display:inline-block;opacity:.95;filter:invert(1);}@media(max-width:600px){.bottom-logo{width:80%}}.brand-signoff{padding:55px 0 80px;background:#fff;text-align:center;border-top:1px solid #edf0f2}.brand-signoff img{width:min(520px,78%);height:auto;display:inline-block;opacity:.95;filter:invert(1);}</style>
+.brand-signoff{padding:55px 0 80px;background:#fff;text-align:center;border-top:1px solid #edf0f2}.bottom-logo{width:min(520px,78%);height:auto;display:inline-block;opacity:.95;filter:invert(1);}@media(max-width:600px){.bottom-logo{width:80%}}.brand-signoff{padding:55px 0 80px;background:#fff;text-align:center;border-top:1px solid #edf0f2}.brand-signoff img{width:min(520px,78%);height:auto;display:inline-block;opacity:.95;filter:invert(1);}
+/* Keep subwoofer and amplifier products in a single horizontal, swipeable row */
+.category:nth-child(1) .products,
+.category:nth-child(2) .products{
+  display:flex;
+  flex-wrap:nowrap;
+  gap:14px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:2px 2px 14px;
+  scroll-snap-type:x proximity;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:#aab3bb #e9edf0;
+}
+.category:nth-child(1) .products .product,
+.category:nth-child(2) .products .product{
+  flex:0 0 190px;
+  min-width:0;
+  scroll-snap-align:start;
+}
+.category:nth-child(1) .products::-webkit-scrollbar,
+.category:nth-child(2) .products::-webkit-scrollbar{height:8px}
+.category:nth-child(1) .products::-webkit-scrollbar-track,
+.category:nth-child(2) .products::-webkit-scrollbar-track{background:#e9edf0;border-radius:99px}
+.category:nth-child(1) .products::-webkit-scrollbar-thumb,
+.category:nth-child(2) .products::-webkit-scrollbar-thumb{background:#aab3bb;border-radius:99px}
+</style>
 </head>
 <body>
 <header><div class="wrap nav"><a class="brand" href="index.html">Enclosure Lab</a><nav class="navlinks"><a href="index.html#how">How It Works</a><a href="products.html">Products</a><a href="index.html#quote">Request a Quote</a><a href="checkout.html">Checkout</a><a href="index.html#about">About</a><a class="cta" href="index.html#quote">Start a Quote</a></nav></div></header>
