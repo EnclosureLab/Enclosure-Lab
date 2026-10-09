@@ -11,3 +11,16 @@
 .brand-mark.logo-mark{width:38px;height:38px;display:grid;place-items:center;overflow:hidden;background:#000;border-radius:4px}
 .brand-mark.logo-mark img{width:100%;height:100%;object-fit:contain;display:block}
 footer .brand-mark.logo-mark{width:42px;height:42px}
+
+/* Mobile navigation: only affects phone/tablet layouts; desktop navigation remains unchanged */
+.mobile-menu-toggle{display:none}
+@media(max-width:850px){
+  .site-header{z-index:100}
+  .site-header .nav{position:relative}
+  .mobile-menu-toggle{display:grid;place-items:center;margin-left:10px;width:42px;height:42px;border:1px solid #dce1e6;border-radius:9px;background:#fff;color:#17202b;font-size:24px;line-height:1;cursor:pointer}
+  .site-header .nav nav{display:none;position:absolute;top:calc(100% + 1px);left:0;right:0;margin:0;padding:10px;background:#fff;border:1px solid #e3e7eb;border-radius:0 0 12px 12px;box-shadow:0 16px 30px rgba(20,30,40,.12);flex-direction:column;gap:0;z-index:101}
+  .site-header .nav nav.mobile-open{display:flex}
+  .site-header .nav nav a{display:block;padding:13px 12px;border-radius:7px}
+  .site-header .nav nav a:hover{background:#f4f6f8}
+  .nav-cta{margin-left:auto}
+}
