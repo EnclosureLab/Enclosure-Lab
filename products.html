@@ -115,4 +115,20 @@ function toggleCategory(button){
  if(category.classList.contains('open')) category.scrollIntoView({behavior:'smooth',block:'start'});
 }
 </script>
+
+<style>
+/* Crop each sticker separately from the uploaded five-sticker sheet */
+.sticker-img{
+  background-image:url("sticker-sheet.png")!important;
+  background-repeat:no-repeat!important;
+  background-color:#f0f2f4!important;
+  border-radius:8px;
+  background-size:300% 300%!important;
+}
+.sticker-img-1{background-position:0% 0%!important}
+.sticker-img-2{background-position:100% 0%!important}
+.sticker-img-3{background-position:0% 50%!important}
+.sticker-img-4{background-position:0% 100%!important}
+.sticker-img-5{background-position:100% 100%!important}
+</style>
 </body></html>
