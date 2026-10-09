@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout | Enclosure Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.checkout-hero{padding:58px 0 35px;background:linear-gradient(180deg,#f7f9fb,#fff)}.checkout-hero h1{font-size:clamp(42px,6vw,66px);letter-spacing:-.06em;line-height:1.02;margin:0 0 14px}.checkout-hero h1 span{color:#7a8795}.checkout-hero p:last-child{color:#687480}.checkout-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.8fr);gap:24px;padding:24px 0 90px}.checkout-card,.summary-card{border:1px solid #dfe4e8;border-radius:16px;background:#fff;padding:26px;box-shadow:0 10px 30px rgba(20,30,40,.04)}.checkout-card h2,.summary-card h2{font-size:22px;letter-spacing:-.03em;margin:0 0 18px}.cart-list{display:grid;gap:10px}.cart-line{display:grid;grid-template-columns:1fr auto;gap:10px;padding:14px;border:1px solid #e6eaee;border-radius:10px}.cart-line strong{display:block;font-size:14px}.cart-line small{color:#74808c}.line-controls{display:flex;align-items:center;gap:7px}.line-controls button,.qty-button{border:1px solid #d9dfe4;background:#fff;border-radius:7px;min-width:30px;height:30px;cursor:pointer}.line-controls .remove{color:#7a3030}.empty-cart{padding:24px;text-align:center;border:1px dashed #cbd3da;border-radius:12px;color:#687480}.empty-cart a{display:inline-block;margin-top:12px;font-weight:800;text-decoration:underline;color:#17202b}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label,.group-label{font-size:12px;font-weight:800;color:#53606c}.field input,.field textarea,.field select{width:100%;border:1px solid #d8dfe5;border-radius:8px;padding:12px;font:inherit;font-size:14px;background:#fff;color:#17202b}.field textarea{min-height:90px;resize:vertical}.delivery-options{display:grid;gap:10px}.delivery-option{display:flex;gap:10px;align-items:flex-start;border:1px solid #dfe4e8;border-radius:10px;padding:14px;cursor:pointer}.delivery-option input{margin-top:4px;accent-color:#17202b}.delivery-option strong{display:block;font-size:14px}.delivery-option small{color:#75808b}.summary-card{height:max-content;position:sticky;top:96px}.summary-row{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px solid #edf0f2;font-size:14px}.summary-row.total{font-size:17px;font-weight:800;border-bottom:0}.summary-row .muted{color:#7b8690}.notice{background:#f5f7f9;border-radius:9px;padding:12px;color:#65717d;font-size:12px;margin:15px 0}.checkout-submit{width:100%;border:0;border-radius:9px;background:#17202b;color:#fff;padding:14px 18px;font:inherit;font-weight:800;cursor:pointer}.checkout-submit:disabled{opacity:.45;cursor:not-allowed}.summary-card .back-link{display:block;text-align:center;margin-top:14px;font-size:13px;font-weight:700}.form-status{margin-top:12px;font-size:13px;color:#596572}.hidden{display:none!important}
+@media(max-width:800px){.checkout-layout{grid-template-columns:1fr}.summary-card{position:static;grid-row:1}.checkout-card{padding:20px}}@media(max-width:520px){.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.checkout-card,.summary-card{padding:18px}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav">
+<a class="brand" href="index.html#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span>Enclosure Lab</span></a>
+<nav><a href="index.html#how">How It Works</a><a href="products.html">Products</a><a href="index.html#quote">Request a Quote</a><a href="index.html#about">About</a></nav>
+<a class="nav-cta" href="products.html">Continue Shopping</a>
+</div></header>
+<main>
+<section class="checkout-hero"><div class="container"><p class="eyebrow">ENCLOSURE LAB CHECKOUT</p><h1>Review your <span>order.</span></h1><p>Confirm your items and delivery preference. Payments are not enabled yet.</p></div></section>
+<section class="container checkout-layout">
+<div class="checkout-card">
+<h2>Your items</h2><div id="cartList" class="cart-list"></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 30px"><button class="button ghost" type="button" id="addEnclosure">+ Add a custom enclosure request</button><a class="button ghost" href="products.html">Browse products</a></div>
+<h2>Contact and delivery</h2>
+<form id="checkoutForm"><div class="form-grid">
+<div class="field"><label for="name">Full name *</label><input id="name" name="name" autocomplete="name" required></div>
+<div class="field"><label for="email">Email *</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+<div class="field"><label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
+<div class="field"><label for="delivery">Fulfillment *</label><select id="delivery" name="delivery" required><option value="shipping">Ship to a U.S. address</option><option value="pickup">Local pickup</option></select></div>
+<div class="field full" id="addressFields"><label for="address">Street address *</label><input id="address" name="address" autocomplete="street-address"><div class="form-grid"><div class="field"><label for="city">City *</label><input id="city" name="city" autocomplete="address-level2"></div><div class="field"><label for="state">State *</label><input id="state" name="state" autocomplete="address-level1"></div><div class="field"><label for="zip">ZIP code *</label><input id="zip" name="zip" autocomplete="postal-code" inputmode="numeric"></div></div></div>
+<div class="field full"><label for="notes">Order notes (optional)</label><textarea id="notes" name="notes" placeholder="Vehicle, subwoofer details, preferred pickup timing, or other order notes"></textarea></div>
+</div>
+<div class="notice">This is an order-request checkout for now. No payment is collected, and product prices/shipping for items without listed prices will be confirmed with you before the order is finalized.</div>
+<button class="checkout-submit" id="submitOrder" type="submit">Prepare order request</button><p id="formStatus" class="form-status" aria-live="polite"></p>
+</form></div>
+<aside class="summary-card"><h2>Order summary</h2><div class="summary-row"><span>Items</span><strong id="itemCount">0</strong></div><div class="summary-row"><span>Known sticker subtotal</span><strong id="subtotal">$0.00</strong></div><div class="summary-row"><span>Other items</span><span class="muted" id="quoteItems">Quoted after review</span></div><div class="summary-row"><span>Shipping / pickup</span><span class="muted">Confirmed later</span></div><div class="summary-row total"><span>Amount due today</span><strong>$0.00</strong></div><div class="notice">Secure online payments will be added in a later step. This page does not charge you.</div><a class="back-link" href="products.html">← Back to products</a></aside>
+</section></main>
+<footer><div class="container footer-grid"><div><a class="brand" href="index.html#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span>Enclosure Lab</span></a><p>Custom subwoofer enclosures, designed and built to order.</p></div><div><span class="footer-label">CONTACT</span><a href="mailto:lawsonhughes53@gmail.com">lawsonhughes53@gmail.com</a></div><div><span class="footer-label">SHOP</span><a href="products.html">Products →</a></div></div><div class="container copyright">© <span id="year"></span> Enclosure Lab. All rights reserved.</div></footer>
+<script>
+const CART_KEY="enclosureLabCart";
+const STICKER_PRICES={"Large EL Enclosure Lab":5,"Circular EL Logo":4,"Brush Style EL":3,"Rectangle Logo":2,"Small EL Logo":1};
+function getCart(){try{return JSON.parse(localStorage.getItem(CART_KEY)||"[]")}catch(e){return[]}}
+function saveCart(cart){localStorage.setItem(CART_KEY,JSON.stringify(cart))}
+function money(n){return "$"+Number(n).toFixed(2)}
+function renderCart(){
+ const cart=getCart(),list=document.getElementById("cartList");list.innerHTML="";
+ if(!cart.length){list.innerHTML='<div class="empty-cart">Your cart is empty.<br><a href="products.html">Browse the products page</a></div>'}
+ cart.forEach((item,index)=>{
+  const line=document.createElement("div");line.className="cart-line";
+  const details=document.createElement("div");const title=document.createElement("strong");title.textContent=item.name;const sub=document.createElement("small");sub.textContent=item.price!=null?money(item.price)+" each":"Price confirmed after review";details.append(title,sub);
+  const controls=document.createElement("div");controls.className="line-controls";
+  const minus=document.createElement("button");minus.type="button";minus.textContent="−";minus.setAttribute("aria-label","Decrease quantity");minus.onclick=()=>changeQty(index,-1);
+  const qty=document.createElement("span");qty.textContent=item.qty;
+  const plus=document.createElement("button");plus.type="button";plus.textContent="+";plus.setAttribute("aria-label","Increase quantity");plus.onclick=()=>changeQty(index,1);
+  const remove=document.createElement("button");remove.type="button";remove.textContent="×";remove.className="remove";remove.setAttribute("aria-label","Remove item");remove.onclick=()=>{const c=getCart();c.splice(index,1);saveCart(c);renderCart()};
+  controls.append(minus,qty,plus,remove);line.append(details,controls);list.append(line);
+ });
+ const qty=cart.reduce((s,i)=>s+i.qty,0),subtotal=cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);
+ document.getElementById("itemCount").textContent=qty;
+ document.getElementById("subtotal").textContent=money(subtotal);
+ document.getElementById("quoteItems").textContent=cart.some(i=>i.price==null)?"Price confirmed after review":"None";
+ document.getElementById("submitOrder").disabled=!cart.length;
+}
+function changeQty(index,delta){const c=getCart();if(!c[index])return;c[index].qty+=delta;if(c[index].qty<1)c.splice(index,1);saveCart(c);renderCart()}
+document.getElementById("addEnclosure").addEventListener("click",()=>{const c=getCart();const found=c.find(i=>i.name==="Custom subwoofer enclosure (quote request)");if(found)found.qty++;else c.push({name:"Custom subwoofer enclosure (quote request)",category:"enclosure",price:null,qty:1});saveCart(c);renderCart()});
+const delivery=document.getElementById("delivery"),addressFields=document.getElementById("addressFields");
+function updateDelivery(){const shipping=delivery.value==="shipping";addressFields.classList.toggle("hidden",!shipping);["address","city","state","zip"].forEach(id=>document.getElementById(id).required=shipping)}
+delivery.addEventListener("change",updateDelivery);updateDelivery();
+document.getElementById("checkoutForm").addEventListener("submit",e=>{
+ e.preventDefault();const cart=getCart();if(!cart.length)return;
+ const f=new FormData(e.currentTarget);const subtotal=cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);
+ const items=cart.map(i=>"- "+i.name+" x "+i.qty+" — "+(i.price==null?"price to be confirmed":money(i.price)+" each")).join("\n");
+ const body=["Enclosure Lab order request","", "Name: "+f.get("name"),"Email: "+f.get("email"),"Phone: "+(f.get("phone")||"Not provided"),"Fulfillment: "+(f.get("delivery")==="pickup"?"Local pickup":"Shipping") ,...(f.get("delivery")==="shipping"?["Address: "+f.get("address"),"City: "+f.get("city"),"State: "+f.get("state"),"ZIP: "+f.get("zip")]:[]),"","Items:",items,"","Known sticker subtotal: "+money(subtotal),"Shipping: to be confirmed","Notes: "+(f.get("notes")||"None"),"","No payment has been collected. Please confirm pricing and next steps."].join("\n");
+ document.getElementById("formStatus").textContent="Your email app will open with the order request. Review it and press Send to submit it.";
+ window.location.href="mailto:lawsonhughes53@gmail.com?subject="+encodeURIComponent("Enclosure Lab order request")+"&body="+encodeURIComponent(body);
+});
+document.getElementById("year").textContent=new Date().getFullYear();renderCart();
+</script>
+</body></html>
