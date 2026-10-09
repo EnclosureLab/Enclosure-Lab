@@ -63,3 +63,29 @@
 .native-panel .product-panel[hidden]{display:block !important}
 .category-card{width:100%;font:inherit;color:inherit}
 @media(max-width:950px){.category-details[open]{grid-column:auto}}
+
+
+/* Small rounded outline around every Add to Cart button */
+.cart-add,
+.order.add-sticker{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:auto;
+  min-height:36px;
+  padding:8px 12px;
+  border:1px solid #cbd3da;
+  border-radius:9px;
+  background:#17202b;
+  color:#fff;
+  font-size:12px;
+  font-weight:800;
+  line-height:1.2;
+  cursor:pointer;
+  box-shadow:0 2px 5px rgba(23,32,43,.08);
+}
+.cart-add:hover,
+.order.add-sticker:hover{
+  border-color:#7f8b96;
+  background:#263341;
+}
