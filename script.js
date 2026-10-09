@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const c = window.SITE_CONFIG || {};
   document.querySelectorAll("[data-brand]").forEach(el => el.textContent = c.businessName || "Enclosure Lab");
   document.querySelectorAll("[data-tagline]").forEach(el => el.textContent = c.tagline || "");
-  const email = c.quoteEmail || "quotes@example.com";
+  const email = c.quoteEmail || "lawsonhughes53@gmail.com";
   const phone = c.phone || "";
   document.querySelectorAll("[data-email]").forEach(el => el.textContent = email);
   document.querySelectorAll("[data-email-link]").forEach(el => el.href = phone ? `tel:${phone.replace(/\D/g, "")}` : `mailto:${email}`);
