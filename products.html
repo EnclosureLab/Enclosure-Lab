@@ -103,7 +103,7 @@ header{height:76px;border-bottom:1px solid #e5e8eb;background:#fff;display:flex;
  function add(name,category,price){let cart=[];try{cart=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){}
  const item=cart.find(x=>x.name===name);if(item)item.qty++;else cart.push({name,category,price,qty:1});
  localStorage.setItem(KEY,JSON.stringify(cart));const n=document.getElementById("cartNotice");n.textContent=name+" added to cart";n.classList.add("show");setTimeout(()=>n.classList.remove("show"),2200);}
- document.querySelectorAll(".product").forEach(card=>{const title=card.querySelector("h3")?.textContent.trim();if(!title)return;const b=document.createElement("button");b.className="cart-add";b.type="button";b.textContent="Add to cart";b.addEventListener("click",()=>add(title,card.querySelector(".photo")?.classList.contains("amphoto")?"amplifier":"subwoofer",productPrices[title] ?? null));card.querySelector(".info")?.append(b);});
+ document.querySelectorAll(".product").forEach(card=>{const title=card.querySelector("h3")?.textContent.trim();if(!title)return;const b=document.createElement("button");b.className="cart-add";b.type="button";b.textContent="Add to Cart";b.addEventListener("click",()=>add(title,card.querySelector(".photo")?.classList.contains("amphoto")?"amplifier":"subwoofer",productPrices[title] ?? null));card.querySelector(".info")?.append(b);});
  document.querySelectorAll(".sticker-card").forEach(card=>{const title=card.querySelector("strong")?.textContent.trim();const price=stickerPrices[title];const b=card.querySelector(".add-sticker");if(b)b.addEventListener("click",()=>add(title,"sticker",price));});
 })();
 </script>
