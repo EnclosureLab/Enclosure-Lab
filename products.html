@@ -27,6 +27,19 @@ header{height:76px;border-bottom:1px solid #e5e8eb;background:#fff;display:flex;
 .stickers{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.sticker-card{background:#fff;border:1px solid #e0e5e9;border-radius:12px;padding:12px}.sticker-img{height:130px;background-color:#f0f2f4;background-image:url("sticker-sheet.png");background-repeat:no-repeat;background-size:200% 300%;border-radius:8px;background-position:0% 0%}.sticker-img-1{background-position:0% 0%}.sticker-img-2{background-position:100% 0%}.sticker-img-3{background-position:0% 50%}.sticker-img-4{background-position:0% 100%}.sticker-img-5{background-position:100% 100%}.sticker-card strong{display:block;font-size:11px;margin:10px 0 4px}.price{font-weight:800;font-size:15px}.order{display:block;background:#17202b;color:#fff;text-decoration:none;text-align:center;padding:9px;border-radius:7px;font-size:11px;font-weight:800;margin-top:10px}
 @media(max-width:950px){.categories{grid-template-columns:minmax(0,1fr)}.categories>.empty-speakers,.categories>.empty-headphones,.categories>.category:has(.art.stickers){grid-column:auto;grid-row:auto}.products{grid-template-columns:repeat(2,minmax(0,1fr))}.stickers{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.products{grid-template-columns:1fr}.stickers{grid-template-columns:1fr}}
+/* Keep headphone listings and product images within their card on narrow screens */
+.headphone-product{min-width:0;width:100%}
+.headphone-product .photo{height:180px;overflow:hidden;background:#fff}
+.headphone-product .photo img{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain}
+.empty-headphones .panel,.empty-headphones .products{min-width:0;width:100%;box-sizing:border-box}
+@media(max-width:600px){
+ .categories{display:grid;grid-template-columns:minmax(0,1fr);width:100%;min-width:0}
+ .categories>.empty-speakers,.categories>.empty-headphones,.categories>.category:has(.art.stickers){grid-column:1;grid-row:auto}
+ .category,.category>button,.category>.panel{min-width:0;max-width:100%;box-sizing:border-box}
+ .empty-headphones .panel{padding:12px}
+ .empty-headphones .products{grid-template-columns:minmax(0,1fr)}
+ .headphone-product .photo{height:190px}
+}
 .brand-signoff{padding:55px 0 80px;background:#fff;text-align:center;border-top:1px solid #edf0f2}.bottom-logo{width:min(520px,78%);height:auto;display:inline-block;opacity:.95;filter:invert(1);}@media(max-width:600px){.bottom-logo{width:80%}}.brand-signoff{padding:55px 0 80px;background:#fff;text-align:center;border-top:1px solid #edf0f2}.brand-signoff img{width:min(520px,78%);height:auto;display:inline-block;opacity:.95;filter:invert(1);}
 /* Keep subwoofer and amplifier products in a single horizontal, swipeable row */
 .category:nth-child(1) .products,
