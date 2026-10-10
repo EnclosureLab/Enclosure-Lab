@@ -41,7 +41,7 @@
 <script>
 const CART_KEY="enclosureLabCart";
 const STICKER_PRICES={"Large EL Enclosure Lab":5,"Circular EL Logo":4,"Brush Style EL":3,"Rectangle Logo":2,"Small EL Logo":1};
-function getCart(){try{return JSON.parse(localStorage.getItem(CART_KEY)||"[]")}catch(e){return[]}}
+function getCart(){try{const cart=JSON.parse(localStorage.getItem(CART_KEY)||"[]");const speakerPrices=[[/DS18.*6PRO500MR-4/i,94.95],[/DS18.*PRO-X6\.4M/i,44.95],[/DS18.*PRO-ZT6/i,94.95],[/DS18.*PRO-HY6\.4B/i,114.95]];let changed=false;cart.forEach(item=>{if(item.price==null){const match=speakerPrices.find(([pattern])=>pattern.test(item.name||""));if(match){item.price=match[1];changed=true}}});if(changed)localStorage.setItem(CART_KEY,JSON.stringify(cart));return cart}catch(e){return[]}}
 function saveCart(cart){localStorage.setItem(CART_KEY,JSON.stringify(cart))}
 function money(n){return "$"+Number(n).toFixed(2)}
 function renderCart(){
