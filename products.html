@@ -291,6 +291,38 @@ function toggleCategory(button){
 <style>
 .mobile-menu-toggle{display:none}
 @media(max-width:850px){header .nav{position:relative;justify-content:space-between}.mobile-menu-toggle{display:grid;place-items:center;margin-left:auto;width:42px;height:42px;border:1px solid #dce1e5;border-radius:9px;background:#fff;color:#17202b;font-size:24px;line-height:1;cursor:pointer}.navlinks{display:none;position:absolute;top:100%;left:0;right:0;margin:0;padding:10px;background:#fff;border:1px solid #e0e5e9;border-radius:0 0 12px 12px;box-shadow:0 16px 30px rgba(20,30,40,.12);flex-direction:column;gap:0;z-index:101}.navlinks.mobile-open{display:flex;visibility:visible;pointer-events:auto}.navlinks a{display:block;padding:13px 12px;border-radius:7px}.navlinks a:hover{background:#f4f6f8}.navlinks .cta{margin:6px 0;text-align:center}}
+
+/* Headphones: same horizontal swipe row and card width as subwoofer/amplifier listings */
+.empty-headphones .panel{overflow:hidden;min-width:0}
+.empty-headphones .products{
+ display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;
+ gap:14px!important;width:100%!important;min-width:0!important;
+ overflow-x:auto!important;overflow-y:hidden!important;
+ padding:2px 2px 14px!important;scroll-snap-type:x proximity;
+ -webkit-overflow-scrolling:touch;scrollbar-width:thin;
+ scrollbar-color:#aab3bb #e9edf0;
+}
+.empty-headphones .products .headphone-product{
+ display:block!important;flex:0 0 190px!important;width:190px!important;
+ min-width:190px!important;max-width:190px!important;box-sizing:border-box;
+ scroll-snap-align:start;
+}
+.empty-headphones .headphone-product .photo{
+ height:145px!important;width:100%!important;padding:8px!important;
+ box-sizing:border-box;display:flex!important;align-items:center;justify-content:center;
+ overflow:hidden;background:#fff!important;
+}
+.empty-headphones .headphone-product .photo img{
+ display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;
+}
+.empty-headphones .headphone-product .info{padding:12px!important;width:100%;min-width:0;box-sizing:border-box}
+.empty-headphones .headphone-product .info h3{font-size:16px!important;line-height:1.25!important;overflow-wrap:anywhere}
+.empty-headphones .headphone-product .info p{font-size:13px!important;line-height:1.35!important;overflow-wrap:anywhere}
+.empty-headphones .headphone-product .price-line{font-size:13px!important;display:flex;justify-content:space-between;gap:5px;flex-wrap:wrap}
+.empty-headphones .headphone-product .price-line b{font-size:15px!important}
+.empty-headphones .products::-webkit-scrollbar{height:8px}
+.empty-headphones .products::-webkit-scrollbar-track{background:#e9edf0;border-radius:5px}
+.empty-headphones .products::-webkit-scrollbar-thumb{background:#aab3bb;border-radius:5px}
 </style>
 
 <script>
