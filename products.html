@@ -258,7 +258,7 @@ function toggleCategory(button){
      if(match){matches++;matchingCategories.add(card.closest(".category"));}
    });
    categories.forEach((category,index)=>{
-     const isStickerCategory=index===2;
+     const isStickerCategory=!!category.querySelector(".stickers");
      if(!query){
        category.style.display=originalCategoryDisplay.get(category);
        category.classList.remove("open");
