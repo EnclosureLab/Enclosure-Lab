@@ -118,14 +118,7 @@ header{height:76px;border-bottom:1px solid #e5e8eb;background:#fff;display:flex;
 
 
 <style>
-/* Make the speakers category box align in height with other category boxes */
-.categories{align-items:start}
-.categories>.category{align-self:start;height:auto;min-height:0}
-.categories>.category:not(.open) .panel{display:none}
-.categories>.category.open .panel{display:block}
-.categories>.category .panel{padding:22px;background:#f7f9fb}
-.categories>.category .products{display:flex;flex-wrap:nowrap;gap:14px;overflow-x:auto;overflow-y:hidden;align-items:stretch;padding:2px 2px 14px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
-.categories>.category .products .product{flex:0 0 300px;width:300px;min-width:260px;max-width:100%;box-sizing:border-box;scroll-snap-align:start}
+/* Speaker-card-only styling; leave existing category and product layouts unchanged */
 .ds18-speaker-photo{height:230px!important;background:#fff!important;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;padding:12px;box-sizing:border-box}
 .ds18-speaker-photo img{position:static!important;display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;object-position:center!important}
 .ds18-speaker-product .info{padding:13px!important}
@@ -133,7 +126,6 @@ header{height:76px;border-bottom:1px solid #e5e8eb;background:#fff;display:flex;
 .ds18-speaker-product .info p{font-size:14px!important;line-height:1.4!important;margin:0 0 9px!important}
 .ds18-speaker-product .spec,.ds18-speaker-product .spec b{font-size:14px!important}
 .ds18-speaker-product .price-line{font-size:15px!important}
-@media(max-width:600px){.categories>.category .products .product{flex-basis:280px;width:280px;min-width:260px}}
 </style>
 
 </head>
