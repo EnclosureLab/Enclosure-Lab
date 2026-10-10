@@ -354,6 +354,26 @@ function toggleCategory(button){
  flex-wrap:wrap!important;
  gap:5px!important;
 }
+
+/* Make AirPods Max card visibly smaller to match the AirPods 4 card proportions on mobile */
+@media(max-width:700px){
+ .empty-headphones .products .airpods-max-product{
+  flex:0 0 170px!important;
+  width:170px!important;
+  min-width:170px!important;
+  max-width:170px!important;
+ }
+ .empty-headphones .products .airpods-max-product .photo{
+  height:125px!important;
+  padding:12px!important;
+ }
+ .empty-headphones .products .airpods-max-product .info{
+  padding:10px!important;
+ }
+ .empty-headphones .products .airpods-max-product .info h3{font-size:15px!important;line-height:1.25!important}
+ .empty-headphones .products .airpods-max-product .info p{font-size:12px!important;line-height:1.3!important}
+ .empty-headphones .products .airpods-max-product .price-line b{font-size:14px!important}
+}
 </style>
 
 <script>
