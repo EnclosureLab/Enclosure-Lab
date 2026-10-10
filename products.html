@@ -323,6 +323,37 @@ function toggleCategory(button){
 .empty-headphones .products::-webkit-scrollbar{height:8px}
 .empty-headphones .products::-webkit-scrollbar-track{background:#e9edf0;border-radius:5px}
 .empty-headphones .products::-webkit-scrollbar-thumb{background:#aab3bb;border-radius:5px}
+
+/* Ensure AirPods Max uses exactly the same card dimensions as AirPods 4 */
+.empty-headphones .products .airpods-max-product{
+ flex:0 0 190px!important;
+ width:190px!important;
+ min-width:190px!important;
+ max-width:190px!important;
+ box-sizing:border-box!important;
+}
+.empty-headphones .products .airpods-max-product .photo{
+ height:145px!important;
+ width:100%!important;
+}
+.empty-headphones .products .airpods-max-product .info{
+ width:100%!important;
+ min-width:0!important;
+ box-sizing:border-box!important;
+ padding:12px!important;
+}
+.empty-headphones .products .airpods-max-product .info h3,
+.empty-headphones .products .airpods-max-product .info p{
+ max-width:100%!important;
+ overflow-wrap:anywhere!important;
+ word-break:normal!important;
+}
+.empty-headphones .products .airpods-max-product .price-line{
+ display:flex!important;
+ justify-content:space-between!important;
+ flex-wrap:wrap!important;
+ gap:5px!important;
+}
 </style>
 
 <script>
