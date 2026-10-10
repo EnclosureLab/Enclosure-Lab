@@ -126,6 +126,15 @@ header{height:76px;border-bottom:1px solid #e5e8eb;background:#fff;display:flex;
 .ds18-speaker-product .info p{font-size:14px!important;line-height:1.4!important;margin:0 0 9px!important}
 .ds18-speaker-product .spec,.ds18-speaker-product .spec b{font-size:14px!important}
 .ds18-speaker-product .price-line{font-size:15px!important}
+
+/* Speakers category only: compact horizontal product carousel */
+.category:has(.ds18-speaker-product) .products{display:flex!important;flex-wrap:nowrap!important;gap:12px!important;overflow-x:auto!important;overflow-y:hidden!important;align-items:stretch!important;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding:4px 4px 14px!important}
+.category:has(.ds18-speaker-product) .products>.product{flex:0 0 220px!important;width:220px!important;min-width:220px!important;max-width:220px!important;box-sizing:border-box!important;scroll-snap-align:start}
+.category:has(.ds18-speaker-product) .ds18-speaker-photo{height:150px!important;padding:8px!important}
+.category:has(.ds18-speaker-product) .ds18-speaker-product .info{padding:10px!important}
+.category:has(.ds18-speaker-product) .ds18-speaker-product .info h3{font-size:15px!important;line-height:1.25!important}
+.category:has(.ds18-speaker-product) .ds18-speaker-product .info p{font-size:12px!important;line-height:1.35!important}
+.category:has(.ds18-speaker-product) .ds18-speaker-product .spec,.category:has(.ds18-speaker-product) .ds18-speaker-product .spec b,.category:has(.ds18-speaker-product) .ds18-speaker-product .price-line{font-size:13px!important}
 </style>
 
 </head>
