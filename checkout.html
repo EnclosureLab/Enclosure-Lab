@@ -36,7 +36,7 @@
 <div class="notice">This is an order-request checkout for now. No payment is collected, and product prices/shipping for items without listed prices will be confirmed with you before the order is finalized.</div>
 <button class="checkout-submit" id="submitOrder" type="submit">Prepare order request</button><p id="formStatus" class="form-status" aria-live="polite"></p>
 </form></div>
-<aside class="summary-card"><h2>Order summary</h2><div class="summary-row"><span>Items</span><strong id="itemCount">0</strong></div><div class="summary-row"><span>Subtotal</span><strong id="subtotal">$0.00</strong></div><div class="summary-row" id="discountRow" hidden><span>Discount <span id="discountLabel"></span></span><strong id="discountAmount">-$0.00</strong></div><div class="summary-row"><span>Estimated tax</span><strong id="tax">$0.00</strong></div><div class="summary-row"><span>Other items</span><span class="muted" id="quoteItems">Quoted after review</span></div><div class="summary-row"><span>Shipping / pickup</span><span class="muted">Confirmed later</span></div><div class="summary-row total"><span>Amount due today</span><strong id="amountDue">$0.00</strong></div><div class="discount-box"><label for="discountCode">Discount code</label><div class="discount-controls"><input id="discountCode" type="text" placeholder="Enter discount code" autocomplete="off"><button id="applyDiscount" type="button">Apply</button></div><p id="discountStatus" class="discount-status" role="status" aria-live="polite">Have a code? Enter it above.</p></div><div class="notice">Secure online payments will be added in a later step. This page does not charge you.</div><a class="back-link" href="products.html">← Back to products</a></aside>
+<aside class="summary-card"><h2>Order summary</h2><div class="summary-row"><span>Items</span><strong id="itemCount">0</strong></div><div class="summary-row"><span>Subtotal</span><strong id="subtotal">$0.00</strong></div><div class="summary-row" id="discountRow" hidden><span>Discount <span id="discountLabel"></span></span><strong id="discountAmount">-$0.00</strong></div><div class="summary-row"><span>Estimated tax</span><strong id="tax">$0.00</strong></div><div class="summary-row"><span>Other items</span><span class="muted" id="quoteItems">Quoted after review</span></div><div class="summary-row"><span>Estimated shipping</span><strong id="shippingCost">$0.00</strong></div><p id="shippingNote" class="discount-status">Enter your ZIP code for an estimate. Custom enclosures are excluded.</p><div class="summary-row total"><span>Amount due today</span><strong id="amountDue">$0.00</strong></div><div class="discount-box"><label for="discountCode">Discount code</label><div class="discount-controls"><input id="discountCode" type="text" placeholder="Enter discount code" autocomplete="off"><button id="applyDiscount" type="button">Apply</button></div><p id="discountStatus" class="discount-status" role="status" aria-live="polite">Have a code? Enter it above.</p></div><div class="notice">Secure online payments will be added in a later step. This page does not charge you.</div><a class="back-link" href="products.html">← Back to products</a></aside>
 </section></main>
 <footer><div class="container footer-grid"><div><a class="brand" href="index.html#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span>Enclosure Lab</span></a><p>Custom subwoofer enclosures, designed and built to order.</p></div><div><span class="footer-label">CONTACT</span><a href="mailto:lawsonhughes53@gmail.com">lawsonhughes53@gmail.com</a></div><div><span class="footer-label">SHOP</span><a href="products.html">Products →</a></div></div><div class="container copyright">© <span id="year"></span> Enclosure Lab. All rights reserved.</div></footer>
 <script>
@@ -52,6 +52,29 @@ function applyDiscountCode(){const input=document.getElementById("discountCode")
 document.getElementById("applyDiscount").addEventListener("click",applyDiscountCode);
 document.getElementById("discountCode").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();applyDiscountCode();}});
 document.getElementById("discountCode").value=localStorage.getItem("enclosureLabDiscountCode")||"";
+function estimateShipping(cart, zip, fulfillment){
+ if(fulfillment==="pickup") return 0;
+ const shippable=cart.filter(i=>i.category!=="enclosure" && !/custom.*enclosure|enclosure.*quote/i.test(i.name||""));
+ if(!shippable.length) return 0;
+ const z=String(zip||"").replace(/\\D/g,"").slice(0,5);
+ if(z.length!==5) return null;
+ const state=document.getElementById("state").value.trim().toUpperCase();
+ const localStates=["TN","AL","GA","NC","SC","KY","VA","MS"];
+ const nearbyStates=["FL","WV","OH","IN","IL","MO","AR"];
+ const zone=state==="TN"||localStates.includes(state)?7:nearbyStates.includes(state)?12:18;
+ const rateFor=item=>{
+  const name=(item.name||"").toLowerCase(),category=(item.category||"").toLowerCase();
+  if(category==="sticker")return 3.50;
+  if(category==="headphones"||/airpods|headphones|earbuds|tune buds|live beam|tour pro/.test(name))return 8.50;
+  if(category==="amplifier"||/amplifier|\bamp\b|\d\.\d+\.\d+d|md 1800|smart 3 bass|salt-2/.test(name))return 13.50;
+  if(category==="speaker"||/coaxial speakers|ds18|midrange|jbl go|jbl clip|jbl flip|jbl charge|jbl xtreme|jbl boombox|jbl grip|jbl wind/.test(name))return 10.50;
+  return 18.50;
+ };
+ let total=0;
+ shippable.forEach(item=>{const qty=Math.max(1,Number(item.qty)||1),unit=rateFor(item);total+=unit+(qty-1)*Math.max(3,unit*.45)});
+ total+=zone;
+ return Math.round(total*100)/100;
+}
 function renderCart(){
  const cart=getCart(),list=document.getElementById("cartList");list.innerHTML="";
  if(!cart.length){list.innerHTML='<div class="empty-cart">Your cart is empty.<br><a href="products.html">Browse the products page</a></div>'}
@@ -74,20 +97,25 @@ function renderCart(){
  document.getElementById("discountAmount").textContent="-"+money(discountAmount);
  const taxable=Math.max(0,subtotal-discountAmount),tax=Math.round(taxable*0.0925*100)/100;
  document.getElementById("tax").textContent=money(tax);
- document.getElementById("amountDue").textContent=money(taxable+tax);
+ const shipping=estimateShipping(cart,document.getElementById("zip").value,delivery.value);
+ document.getElementById("shippingCost").textContent=shipping===null?"Enter ZIP code":money(shipping);
+ document.getElementById("shippingNote").textContent=delivery.value==="pickup"?"Local pickup is free.":shipping===null?"Enter a valid 5-digit ZIP code to see estimated shipping.":"Estimated shipping only; final cost may vary. Custom enclosures are excluded.";
+ document.getElementById("amountDue").textContent=money(taxable+tax+(shipping||0));
  document.getElementById("quoteItems").textContent=cart.some(i=>i.price==null)?"Price confirmed after review":"None";
  document.getElementById("submitOrder").disabled=!cart.length;
 }
 function changeQty(index,delta){const c=getCart();if(!c[index])return;c[index].qty+=delta;if(c[index].qty<1)c.splice(index,1);saveCart(c);renderCart()}
 document.getElementById("addEnclosure").addEventListener("click",()=>{const c=getCart();const found=c.find(i=>i.name==="Custom subwoofer enclosure (quote request)");if(found)found.qty++;else c.push({name:"Custom subwoofer enclosure (quote request)",category:"enclosure",price:null,qty:1});saveCart(c);renderCart()});
 const delivery=document.getElementById("delivery"),addressFields=document.getElementById("addressFields");
-function updateDelivery(){const shipping=delivery.value==="shipping";addressFields.classList.toggle("hidden",!shipping);["address","city","state","zip"].forEach(id=>document.getElementById(id).required=shipping)}
-delivery.addEventListener("change",updateDelivery);updateDelivery();
+function updateDelivery(){const shipping=delivery.value==="shipping";addressFields.classList.toggle("hidden",!shipping);["address","city","state","zip"].forEach(id=>document.getElementById(id).required=shipping);renderCart()}
+delivery.addEventListener("change",updateDelivery);
+["zip","state"].forEach(id=>document.getElementById(id).addEventListener("input",renderCart));
+updateDelivery();
 document.getElementById("checkoutForm").addEventListener("submit",e=>{
  e.preventDefault();const cart=getCart();if(!cart.length)return;
- const f=new FormData(e.currentTarget);const subtotal=cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);const discount=getAppliedDiscount(subtotal),discountAmount=discount.amount;const taxable=Math.max(0,subtotal-discountAmount);const tax=Math.round(taxable*0.0925*100)/100;const total=taxable+tax;
+ const f=new FormData(e.currentTarget);const subtotal=cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);const discount=getAppliedDiscount(subtotal),discountAmount=discount.amount;const taxable=Math.max(0,subtotal-discountAmount);const tax=Math.round(taxable*0.0925*100)/100;const shipping=estimateShipping(cart,f.get("zip"),f.get("delivery"));const total=taxable+tax+(shipping||0);
  const items=cart.map(i=>"- "+i.name+" x "+i.qty+" — "+(i.price==null?"price to be confirmed":money(i.price)+" each")).join("\n");
- const body=["Enclosure Lab order request","", "Name: "+f.get("name"),"Email: "+f.get("email"),"Phone: "+(f.get("phone")||"Not provided"),"Fulfillment: "+(f.get("delivery")==="pickup"?"Local pickup":"Shipping") ,...(f.get("delivery")==="shipping"?["Address: "+f.get("address"),"City: "+f.get("city"),"State: "+f.get("state"),"ZIP: "+f.get("zip")]:[]),"","Items:",items,"","Subtotal: "+money(subtotal),"Discount: "+(discountAmount>0?discount.code+" (-"+money(discountAmount)+")":"None"),"Estimated tax (9.25%): "+money(tax),"Estimated total: "+money(total),"Shipping: to be confirmed","Notes: "+(f.get("notes")||"None"),"","No payment has been collected. Please confirm pricing and next steps."].join("\n");
+ const body=["Enclosure Lab order request","", "Name: "+f.get("name"),"Email: "+f.get("email"),"Phone: "+(f.get("phone")||"Not provided"),"Fulfillment: "+(f.get("delivery")==="pickup"?"Local pickup":"Shipping") ,...(f.get("delivery")==="shipping"?["Address: "+f.get("address"),"City: "+f.get("city"),"State: "+f.get("state"),"ZIP: "+f.get("zip")]:[]),"","Items:",items,"","Subtotal: "+money(subtotal),"Discount: "+(discountAmount>0?discount.code+" (-"+money(discountAmount)+")":"None"),"Estimated tax (9.25%): "+money(tax),"Estimated shipping: "+(shipping===null?"ZIP code required":money(shipping)),"Estimated total: "+money(total),"Shipping: estimated; final cost may vary","Notes: "+(f.get("notes")||"None"),"","No payment has been collected. Please confirm pricing and next steps."].join("\n");
  document.getElementById("formStatus").textContent="Your email app will open with the order request. Review it and press Send to submit it.";
  window.location.href="mailto:lawsonhughes53@gmail.com?subject="+encodeURIComponent("Enclosure Lab order request")+"&body="+encodeURIComponent(body);
 });
