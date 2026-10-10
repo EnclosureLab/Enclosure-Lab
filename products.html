@@ -407,6 +407,32 @@ function toggleCategory(button){
   font-size:12px!important;
  }
 }
+
+/* High-specificity override: AirPods Max must be a compact swipe-row card */
+@media screen and (max-width:700px){
+ .categories > .category.empty-headphones .panel .products > article.product.airpods-max-product{
+  display:block!important;
+  flex:0 0 145px!important;
+  width:145px!important;
+  min-width:145px!important;
+  max-width:145px!important;
+  inline-size:145px!important;
+  box-sizing:border-box!important;
+ }
+ .categories > .category.empty-headphones .panel .products > article.product.airpods-max-product .photo{
+  display:flex!important;height:105px!important;min-height:105px!important;max-height:105px!important;
+  padding:8px!important;overflow:hidden!important;box-sizing:border-box!important;
+ }
+ .categories > .category.empty-headphones .panel .products > article.product.airpods-max-product .photo img{
+  width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;
+ }
+ .categories > .category.empty-headphones .panel .products > article.product.airpods-max-product .info{
+  width:100%!important;max-width:100%!important;min-width:0!important;padding:8px!important;box-sizing:border-box!important;
+ }
+ .categories > .category.empty-headphones .panel .products > article.product.airpods-max-product .info h3{font-size:14px!important;line-height:1.2!important}
+ .categories > .category.empty-headphones .panel .products > article.product.airpods-max-product .info p{font-size:11px!important;line-height:1.25!important;overflow-wrap:anywhere!important}
+ .categories > .category.empty-headphones .panel .products > article.product.airpods-max-product .price-line b{font-size:13px!important}
+}
 </style>
 
 <script>
