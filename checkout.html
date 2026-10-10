@@ -35,7 +35,7 @@
 <div class="notice">This is an order-request checkout for now. No payment is collected, and product prices/shipping for items without listed prices will be confirmed with you before the order is finalized.</div>
 <button class="checkout-submit" id="submitOrder" type="submit">Prepare order request</button><p id="formStatus" class="form-status" aria-live="polite"></p>
 </form></div>
-<aside class="summary-card"><h2>Order summary</h2><div class="summary-row"><span>Items</span><strong id="itemCount">0</strong></div><div class="summary-row"><span>Known sticker subtotal</span><strong id="subtotal">$0.00</strong></div><div class="summary-row"><span>Other items</span><span class="muted" id="quoteItems">Quoted after review</span></div><div class="summary-row"><span>Shipping / pickup</span><span class="muted">Confirmed later</span></div><div class="summary-row total"><span>Amount due today</span><strong>$0.00</strong></div><div class="notice">Secure online payments will be added in a later step. This page does not charge you.</div><a class="back-link" href="products.html">← Back to products</a></aside>
+<aside class="summary-card"><h2>Order summary</h2><div class="summary-row"><span>Items</span><strong id="itemCount">0</strong></div><div class="summary-row"><span>Known sticker subtotal</span><strong id="subtotal">$0.00</strong></div><div class="summary-row"><span>Estimated tax (9.25%)</span><strong id="tax">$0.00</strong></div><div class="summary-row"><span>Other items</span><span class="muted" id="quoteItems">Quoted after review</span></div><div class="summary-row"><span>Shipping / pickup</span><span class="muted">Confirmed later</span></div><div class="summary-row total"><span>Amount due today</span><strong id="amountDue">$0.00</strong></div><div class="notice">Secure online payments will be added in a later step. This page does not charge you.</div><a class="back-link" href="products.html">← Back to products</a></aside>
 </section></main>
 <footer><div class="container footer-grid"><div><a class="brand" href="index.html#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span>Enclosure Lab</span></a><p>Custom subwoofer enclosures, designed and built to order.</p></div><div><span class="footer-label">CONTACT</span><a href="mailto:lawsonhughes53@gmail.com">lawsonhughes53@gmail.com</a></div><div><span class="footer-label">SHOP</span><a href="products.html">Products →</a></div></div><div class="container copyright">© <span id="year"></span> Enclosure Lab. All rights reserved.</div></footer>
 <script>
@@ -60,6 +60,9 @@ function renderCart(){
  const qty=cart.reduce((s,i)=>s+i.qty,0),subtotal=cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);
  document.getElementById("itemCount").textContent=qty;
  document.getElementById("subtotal").textContent=money(subtotal);
+ const tax=Math.round(subtotal*0.0925*100)/100;
+ document.getElementById("tax").textContent=money(tax);
+ document.getElementById("amountDue").textContent=money(subtotal+tax);
  document.getElementById("quoteItems").textContent=cart.some(i=>i.price==null)?"Price confirmed after review":"None";
  document.getElementById("submitOrder").disabled=!cart.length;
 }
@@ -70,9 +73,9 @@ function updateDelivery(){const shipping=delivery.value==="shipping";addressFiel
 delivery.addEventListener("change",updateDelivery);updateDelivery();
 document.getElementById("checkoutForm").addEventListener("submit",e=>{
  e.preventDefault();const cart=getCart();if(!cart.length)return;
- const f=new FormData(e.currentTarget);const subtotal=cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);
+ const f=new FormData(e.currentTarget);const subtotal=cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);const tax=Math.round(subtotal*0.0925*100)/100;const total=subtotal+tax;
  const items=cart.map(i=>"- "+i.name+" x "+i.qty+" — "+(i.price==null?"price to be confirmed":money(i.price)+" each")).join("\n");
- const body=["Enclosure Lab order request","", "Name: "+f.get("name"),"Email: "+f.get("email"),"Phone: "+(f.get("phone")||"Not provided"),"Fulfillment: "+(f.get("delivery")==="pickup"?"Local pickup":"Shipping") ,...(f.get("delivery")==="shipping"?["Address: "+f.get("address"),"City: "+f.get("city"),"State: "+f.get("state"),"ZIP: "+f.get("zip")]:[]),"","Items:",items,"","Known sticker subtotal: "+money(subtotal),"Shipping: to be confirmed","Notes: "+(f.get("notes")||"None"),"","No payment has been collected. Please confirm pricing and next steps."].join("\n");
+ const body=["Enclosure Lab order request","", "Name: "+f.get("name"),"Email: "+f.get("email"),"Phone: "+(f.get("phone")||"Not provided"),"Fulfillment: "+(f.get("delivery")==="pickup"?"Local pickup":"Shipping") ,...(f.get("delivery")==="shipping"?["Address: "+f.get("address"),"City: "+f.get("city"),"State: "+f.get("state"),"ZIP: "+f.get("zip")]:[]),"","Items:",items,"","Known sticker subtotal: "+money(subtotal),"Estimated tax (9.25%): "+money(tax),"Estimated subtotal plus tax: "+money(total),"Shipping: to be confirmed","Notes: "+(f.get("notes")||"None"),"","No payment has been collected. Please confirm pricing and next steps."].join("\n");
  document.getElementById("formStatus").textContent="Your email app will open with the order request. Review it and press Send to submit it.";
  window.location.href="mailto:lawsonhughes53@gmail.com?subject="+encodeURIComponent("Enclosure Lab order request")+"&body="+encodeURIComponent(body);
 });
