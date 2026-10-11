@@ -247,6 +247,32 @@ header{height:76px;border-bottom:1px solid #e5e8eb;background:#fff;display:flex;
 }
 </style>
 
+
+<style id="prefab-card-label-visibility-fix">
+/* Keep the photo confined to the image area; preserve the category title and subtitle below it. */
+.category.prefab-category > button { display: block; width: 100%; }
+.category.prefab-category .prefab-art { height: 190px; min-height: 190px; overflow: hidden; }
+.category.prefab-category .prefab-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+.category.prefab-category .label {
+  position: relative;
+  display: flex;
+  min-height: 68px;
+  padding: 17px;
+  background: #fff;
+  color: #17202b;
+  z-index: 1;
+}
+.category.prefab-category .label strong,
+.category.prefab-category .label small,
+.category.prefab-category .plus { visibility: visible; opacity: 1; }
+</style>
+
 </head>
 <body>
 <header><div class="wrap nav"><a class="brand" href="index.html">Enclosure Lab</a><nav class="navlinks" id="mobileNavigation"><a href="index.html#how">How It Works</a><a href="products.html">Products</a><a href="index.html#quote">Request a Quote</a><a href="checkout.html">Checkout</a><a href="index.html#about">About</a><a class="cta" href="index.html#quote">Start a Quote</a></nav><button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileNavigation">☰</button></div></header>
