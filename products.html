@@ -305,6 +305,57 @@ header{height:76px;border-bottom:1px solid #e5e8eb;background:#fff;display:flex;
 
 <style id="prefab-image-position-adjustment">.category.prefab-category .prefab-art{display:flex;align-items:center;justify-content:center;overflow:hidden}.category.prefab-category .prefab-art img{object-fit:contain!important;object-position:center center!important;transform:scale(.95)!important;transform-origin:center center!important}</style>
 
+<style id="prefab-product-layout-fix">
+/* Keep the prefab listing aligned and readable like the other product cards. */
+.category.prefab-category .panel { width:100%; min-width:0; overflow:hidden; }
+.category.prefab-category .panel .products {
+  display:grid !important;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)) !important;
+  width:100% !important; min-width:0 !important; box-sizing:border-box;
+}
+.category.prefab-category .prefab-product {
+  display:block !important; width:100% !important; min-width:0 !important;
+  max-width:100% !important; box-sizing:border-box;
+}
+.category.prefab-category .prefab-product .photo {
+  display:flex !important; align-items:center; justify-content:center;
+  width:100% !important; height:220px !important; min-width:0;
+  overflow:hidden; background:#fff !important; padding:10px; box-sizing:border-box;
+}
+.category.prefab-category .prefab-product .photo img {
+  display:block !important; width:100% !important; height:100% !important;
+  max-width:100% !important; max-height:100% !important; object-fit:contain !important;
+}
+.category.prefab-category .prefab-product .info {
+  display:block; width:100%; min-width:0; padding:16px !important;
+  box-sizing:border-box; overflow-wrap:anywhere;
+}
+.category.prefab-category .prefab-product .info h3 {
+  font-size:18px !important; line-height:1.3 !important; overflow-wrap:anywhere;
+}
+.category.prefab-category .prefab-product .info p {
+  font-size:14px !important; line-height:1.4 !important; overflow-wrap:anywhere;
+}
+.category.prefab-category .prefab-product .spec {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap:12px; flex-wrap:wrap; font-size:14px; line-height:1.35; padding:10px 0;
+}
+.category.prefab-category .prefab-product .spec span { flex:1 1 120px; min-width:0; }
+.category.prefab-category .prefab-product .spec b { flex:0 1 auto; font-size:14px; text-align:right; overflow-wrap:anywhere; }
+.category.prefab-category .prefab-product .price-line {
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+  flex-wrap:wrap; font-size:16px; line-height:1.35;
+}
+.category.prefab-category .prefab-product .price-line b { font-size:16px; overflow-wrap:anywhere; }
+.category.prefab-category .prefab-product .cart-add { width:100%; box-sizing:border-box; white-space:normal; }
+@media(max-width:600px) {
+  .category.prefab-category .panel { padding:12px !important; }
+  .category.prefab-category .panel .products { grid-template-columns:minmax(0,1fr) !important; }
+  .category.prefab-category .prefab-product .photo { height:200px !important; }
+  .category.prefab-category .prefab-product .info { padding:14px !important; }
+}
+</style>
+
 </head>
 <body>
 <header><div class="wrap nav"><a class="brand" href="index.html">Enclosure Lab</a><nav class="navlinks" id="mobileNavigation"><a href="index.html#how">How It Works</a><a href="products.html">Products</a><a href="index.html#quote">Request a Quote</a><a href="checkout.html">Checkout</a><a href="index.html#about">About</a><a class="cta" href="index.html#quote">Start a Quote</a></nav><button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileNavigation">☰</button></div></header>
