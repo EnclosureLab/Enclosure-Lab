@@ -206,6 +206,19 @@ header{height:76px;border-bottom:1px solid #e5e8eb;background:#fff;display:flex;
 
 <style id="car-audio-horizontal-scroll">
 /* Keep the four car-audio categories together in a horizontal, swipeable row. */
+/* Reveal a small portion of the next category so users discover horizontal scrolling. */
+.car-audio-scroll {
+  padding-right: 54px !important;
+  scroll-padding-right: 54px;
+}
+.car-audio-scroll > .category {
+  flex-basis: calc((100% - 54px) / 3) !important;
+}
+@media (max-width: 700px) {
+  .car-audio-scroll { padding-right: 44px !important; }
+  .car-audio-scroll > .category { flex-basis: 76% !important; }
+}
+
 .car-audio-scroll {
   display: flex;
   flex-wrap: nowrap;
