@@ -779,7 +779,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 <style id="prefab-card-size-final-override">
-/* Match the prefab listing card to the regular speaker product-card scale. */
+/* Keep prefab listings compact, matching the small speaker/subwoofer product cards. */
 .category.prefab-category .panel { width:100%!important; min-width:0!important; overflow:hidden!important; }
 .category.prefab-category .panel > .products {
   display:flex!important; flex-flow:row nowrap!important; align-items:stretch!important;
@@ -789,14 +789,14 @@ document.addEventListener("DOMContentLoaded", function () {
   scroll-snap-type:x proximity!important; -webkit-overflow-scrolling:touch!important;
 }
 .category.prefab-category .panel > .products > article.product.prefab-product {
-  display:flex!important; flex:0 0 370px!important; flex-direction:column!important;
-  width:370px!important; min-width:370px!important; max-width:370px!important;
+  display:flex!important; flex:0 0 190px!important; flex-direction:column!important;
+  width:190px!important; min-width:190px!important; max-width:190px!important;
   box-sizing:border-box!important; scroll-snap-align:start!important;
 }
 .category.prefab-category .panel > .products > article.product.prefab-product > .photo {
-  display:flex!important; flex:0 0 190px!important; align-items:center!important; justify-content:center!important;
-  height:190px!important; min-height:190px!important; max-height:190px!important;
-  width:100%!important; padding:10px!important; overflow:hidden!important;
+  display:flex!important; flex:0 0 145px!important; align-items:center!important; justify-content:center!important;
+  height:145px!important; min-height:145px!important; max-height:145px!important;
+  width:100%!important; padding:8px!important; overflow:hidden!important;
   background:#fff!important; box-sizing:border-box!important;
 }
 .category.prefab-category .panel > .products > article.product.prefab-product > .photo img {
@@ -805,35 +805,26 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 .category.prefab-category .panel > .products > article.product.prefab-product > .info {
   display:block!important; flex:1 1 auto!important; width:100%!important; min-width:0!important;
-  max-width:100%!important; padding:14px!important; box-sizing:border-box!important; overflow-wrap:anywhere!important;
+  max-width:100%!important; padding:12px!important; box-sizing:border-box!important; overflow-wrap:anywhere!important;
 }
 .category.prefab-category .panel > .products > article.product.prefab-product .info h3 {
-  font-size:17px!important; line-height:1.3!important; margin:0 0 7px!important;
+  font-size:15px!important; line-height:1.25!important; margin:0 0 6px!important;
 }
 .category.prefab-category .panel > .products > article.product.prefab-product .info p {
-  font-size:13px!important; line-height:1.35!important; margin:0 0 9px!important;
+  font-size:12px!important; line-height:1.3!important; margin:0 0 8px!important;
 }
 .category.prefab-category .panel > .products > article.product.prefab-product .spec {
   display:flex!important; align-items:flex-start!important; justify-content:space-between!important;
-  flex-wrap:wrap!important; gap:8px!important; padding:9px 0!important; font-size:13px!important; line-height:1.35!important;
+  flex-wrap:wrap!important; gap:5px!important; padding:8px 0!important; font-size:11px!important; line-height:1.3!important;
 }
-.category.prefab-category .panel > .products > article.product.prefab-product .spec span { flex:1 1 130px!important; min-width:0!important; }
-.category.prefab-category .panel > .products > article.product.prefab-product .spec b { flex:0 1 auto!important; font-size:13px!important; text-align:right!important; }
+.category.prefab-category .panel > .products > article.product.prefab-product .spec span { flex:1 1 80px!important; min-width:0!important; }
+.category.prefab-category .panel > .products > article.product.prefab-product .spec b { flex:0 1 auto!important; font-size:11px!important; text-align:right!important; }
 .category.prefab-category .panel > .products > article.product.prefab-product .price-line {
   display:flex!important; align-items:flex-start!important; justify-content:space-between!important;
-  gap:8px!important; flex-wrap:wrap!important; font-size:14px!important;
+  gap:5px!important; flex-wrap:wrap!important; font-size:12px!important;
 }
-.category.prefab-category .panel > .products > article.product.prefab-product .price-line b { font-size:15px!important; }
-.category.prefab-category .panel > .products > article.product.prefab-product .cart-add { width:100%!important; box-sizing:border-box!important; }
-@media(max-width:600px) {
-  .category.prefab-category .panel { padding:12px!important; }
-  .category.prefab-category .panel > .products > article.product.prefab-product {
-    flex-basis:320px!important; width:320px!important; min-width:320px!important; max-width:320px!important;
-  }
-  .category.prefab-category .panel > .products > article.product.prefab-product > .photo {
-    flex-basis:170px!important; height:170px!important; min-height:170px!important; max-height:170px!important;
-  }
-}
+.category.prefab-category .panel > .products > article.product.prefab-product .price-line b { font-size:13px!important; }
+.category.prefab-category .panel > .products > article.product.prefab-product .cart-add { width:100%!important; box-sizing:border-box!important; font-size:12px!important; padding:9px 7px!important; }
 </style>
 
 </body></html>
