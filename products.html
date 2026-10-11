@@ -586,19 +586,22 @@ function toggleCategory(button){
 
 <script id="car-audio-horizontal-scroll-script">
 document.addEventListener("DOMContentLoaded", function () {
-  const categories = document.querySelector(".categories");
-  if (!categories || categories.querySelector(".car-audio-scroll")) return;
-  const cards = [...categories.querySelectorAll(":scope > .category")];
-  const sub = cards.find(el => el.querySelector(".label strong")?.textContent.trim() === "SUBWOOFERS");
-  const amp = cards.find(el => el.querySelector(".label strong")?.textContent.trim() === "AMPLIFIERS");
-  const speakers = cards.find(el => el.querySelector(".label strong")?.textContent.trim() === "SPEAKERS");
-  const prefab = cards.find(el => el.querySelector(".label strong")?.textContent.trim() === "PREFAB BOXES");
-  if (!sub || !amp || !speakers || !prefab) return;
-  const scroller = document.createElement("div");
-  scroller.className = "car-audio-scroll";
-  scroller.setAttribute("aria-label", "Car audio categories. Scroll horizontally for more options.");
-  sub.before(scroller);
-  [sub, amp, speakers, prefab].forEach(card => scroller.appendChild(card));
+  const title = [...document.querySelectorAll(".category-group-title")].find(el => el.textContent.trim() === "CAR AUDIO");
+  const carAudio = title && title.nextElementSibling;
+  if (!carAudio || !carAudio.classList.contains("categories")) return;
+  let scroller = carAudio.querySelector(":scope > .car-audio-scroll");
+  if (!scroller) {
+    scroller = document.createElement("div");
+    scroller.className = "car-audio-scroll";
+    scroller.setAttribute("aria-label", "Car audio categories. Scroll horizontally for more options.");
+    const cards = [...carAudio.querySelectorAll(":scope > .category")];
+    const sub = cards.find(el => el.querySelector(".label strong")?.textContent.trim() === "SUBWOOFERS");
+    if (!sub) return;
+    sub.before(scroller);
+    cards.filter(el => ["SUBWOOFERS", "AMPLIFIERS", "SPEAKERS"].includes(el.querySelector(".label strong")?.textContent.trim())).forEach(el => scroller.appendChild(el));
+  }
+  const prefab = [...document.querySelectorAll(".category.prefab-category")].find(el => el.querySelector(".label strong")?.textContent.trim() === "PREFAB BOXES");
+  if (prefab && prefab.parentElement !== scroller) scroller.appendChild(prefab);
 });
 </script>
 
