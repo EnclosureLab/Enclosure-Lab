@@ -289,6 +289,27 @@ header{height:76px;border-bottom:1px solid #e5e8eb;background:#fff;display:flex;
 }
 </style>
 
+
+<style id="prefab-image-full-height-fix">
+/* Let the image determine the artwork height so the enclosure is never cut off. */
+.category.prefab-category .prefab-art {
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  line-height: 0;
+  background: #fff !important;
+}
+.category.prefab-category .prefab-art img {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  background: #fff !important;
+}
+</style>
+
 </head>
 <body>
 <header><div class="wrap nav"><a class="brand" href="index.html">Enclosure Lab</a><nav class="navlinks" id="mobileNavigation"><a href="index.html#how">How It Works</a><a href="products.html">Products</a><a href="index.html#quote">Request a Quote</a><a href="checkout.html">Checkout</a><a href="index.html#about">About</a><a class="cta" href="index.html#quote">Start a Quote</a></nav><button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileNavigation">☰</button></div></header>
