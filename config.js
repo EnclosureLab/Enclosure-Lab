@@ -5,7 +5,7 @@
 const SITE_CONFIG = {
   businessName: "Enclosure Lab",
   tagline: "Custom subwoofer enclosures, designed and built to order.",
-  quoteEmail: "quotes@example.com",
+  quoteEmail: "lawsonhughes53@gmail.com",
   phone: "423-355-8230",
   // Quote requests open a text message addressed to this number.
   useSms: true,
