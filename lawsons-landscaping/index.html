@@ -16,7 +16,7 @@
 <body><div class="leaf-fall" aria-hidden="true"><span>🍁</span><span>🍂</span><span>🍃</span><span>🍁</span><span>🍂</span><span>🍁</span><span>🍂</span><span>🍃</span></div>
 <header class="header"><div class="wrap nav">
 <a class="brand" href="#home" data-page="home"><span class="brand-mark"><img src="lawsons-landscaping-logo.webp" alt="Lawson\'s Landscaping logo"></span></a>
-<nav class="links" id="siteNav" aria-label="Main navigation"><a href="#home" data-page="home" class="active">Home</a><a href="#prices" data-page="prices">Prices</a><a href="#apply" data-page="apply">Employment</a><a href="https://enclosurelab.github.io/Lawson-s-Company-Holdings-/employee.html" target="_blank" rel="noopener">Employee Portal ↗</a></nav>
+<nav class="links" id="siteNav" aria-label="Main navigation"><a href="#home" data-page="home" class="active">Home</a><a href="#prices" data-page="prices">Prices</a><a href="#reviews" data-page="reviews">Reviews</a><a href="#apply" data-page="apply">Employment</a><a href="https://enclosurelab.github.io/Lawson-s-Company-Holdings-/employee.html" target="_blank" rel="noopener">Employee Portal ↗</a></nav>
 <a class="nav-apply" href="#apply" data-page="apply">Apply to Work ↗</a><button class="menu" id="menuBtn" aria-label="Open navigation" aria-expanded="false">☰</button>
 </div></header>
 <main>
@@ -42,6 +42,7 @@
 <details class="faq"><summary>Hedge Trimming & Mulching (Bundle)</summary><div class="faq-body"><span class="badge">10–30% cheaper as a bundle</span><br><span class="price">$50–$90</span><p>Hedge Trimming & Mulching Bundle includes (A Hedge Trim, and Mulching.) Prices vary from $50-$90 which is 10-30% cheaper than paying for both services separately.</p></div></details>
 <details class="faq"><summary>Window Cleaning</summary><div class="faq-body"><span class="price">$80–$150</span><p>Window cleaning prices typically ranging from $80-$150 depending on size and number of windows.</p></div></details>
 </div><div style="margin-top:28px"><a class="btn" href="tel:+14233558230">Request a Free Quote · (423)-355-8230</a></div></div></div></section>
+<section class="page" id="reviews"><div class="section"><div class="wrap"><div class="section-heading"><p class="eyebrow">CUSTOMER FEEDBACK</p><h2>Reviews</h2><p>Your feedback helps Lawsons Landscaping keep improving. If we’ve worked on your property, we’d appreciate hearing about your experience.</p></div><div class="price-intro"><strong>Have we worked on your yard?</strong><br>Share what went well or what we could do better. Reviews are not published automatically; submissions are sent to the business for review.</div><div class="form-shell"><aside class="form-aside"><h3>Thank you for your feedback!</h3><p>Honest feedback helps us improve our lawn care and outdoor services.</p><p class="contact"><a href="tel:+14233558230">(423)-355-8230</a></p></aside><form class="application" id="reviewForm"><div class="form-grid"><label class="field">Your name *<input name="Reviewer name" autocomplete="name" required></label><label class="field">Service received *<select name="Service received" required><option value="">Choose a service</option><option>Mowing</option><option>Fertilizer</option><option>Raking / leaf cleanup</option><option>Hedge trimming</option><option>Pressure washing</option><option>Mulching</option><option>Window cleaning</option><option>Other</option></select></label><label class="field full">Your review *<textarea name="Review" rows="5" maxlength="2000" placeholder="Tell us about your experience..." required></textarea></label><label class="field full">Rating *<select name="Rating" required><option value="">Choose a rating</option><option>5 - Excellent</option><option>4 - Good</option><option>3 - Okay</option><option>2 - Could be better</option><option>1 - Poor</option></select></label></div><div class="submit-row"><span class="note">Your email app will open; press Send to submit.</span><button class="btn" type="submit">Submit Review →</button></div><p class="form-status" id="reviewStatus" aria-live="polite"></p></form></div></div></div></section>
 <section class="page" id="apply"><div class="section"><div class="wrap"><div class="section-heading"><p class="eyebrow">JOIN THE TEAM</p><h2>Apply to work at Lawsons Landscaping.</h2><p>Complete the application below. When you submit it, your email app will open with your answers prepared in a message to Lawsons Landscaping.</p></div><div class="form-shell"><aside class="form-aside"><h3>Interested in working outdoors?</h3><p>Tell us a little about yourself, your availability, and any experience you have. Please make sure your contact details are correct.</p><p class="contact"><a href="tel:+14233558230">(423)-355-8230</a></p><p class="note" style="color:#d2e0d4">Applications are prepared in your email app. You must press Send to submit them.</p></aside>
 <form class="application" id="jobForm">
 <div class="form-grid">
@@ -64,7 +65,7 @@
 (() => {
  const nav=document.getElementById('siteNav'), menu=document.getElementById('menuBtn');
  function showPage(name,updateHash=true){
-  if(!['home','prices','apply'].includes(name))name='home';
+  if(!['home','prices','reviews','apply'].includes(name))name='home';
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===name));
   document.querySelectorAll('[data-page]').forEach(a=>a.classList.toggle('active',a.dataset.page===name));
   nav.classList.remove('open');menu.setAttribute('aria-expanded','false');menu.textContent='☰';menu.setAttribute('aria-label','Open navigation');
@@ -76,6 +77,15 @@
  window.addEventListener('hashchange',()=>showPage(location.hash.slice(1),false));
  if(location.hash)showPage(location.hash.slice(1),false);
  document.getElementById('year').textContent=new Date().getFullYear();
+ document.getElementById('reviewForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  const data=new FormData(e.currentTarget);
+  const lines=['LAWSONS LANDSCAPING — CUSTOMER REVIEW','',...Array.from(data.entries()).map(([k,v])=>k+': '+(String(v).trim()||'Not provided'))];
+  const subject='Lawsons Landscaping Customer Review — '+(data.get('Reviewer name')||'New review');
+  const url='mailto:lawsonhughes53@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(lines.join('\\n'));
+  document.getElementById('reviewStatus').textContent='Opening your email app with your review prepared. Please review it and press Send.';
+  window.location.href=url;
+ });
  document.getElementById('jobForm').addEventListener('submit',e=>{
   e.preventDefault();
   const data=new FormData(e.currentTarget);
