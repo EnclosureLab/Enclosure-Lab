@@ -131,7 +131,7 @@
   e.preventDefault();
   const form=e.currentTarget;
   const data=new FormData(form);
-  const ratingMatch=String(data.get('Rating')||'').match(/^\\d+/);
+  const ratingMatch=String(data.get('Rating')||'').match(/^\d+/);
   const payload={
    reviewer_name:String(data.get('Reviewer name')||'').trim(),
    service_received:String(data.get('Service received')||'').trim(),
