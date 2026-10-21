@@ -148,7 +148,7 @@
   const {error}=await supabaseClient.from('landscaping_reviews').insert(payload);
   button.disabled=false;
   if(error){
-   reviewStatus.textContent='Your review could not be posted yet. Please try again in a moment.';
+   reviewStatus.textContent='Your review could not be posted: '+(error.message||'Unknown database error')+'.';
    console.error('Could not submit landscaping review:',error.message);
    return;
   }
