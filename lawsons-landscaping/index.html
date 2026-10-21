@@ -202,19 +202,23 @@
 })();
 </script>
 <script>
-document.querySelectorAll('.price-options').forEach(group=>{
+document.addEventListener('click',function(event){
+ const button=event.target.closest('.price-option');
+ if(!button)return;
+ const group=button.closest('.price-options');
+ if(!group)return;
  const low=Number(group.dataset.low),high=Number(group.dataset.high);
- const price=group.querySelector('.price');
- const money=n=>'$'+Math.round(n);
- group.querySelectorAll('.price-option').forEach(button=>{
-  button.setAttribute('aria-pressed',button.classList.contains('active')?'true':'false');
-  button.addEventListener('click',()=>{
-   group.querySelectorAll('.price-option').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false')});
-   button.classList.add('active');button.setAttribute('aria-pressed','true');
-   const tier=button.dataset.tier;
-   const amount=tier==='low'?low:tier==='high'?high:(low+high)/2;
-   price.textContent=money(amount)+' '+group.dataset.unit;
-  });
+ const tier=button.dataset.tier;
+ const amount=tier==='low'?low:tier==='high'?high:(low+high)/2;
+ group.querySelectorAll('.price-option').forEach(function(item){
+  const active=item===button;
+  item.classList.toggle('active',active);
+  item.setAttribute('aria-pressed',active?'true':'false');
  });
+ const price=group.querySelector('.price');
+ if(price)price.textContent='$'+Math.round(amount)+' '+group.dataset.unit;
+});
+document.querySelectorAll('.price-options .price-option').forEach(function(button){
+ button.setAttribute('aria-pressed',button.classList.contains('active')?'true':'false');
 });
 </script></body></html>
