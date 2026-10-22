@@ -78,10 +78,6 @@ alter table public.landscaping_payments enable row level security;
 drop policy if exists "Clients read own profile or owner reads all" on public.client_profiles;
 create policy "Clients read own profile or owner reads all" on public.client_profiles for select to authenticated
 using (auth.uid() = user_id or lower(coalesce(auth.jwt()->>'email','')) = 'lawsonhughes53@gmail.com');
-drop policy if exists "Clients update own contact details or owner manages profiles" on public.client_profiles;
-create policy "Clients update own contact details or owner manages profiles" on public.client_profiles for update to authenticated
-using (auth.uid() = user_id or lower(coalesce(auth.jwt()->>'email','')) = 'lawsonhughes53@gmail.com')
-with check (auth.uid() = user_id or lower(coalesce(auth.jwt()->>'email','')) = 'lawsonhughes53@gmail.com');
 drop policy if exists "Owner creates client profiles" on public.client_profiles;
 create policy "Owner creates client profiles" on public.client_profiles for insert to authenticated
 with check (lower(coalesce(auth.jwt()->>'email','')) = 'lawsonhughes53@gmail.com');
@@ -105,7 +101,7 @@ create policy "Owner manages payments" on public.landscaping_payments for all to
 using (lower(coalesce(auth.jwt()->>'email','')) = 'lawsonhughes53@gmail.com')
 with check (lower(coalesce(auth.jwt()->>'email','')) = 'lawsonhughes53@gmail.com');
 
-grant select, update on public.client_profiles to authenticated;
+grant select on public.client_profiles to authenticated;
 grant insert on public.client_profiles to authenticated;
 grant select, insert, update, delete on public.landscaping_jobs to authenticated;
 grant select, insert, update, delete on public.landscaping_payments to authenticated;
