@@ -16,7 +16,7 @@
 <body><div class="leaf-fall" aria-hidden="true"><span>🍁</span><span>🍂</span><span>🍃</span><span>🍁</span><span>🍂</span><span>🍁</span><span>🍂</span><span>🍃</span></div>
 <header class="header"><div class="wrap nav">
 <a class="brand" href="#home" data-page="home"><span class="brand-mark"><img src="lawsons-landscaping-logo.webp" alt="Lawson\'s Landscaping logo"></span></a>
-<nav class="links" id="siteNav" aria-label="Main navigation"><a href="#home" data-page="home" class="active">Home</a><a href="#prices" data-page="prices">Prices</a><a href="#reviews" data-page="reviews">Reviews</a><a href="#apply" data-page="apply">Employment</a><a href="https://enclosurelab.github.io/Lawson-s-Company-Holdings-/employee.html" target="_blank" rel="noopener">Employee Portal ↗</a></nav>
+<nav class="links" id="siteNav" aria-label="Main navigation"><a href="#home" data-page="home" class="active">Home</a><a href="#prices" data-page="prices">Prices</a><a href="#reviews" data-page="reviews">Reviews</a><a href="#clients" data-page="clients">Client Portal</a><a href="#apply" data-page="apply">Employment</a><a href="https://enclosurelab.github.io/Lawson-s-Company-Holdings-/employee.html" target="_blank" rel="noopener">Employee Portal ↗</a></nav>
 <a class="nav-apply" href="#apply" data-page="apply">Apply to Work ↗</a><button class="menu" id="menuBtn" aria-label="Open navigation" aria-expanded="false">☰</button>
 </div></header>
 <main>
@@ -43,6 +43,16 @@
 <details class="faq"><summary>Pressure Washing &amp; Mulching (Bundle)</summary><div class="faq-body"><span class="badge">20% off when bundled</span><p>Includes pressure washing and mulching.</p><div class="price-options" data-low="110" data-high="190" data-unit="per job"><span class="option-label">Choose the project size</span><div class="option-buttons"><button type="button" class="price-option" data-tier="low">Small project</button><button type="button" class="price-option active" data-tier="mid">Medium project</button><button type="button" class="price-option" data-tier="high">Large project</button></div><span class="price">$150 per job</span><small class="price-note">Final price depends on the areas involved.</small></div></div></details>
 <details class="faq"><summary>Hedge Trimming &amp; Mulching (Bundle)</summary><div class="faq-body"><span class="badge">20% off when bundled</span><p>Includes hedge trimming and mulching.</p><div class="price-options" data-low="50" data-high="90" data-unit="per job"><span class="option-label">Choose the project size</span><div class="option-buttons"><button type="button" class="price-option" data-tier="low">Small project</button><button type="button" class="price-option active" data-tier="mid">Medium project</button><button type="button" class="price-option" data-tier="high">Large project</button></div><span class="price">$70 per job</span><small class="price-note">Final price depends on hedge and bed size.</small></div></div></details>
 </div></div></div><div style="margin-top:28px"><a class="btn" href="tel:+14233558230">Request a Free Quote · (423)-355-8230</a></div></div></div></section>
+
+<section class="page" id="clients"><div class="section"><div class="wrap"><div class="section-heading"><p class="eyebrow">CLIENT ACCOUNT</p><h2>Your Lawsons Landscaping account</h2><p>Create an account or sign in to access your client space. Use an email address you can access so you can verify your account if email confirmation is enabled.</p></div>
+<div class="form-shell"><aside class="form-aside"><h3>Welcome, clients!</h3><p>Keep your account details together and make it easier to stay connected with Lawsons Landscaping.</p><p class="contact"><a href="tel:+14233558230">(423)-355-8230</a></p><p class="note" style="color:#eadccf">For scheduling or a property quote, contact us directly by phone.</p></aside>
+<div class="application">
+<div id="clientAuthCard"><div class="option-buttons" style="max-width:360px"><button class="price-option active" type="button" id="clientLoginTab">Sign in</button><button class="price-option" type="button" id="clientSignupTab">Create account</button></div>
+<form id="clientAuthForm"><div class="form-grid"><label class="field full" id="clientNameWrap" hidden>Full name *<input id="clientName" autocomplete="name" maxlength="120"></label><label class="field full">Email address *<input id="clientEmail" type="email" autocomplete="email" required></label><label class="field full">Password *<input id="clientPassword" type="password" autocomplete="current-password" minlength="8" required><small>Use at least 8 characters.</small></label></div><div class="submit-row"><span class="note" id="clientModeHint">Sign in to your client account.</span><button class="btn" id="clientAuthSubmit" type="submit">Sign in →</button></div><p class="form-status" id="clientAuthStatus" aria-live="polite"></p></form>
+<button class="btn light" type="button" id="clientResetPassword" style="margin-top:8px;background:#f1d7a0;color:#5a2d1d">Forgot password?</button>
+</div>
+<div id="clientDashboard" class="hidden"><p class="badge">Signed in</p><h3 id="clientWelcome">Welcome!</h3><p id="clientAccountEmail"></p><div class="price-intro"><strong>Your client account is ready.</strong><br>For quotes, booking requests, changes to a scheduled service, or questions about your property, contact Lawsons Landscaping at <a href="tel:+14233558230">(423)-355-8230</a>. This account page does not yet provide online booking or payment.</div><button class="btn" type="button" id="clientSignOut">Sign out</button><p class="form-status" id="clientDashboardStatus" aria-live="polite"></p></div>
+</div></div></div></div></section>
 <section class="page" id="reviews"><div class="section"><div class="wrap"><div class="section-heading"><p class="eyebrow">CUSTOMER FEEDBACK</p><h2>Reviews</h2><p>Your feedback helps Lawsons Landscaping keep improving. If we’ve worked on your property, we’d appreciate hearing about your experience.</p></div><div class="price-intro"><strong>Have we worked on your yard?</strong><br>Share what went well or what we could do better. Share your experience and your review will appear in Customer Reviews after it is submitted.</div><div class="form-shell"><aside class="form-aside"><h3>Thank you for your feedback!</h3><p>Honest feedback helps us improve our lawn care and outdoor services.</p><p class="contact"><a href="tel:+14233558230">(423)-355-8230</a></p></aside><form class="application" id="reviewForm"><div class="form-grid"><label class="field">Your name *<input name="Reviewer name" autocomplete="name" required></label><label class="field">Service received *<select name="Service received" required><option value="">Choose a service</option><option>Mowing</option><option>Fertilizer</option><option>Raking / leaf cleanup</option><option>Hedge trimming</option><option>Pressure washing</option><option>Mulching</option><option>Window cleaning</option><option>Other</option></select></label><label class="field full">Your review *<textarea name="Review" rows="5" maxlength="2000" placeholder="Tell us about your experience..." required></textarea></label><fieldset class="field full rating-field"><legend>Rating *</legend><div class="star-rating" role="radiogroup" aria-label="Choose a rating from 1 to 5"><input type="radio" id="rating1" name="Rating" value="1 - ★☆☆☆☆" required><label for="rating1" aria-label="1 star">★</label><input type="radio" id="rating2" name="Rating" value="2 - ★★☆☆☆"><label for="rating2" aria-label="2 stars">★</label><input type="radio" id="rating3" name="Rating" value="3 - ★★★☆☆"><label for="rating3" aria-label="3 stars">★</label><input type="radio" id="rating4" name="Rating" value="4 - ★★★★☆"><label for="rating4" aria-label="4 stars">★</label><input type="radio" id="rating5" name="Rating" value="5 - ★★★★★"><label for="rating5" aria-label="5 stars">★</label></div><small>Click a star to select your rating. All stars up to that number will fill in.</small></fieldset></div><div class="submit-row"><span class="note">Your review will be posted to the Customer Reviews section below.</span><button class="btn" type="submit">Submit Review →</button></div><p class="form-status" id="reviewStatus" aria-live="polite"></p></form></div><div class="reviews-shelf"><div class="reviews-shelf-head"><div><h3>Customer reviews</h3><p>Swipe or scroll sideways to browse customer reviews.</p><div id="reviewOwnerTools" class="review-owner-tools"><button type="button" id="reviewOwnerLogin">Manager sign in</button><span id="reviewOwnerStatus" aria-live="polite"></span></div></div><div class="reviews-controls"><button type="button" id="reviewsLeft" aria-label="Scroll reviews left">‹</button><button type="button" id="reviewsRight" aria-label="Scroll reviews right">›</button></div></div><div class="reviews-track" id="reviewsTrack" tabindex="0" aria-label="Customer reviews carousel"><div class="review-empty"><strong>Reviews coming soon 🍂</strong><p>Customer reviews will appear here once they have been received and approved for publication.</p></div></div></div></div></div></section>
 <section class="page" id="apply"><div class="section"><div class="wrap"><div class="section-heading"><p class="eyebrow">JOIN THE TEAM</p><h2>Apply to work at Lawsons Landscaping.</h2><p>Complete the application below. When you submit it, your email app will open with your answers prepared in a message to Lawsons Landscaping.</p></div><div class="form-shell"><aside class="form-aside"><h3>Interested in working outdoors?</h3><p>Tell us a little about yourself, your availability, and any experience you have. Please make sure your contact details are correct.</p><p class="contact"><a href="tel:+14233558230">(423)-355-8230</a></p><p class="note" style="color:#d2e0d4">Applications are prepared in your email app. You must press Send to submit them.</p></aside>
 <form class="application" id="jobForm">
@@ -67,7 +77,7 @@
 (() => {
  const nav=document.getElementById('siteNav'), menu=document.getElementById('menuBtn');
  function showPage(name,updateHash=true){
-  if(!['home','prices','reviews','apply'].includes(name))name='home';
+  if(!['home','prices','reviews','clients','apply'].includes(name))name='home';
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===name));
   document.querySelectorAll('[data-page]').forEach(a=>a.classList.toggle('active',a.dataset.page===name));
   nav.classList.remove('open');menu.setAttribute('aria-expanded','false');menu.textContent='☰';menu.setAttribute('aria-label','Open navigation');
@@ -228,5 +238,42 @@
   const group=button.closest('.price-options');
   if(group)updatePrice(group,button);
  });
+})();
+</script>
+<script>
+(function(){
+ const db=window.supabase?.createClient('https://lblrmljsjimrrighqbdo.supabase.co','sb_publishable_s2YnH1DT5diDmM781NXxqw_gIJVxPRx');
+ const $=id=>document.getElementById(id);
+ let mode='login';
+ function status(message,bad=false){const e=$('clientAuthStatus');e.textContent=message;e.style.color=bad?'#a33c32':'var(--green)';}
+ function setMode(next){mode=next;$('clientLoginTab').classList.toggle('active',mode==='login');$('clientSignupTab').classList.toggle('active',mode==='signup');$('clientNameWrap').hidden=mode!=='signup';$('clientName').required=mode==='signup';$('clientAuthSubmit').textContent=mode==='login'?'Sign in →':'Create account →';$('clientModeHint').textContent=mode==='login'?'Sign in to your client account.':'Create your personal client account.';status('');}
+ function showUser(user){$('clientAuthCard').classList.toggle('hidden',!!user);$('clientDashboard').classList.toggle('hidden',!user);if(user){const name=user.user_metadata?.display_name||user.email?.split('@')[0]||'client';$('clientWelcome').textContent='Welcome, '+name+'!';$('clientAccountEmail').textContent=user.email||'';}}
+ $('clientLoginTab').addEventListener('click',()=>setMode('login'));
+ $('clientSignupTab').addEventListener('click',()=>setMode('signup'));
+ $('clientAuthForm').addEventListener('submit',async e=>{
+  e.preventDefault();if(!db){status('The account service did not load. Refresh and try again.',true);return;}
+  const button=$('clientAuthSubmit');button.disabled=true;status(mode==='login'?'Signing in…':'Creating your account…');
+  try{
+   const email=$('clientEmail').value.trim().toLowerCase(),password=$('clientPassword').value;
+   if(mode==='signup'){
+    const name=$('clientName').value.trim();if(!name)throw Error('Please enter your full name.');
+    const {data,error}=await db.auth.signUp({email,password,options:{data:{display_name:name},emailRedirectTo:window.location.href.split('#')[0]+'#clients'}});
+    if(error)throw error;
+    if(data.session){showUser(data.user);status('');$('clientAuthForm').reset();}
+    else status('Account request received. Check your email for a confirmation link, then return here to sign in.');
+   }else{
+    const {data,error}=await db.auth.signInWithPassword({email,password});if(error)throw error;showUser(data.user);status('');$('clientAuthForm').reset();
+   }
+  }catch(err){status(err.message||'Unable to complete your request.',true);}finally{button.disabled=false;}
+ });
+ $('clientResetPassword').addEventListener('click',async()=>{
+  if(!db)return status('The account service did not load. Refresh and try again.',true);
+  const email=$('clientEmail').value.trim().toLowerCase();if(!email)return status('Enter your email address above first, then choose Forgot password.',true);
+  const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:window.location.href.split('#')[0]+'#clients'});
+  status(error?'Could not send a reset email: '+error.message:'If an account exists for that email, a password-reset link will arrive shortly.',!!error);
+ });
+ $('clientSignOut').addEventListener('click',async()=>{if(!db)return;const {error}=await db.auth.signOut();if(error){$('clientDashboardStatus').textContent='Could not sign out: '+error.message;return;}showUser(null);setMode('login');});
+ if(db){db.auth.getSession().then(({data})=>showUser(data.session?.user||null));db.auth.onAuthStateChange((_event,session)=>showUser(session?.user||null));}
+ else status('The account service did not load. Refresh and try again.',true);
 })();
 </script></body></html>
