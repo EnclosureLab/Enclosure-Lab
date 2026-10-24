@@ -377,11 +377,32 @@ header{height:76px;border-bottom:1px solid #e5e8eb;background:#fff;display:flex;
 #prefab-products{scroll-margin-top:22px}
 @media(max-width:700px){.prefab-feature{padding:27px 0 30px}.prefab-feature-inner{grid-template-columns:minmax(0,1fr);gap:24px}.prefab-feature-copy h2{font-size:36px}.prefab-feature-visual,.prefab-feature-visual img{min-height:220px;height:220px}.prefab-feature-points{gap:9px 12px}.hero{padding:42px 0 30px}}
 </style>
+<style id="prefab-feature-redesign-two">
+/* Alternate direction: clean workshop/editorial look, not a dark promotional banner. */
+.hero{padding:42px 0 30px;background:#fff}
+.hero .eyebrow{color:#8b5b2b}
+.hero h1{font-size:clamp(38px,5vw,58px);letter-spacing:-.045em}
+.hero h1 span{color:#8b5b2b}
+.prefab-feature{padding:0 0 42px;background:#fff;color:#17202b}
+.prefab-feature-inner{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:34px;align-items:stretch}
+.prefab-feature-copy{padding:34px 0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
+.prefab-feature-copy .eyebrow{color:#8b5b2b;font-size:10px;letter-spacing:.16em}
+.prefab-feature-copy h2{font-size:clamp(32px,4vw,48px);line-height:1.04;letter-spacing:-.05em;margin:0 0 15px;color:#17202b}
+.prefab-feature-copy>p:not(.eyebrow){max-width:400px;color:#66717e;font-size:15px;line-height:1.7;margin:0 0 23px}
+.prefab-feature-cta{display:inline-flex;align-items:center;gap:22px;background:#17202b;color:#fff;text-decoration:none;font-weight:800;padding:14px 18px;border-radius:5px}
+.prefab-feature-cta:hover{background:#8b5b2b}
+.prefab-feature-visual{min-height:320px;position:relative;display:flex;align-items:center;justify-content:center;background:#f1eee8;border-radius:4px;overflow:hidden;text-decoration:none;border:1px solid #e5dfd5}
+.prefab-feature-visual img{display:block;width:100%;height:320px;object-fit:contain;padding:18px}
+.prefab-feature-visual .feature-index{position:absolute;left:16px;top:16px;background:#fff;color:#17202b;padding:9px 11px;font-size:10px;font-weight:800;letter-spacing:.12em}
+.category.prefab-category{border:2px solid #8b5b2b;box-shadow:0 8px 25px #17202b12}
+#prefab-products{scroll-margin-top:24px}
+@media(max-width:700px){.hero{padding:34px 0 24px}.prefab-feature{padding-bottom:28px}.prefab-feature-inner{grid-template-columns:minmax(0,1fr);gap:12px}.prefab-feature-copy{padding:12px 0 4px}.prefab-feature-copy h2{font-size:36px}.prefab-feature-visual,.prefab-feature-visual img{min-height:230px;height:230px}}
+</style>
 </head>
 <body>
 <header><div class="wrap nav"><a class="brand" href="index.html">Enclosure Lab</a><nav class="navlinks" id="mobileNavigation"><a href="index.html#how">How It Works</a><a href="products.html">Products</a><a href="index.html#quote">Request a Quote</a><a href="checkout.html">Checkout</a><a href="index.html#about">About</a><a class="cta" href="index.html#quote">Start a Quote</a></nav><button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileNavigation">☰</button></div></header>
 <section class="hero"><div class="wrap"><p class="eyebrow">ENCLOSURE LAB · BUILT FOR YOUR BASS</p><h1>Find your perfect<br><span>prefab enclosure.</span></h1><p>Shop ready-made subwoofer boxes first, then explore audio gear and accessories to complete your setup.</p></div></section>
-<section class="prefab-feature" aria-labelledby="prefab-feature-title"><div class="wrap prefab-feature-inner"><div class="prefab-feature-copy"><p class="eyebrow">FEATURED · PREFAB BOXES</p><h2 id="prefab-feature-title">The right box makes<br>the whole setup.</h2><p>Explore ready-made ported enclosures with listed dimensions and tuning information. Find a box that fits your subwoofer and your space.</p><a class="prefab-feature-cta" href="#prefab-products">Explore prefab boxes <span aria-hidden="true">→</span></a><div class="prefab-feature-points"><span>READY-MADE OPTIONS</span><span>DIMENSIONS LISTED</span><span>TUNING DETAILS</span></div></div><a class="prefab-feature-visual" href="#prefab-products" aria-label="Explore prefab subwoofer boxes"><img src="prefab-boxes.png" alt="Prefabricated subwoofer enclosure" fetchpriority="high"><span>SHOP PREFAB BOXES <b>↗</b></span></a></div></section>
+<section class="prefab-feature" aria-labelledby="prefab-feature-title"><div class="wrap prefab-feature-inner"><div class="prefab-feature-copy"><p class="eyebrow">ENCLOSURE LAB / FEATURED CATEGORY</p><h2 id="prefab-feature-title">Prefab boxes.<br>Ready for your build.</h2><p>Start with the enclosure. Browse ready-made options with dimensions and tuning details, then explore the rest of the gear.</p><a class="prefab-feature-cta" href="#prefab-products">Browse the boxes <span aria-hidden="true">↘</span></a></div><a class="prefab-feature-visual" href="#prefab-products" aria-label="Browse prefab subwoofer boxes"><img src="prefab-boxes.png" alt="Prefabricated subwoofer enclosure" fetchpriority="high"><span class="feature-index">01 / ENCLOSURES</span></a></div></section>
 <section class="install-note" aria-label="Subwoofer installation offer"><div class="wrap install-note-inner"><span class="install-note-icon" aria-hidden="true">✓</span><div><strong>Order a subwoofer and an Enclosure Lab enclosure together</strong><p>Your subwoofer comes pre-installed in the enclosure, so it arrives ready for your setup.</p></div></div></section>
 <section class="shop"><div class="wrap">
 <div class="sort-toolbar"><div class="product-search"><label for="productSearch">Search products</label><div class="search-input-wrap"><span aria-hidden="true">⌕</span><input id="productSearch" type="search" placeholder="Search a brand or model (e.g. Sundown, SKv2-3500.1D)" autocomplete="off" aria-label="Search product brands and models"><button id="clearProductSearch" type="button" aria-label="Clear product search" hidden>×</button></div><p id="searchStatus" role="status" aria-live="polite">Search by brand or model name.</p></div><div class="sort-select"><label for="productSort">Sort by</label><select id="productSort" aria-label="Sort products"><option value="featured">Featured</option><option value="name-asc">Name: A to Z</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="power-asc">RMS power: low to high</option><option value="power-desc">RMS power: high to low</option><option value="size-asc">Size: small to large</option><option value="size-desc">Size: large to small</option></select></div></div>
