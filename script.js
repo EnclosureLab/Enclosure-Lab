@@ -12,59 +12,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("quoteForm");
   const status = document.getElementById("formStatus");
 
-  form.addEventListener("submit", e => {
+  form.addEventListener("submit", async e => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(form).entries());
     const required = ["name","email","brand","model","size","quantity","type","goal"];
-    if (required.some(k => !data[k])) {
-      status.className = "form-status error";
-      status.textContent = "Please complete the required fields before submitting.";
-      return;
-    }
-
-    const subject = `Custom Box Quote Request — ${data.name}`;
-    const body = [
-      `CUSTOM SUBWOOFER BOX QUOTE REQUEST`,
-      ``,
-      `CUSTOMER`,
-      `Name: ${data.name}`,
-      `Email: ${data.email}`,
-      `Phone: ${data.phone || "Not provided"}`,
-      ``,
-      `SUBWOOFER`,
-      `Brand: ${data.brand}`,
-      `Model: ${data.model}`,
-      `Size: ${data.size}`,
-      `Quantity: ${data.quantity}`,
-      `RMS: ${data.rms || "Not provided"}`,
-      `Specs: ${data.specLink || "Not provided"}`,
-      ``,
-      `VEHICLE / SPACE`,
-      `Year: ${data.year || "Not provided"}`,
-      `Make: ${data.make || "Not provided"}`,
-      `Model: ${data.vehicle || "Not provided"}`,
-      `Max width: ${data.maxWidth || "Not provided"}`,
-      `Max height: ${data.maxHeight || "Not provided"}`,
-      `Max depth: ${data.maxDepth || "Not provided"}`,
-      ``,
-      `DESIGN`,
-      `Type: ${data.type}`,
-      `Goal: ${data.goal}`,
-      `Finish: ${data.finish || "Not provided"}`,
-      `Port: ${data.port || "Not provided"}`,
-      `Notes: ${data.notes || "None"}`
-    ].join("\n");
-
-    if (c.useSms !== false && phone) {
-      const smsBody = `${subject}\n\n${body}`;
-      window.location.href = `sms:${phone.replace(/\D/g, "")}?body=${encodeURIComponent(smsBody)}`;
-      status.className = "form-status success";
-      status.textContent = `Your quote request is ready to text ${phone}.`;
-    } else if (c.useMailto !== false) {
-      window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      status.className = "form-status success";
-      status.textContent = "Your quote request is ready. Your email app should open with the completed request.";
-    }
-    form.reset();
+    if (required.some(k => !data[k])) { status.className="form-status error"; status.textContent="Please complete the required fields before submitting."; return; }
+    const payload = {name:data.name,email:data.email,phone:data.phone||null,brand:data.brand,model:data.model,size:data.size,quantity:data.quantity,rms:data.rms||null,spec_link:data.specLink||null,year:data.year||null,make:data.make||null,vehicle:data.vehicle||null,max_width:data.maxWidth||null,max_height:data.maxHeight||null,max_depth:data.maxDepth||null,type:data.type,goal:data.goal,finish:data.finish||null,port:data.port||null,notes:data.notes||null};
+    status.className="form-status"; status.textContent="Submitting your quote request…";
+    const {data:result,error}=await window.supabase.createClient("https://lblrmljsjimrrighqbdo.supabase.co","sb_publishable_s2YnH1DT5diDmM781NXxqw_gIJVxPRx").from("enclosure_quote_requests").insert(payload);
+    if(error){status.className="form-status error";status.textContent="We couldn’t save your quote request yet. Please contact us directly.";console.error(error);return;}
+    status.className="form-status success";status.textContent="Your quote request was submitted successfully. We’ll review your specifications and contact you.";form.reset();
   });
 });
