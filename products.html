@@ -454,6 +454,33 @@ header{height:76px;border-bottom:1px solid #e5e8eb;background:#fff;display:flex;
 }
 </style>
 
+<style id="diy-kits-section">
+.diy-kits{padding:56px 0 64px;background:#f4f6f8;border-top:1px solid #e1e5e9}
+.diy-kits-heading{max-width:680px;margin:0 0 24px}
+.diy-kits-heading .eyebrow{margin:0 0 9px;color:#8b5b2b;font-size:11px;font-weight:800;letter-spacing:.14em}
+.diy-kits-heading h2{margin:0 0 10px;color:#17202b;font-size:clamp(28px,3.5vw,40px);letter-spacing:-.04em}
+.diy-kits-heading>p:last-child{margin:0;color:#647181;line-height:1.7}
+.diy-kit-card{display:grid;grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr);overflow:hidden;background:#fff;border:1px solid #dfe4e8;border-radius:14px;box-shadow:0 8px 24px #17202b0a}
+.diy-kit-visual{min-height:310px;position:relative;display:grid;place-items:center;overflow:hidden;background:radial-gradient(ellipse at center,#fff 0%,#eee9df 100%)}
+.diy-kit-wood{position:relative;width:190px;height:125px;transform:perspective(600px) rotateY(-18deg) rotateX(7deg)}
+.diy-kit-wood span{position:absolute;width:145px;height:76px;border:2px solid #b68a55;background:linear-gradient(135deg,#e7c99b,#cba16b);box-shadow:0 5px 10px #4b35201a}
+.diy-kit-wood span:nth-child(1){left:20px;top:0;transform:skewY(-8deg)}
+.diy-kit-wood span:nth-child(2){left:0;top:22px;transform:rotate(-8deg);opacity:.92}
+.diy-kit-wood span:nth-child(3){left:38px;top:40px;transform:skewY(10deg)}
+.diy-kit-wood span:nth-child(4){left:48px;top:12px;width:20px;height:92px;transform:skewY(-22deg);background:#bc8e56}
+.diy-kit-wood span:nth-child(5){left:8px;top:70px;width:150px;height:14px;transform:skewY(-8deg);background:#d7b17c}
+.diy-kit-tag{position:absolute;left:18px;top:18px;padding:8px 10px;background:#17202b;color:#fff;border-radius:4px;font-size:10px;font-weight:800;letter-spacing:.12em}
+.diy-kit-copy{padding:30px clamp(20px,4vw,42px);align-self:center}
+.diy-kit-kicker{margin:0 0 8px;color:#8b5b2b;font-size:10px;font-weight:800;letter-spacing:.15em}
+.diy-kit-copy h3{margin:0 0 10px;color:#17202b;font-size:25px;letter-spacing:-.03em}
+.diy-kit-copy>p:not(.diy-kit-kicker){color:#647181;line-height:1.65}
+.diy-kit-copy ul{padding-left:20px;color:#344252;line-height:1.8}
+.diy-kit-note{font-size:12px!important}
+.diy-kit-cta{display:inline-flex;align-items:center;gap:18px;margin-top:8px;padding:13px 17px;border-radius:6px;background:#17202b;color:#fff;text-decoration:none;font-weight:800}
+.diy-kit-cta:hover{background:#8b5b2b}
+@media(max-width:650px){.diy-kits{padding:38px 0}.diy-kit-card{grid-template-columns:1fr}.diy-kit-visual{min-height:210px}.diy-kit-copy{padding:24px 20px}.diy-kit-copy h3{font-size:23px}}
+</style>
+
 </head>
 <body>
 <header><div class="wrap nav"><a class="brand" href="index.html">Enclosure Lab</a><nav class="navlinks" id="mobileNavigation"><a href="index.html#how">How It Works</a><a href="products.html">Products</a><a href="index.html#quote">Request a Quote</a><a href="checkout.html">Checkout</a><a href="index.html#about">About</a><a class="cta" href="index.html#quote">Start a Quote</a></nav><button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileNavigation">☰</button></div></header>
@@ -510,6 +537,30 @@ header{height:76px;border-bottom:1px solid #e5e8eb;background:#fff;display:flex;
 <div class="category prefab-category" id="prefab-products"><button type="button" onclick="toggleCategory(this)"><div class="art prefab-art" aria-hidden="true"><span class="prefab-box-shape"></span></div><div class="label"><div><strong>PREFAB BOXES</strong><small>Ready-made subwoofer enclosures</small></div><span class="plus">+</span></div></button><div class="panel"><div class="products"><article class="product prefab-product"><div class="photo"><img src="prefab-boxes.jpg" alt="8-inch prefab subwoofer enclosure with port" loading="lazy" style="object-fit:contain;background:#fff" onerror="this.onerror=null;this.src='box-hero.png';"></div><div class="info"><h3>Kicker Comp C8 Prefab Box</h3><p>Ported enclosure · 0.75&quot; material thickness</p><div class="spec"><span>External dimensions</span><b>24&quot; × 10.5&quot; × 10.98&quot;</b></div><div class="spec"><span>Tuning</span><b>40 Hz</b></div><div class="price-line"><span>Price</span><b>$140.00</b></div></div></article><article class="product prefab-product"><div class="photo"><img src="prefab-box-10in.jpg" alt="Skar Audio SDR-10 D4 prefab subwoofer enclosure" loading="lazy" style="object-fit:contain;background:#fff" onerror="this.onerror=null;this.src='prefab-boxes.jpg';"></div><div class="info"><h3>Skar Audio SDR-10 D4 Prefab Subwoofer Box</h3><p>Ported enclosure · 0.63&quot; material thickness</p><div class="spec"><span>External dimensions</span><b>27&quot; × 13&quot; × 9.30&quot;</b></div><div class="spec"><span>Tuning</span><b>38 Hz</b></div><div class="price-line"><span>Price</span><b>$180.00</b></div></div></article></div></div></div>
 
 </div></div></section>
+<section class="diy-kits" id="subwoofer-box-kits" aria-labelledby="diy-kits-title">
+  <div class="wrap">
+    <div class="diy-kits-heading">
+      <p class="eyebrow">BUILD IT YOURSELF</p>
+      <h2 id="diy-kits-title">Subwoofer Box Kits</h2>
+      <p>Get the pieces you need to build your own subwoofer enclosure at home—with no woodworking plan guesswork.</p>
+    </div>
+    <div class="diy-kit-card">
+      <div class="diy-kit-visual" aria-hidden="true"><div class="diy-kit-wood"><span></span><span></span><span></span><span></span><span></span></div><div class="diy-kit-tag">DIY KIT</div></div>
+      <div class="diy-kit-copy">
+        <p class="diy-kit-kicker">CUT • ASSEMBLE • INSTALL</p>
+        <h3>DIY Subwoofer Box Kit</h3>
+        <p>Request a kit sized for your setup and build your enclosure yourself at home.</p>
+        <ul>
+          <li>Pre-cut wood panels for the agreed enclosure design</li>
+          <li>Port pieces when required by the design</li>
+          <li>Assembly instructions and a parts checklist</li>
+        </ul>
+        <p class="diy-kit-note">Subwoofer, tools, adhesive, and finishing materials are not included unless confirmed in your quote.</p>
+        <a class="diy-kit-cta" href="index.html#quote">Request a DIY Kit Quote <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </div>
+</section>
 <section class="brand-signoff"><div class="wrap"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo" onerror="this.onerror=null;this.style.display='none';"></div></section>
 
 <style>
