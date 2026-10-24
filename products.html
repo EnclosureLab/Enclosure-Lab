@@ -830,4 +830,27 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 </style>
 
+
+<style id="future-product-placeholders">
+/* Keep category cards visible while product listings are unavailable. */
+.category .coming-soon{padding:24px 16px;text-align:center;color:#687480;background:#f7f9fb;border:1px dashed #cbd3da;border-radius:10px;font-size:14px;line-height:1.5}
+.category .coming-soon strong{display:block;color:#17202b;font-size:15px;margin-bottom:5px}
+</style>
+<script id="hide-unavailable-product-listings">
+document.addEventListener("DOMContentLoaded", function () {
+  const unavailable = new Set(["SUBWOOFERS","AMPLIFIERS","SPEAKERS","PORTABLE SPEAKERS","HEADPHONES"]);
+  document.querySelectorAll(".categories > .category").forEach(category => {
+    const name = category.querySelector(".label strong")?.textContent.trim();
+    if (!unavailable.has(name)) return;
+    const products = category.querySelector(".panel .products");
+    if (!products) return;
+    products.replaceChildren();
+    const placeholder = document.createElement("div");
+    placeholder.className = "coming-soon";
+    placeholder.innerHTML = "<strong>Products coming soon</strong>We’ll add products here when they’re available.";
+    products.appendChild(placeholder);
+  });
+});
+</script>
+
 </body></html>
