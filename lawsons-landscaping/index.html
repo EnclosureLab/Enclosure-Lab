@@ -78,13 +78,17 @@
 
 /* Ensure the full-name field stays hidden on the sign-in tab. */
 #clientNameWrap[hidden]{display:none!important}
+
+.mobile-more-links{display:contents}
+@media(max-width:780px){.nav{height:auto;min-height:76px;flex-wrap:wrap;justify-content:flex-start;gap:8px 10px;padding-top:8px;padding-bottom:10px}.brand{margin-right:auto}.menu{display:inline-flex;align-items:center;justify-content:center;font-size:.88rem;font-weight:800;padding:9px 10px;white-space:nowrap}.links{display:flex;position:static;order:3;width:100%;padding:0;background:transparent;border:0;flex-direction:row;align-items:center;gap:6px;overflow:visible}.links a.mobile-primary{display:inline-flex;align-items:center;justify-content:center;flex:1 1 0;min-width:0;padding:9px 5px;text-align:center;font-size:.82rem;line-height:1.25;border:1px solid var(--line);background:#fff;border-radius:9px}.links .mobile-more-links{display:none;flex-basis:100%;flex-direction:column;gap:6px}.links.open .mobile-more-links{display:flex}.links.open{flex-wrap:wrap}.links .mobile-more-links a{display:block;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:9px}}
+@media(max-width:360px){.links a.mobile-primary{font-size:.75rem;padding:8px 3px}}
 </style>
 </head>
 <body><div class="leaf-fall" aria-hidden="true"><span>🍁</span><span>🍂</span><span>🍃</span><span>🍁</span><span>🍂</span><span>🍁</span><span>🍂</span><span>🍃</span></div>
 <header class="header"><div class="wrap nav">
 <a class="brand" href="#home" data-page="home"><span class="brand-mark"><img src="lawsons-landscaping-logo.webp" alt="Lawson\'s Landscaping logo"></span></a>
-<nav class="links" id="siteNav" aria-label="Main navigation"><a href="#home" data-page="home" class="active">Home</a><a href="#prices" data-page="prices">Prices</a><a href="#reviews" data-page="reviews">Reviews</a><a href="#clients" data-page="clients">Client Portal</a><a href="#apply" data-page="apply">Employment</a><a href="https://enclosurelab.github.io/Lawson-s-Company-Holdings-/employee.html" target="_blank" rel="noopener">Employee Portal ↗</a></nav>
-<a class="nav-apply" href="#apply" data-page="apply">Apply to Work ↗</a><button class="menu" id="menuBtn" aria-label="Open navigation" aria-expanded="false">☰</button>
+<nav class="links" id="siteNav" aria-label="Main navigation"><a class="mobile-primary" href="#home" data-page="home">Home</a><a class="mobile-primary" href="#prices" data-page="prices">Prices</a><a class="mobile-primary" href="#reviews" data-page="reviews">Reviews</a><span class="mobile-more-links"><a href="#clients" data-page="clients">Client Portal</a><a href="#apply" data-page="apply">Employment</a><a href="https://enclosurelab.github.io/Lawson-s-Company-Holdings-/employee.html" target="_blank" rel="noopener">Employee Portal ↗</a></span></nav>
+<a class="nav-apply" href="#apply" data-page="apply">Apply to Work ↗</a><button class="menu" id="menuBtn" aria-label="Open navigation" aria-expanded="false">☰ More</button>
 </div></header>
 <main>
 <section class="page active" id="home">
@@ -152,7 +156,7 @@
   window.scrollTo({top:0,behavior:'smooth'});
  }
  document.querySelectorAll('[data-page]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();showPage(a.dataset.page)}));
- menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));menu.textContent=open?'×':'☰';menu.setAttribute('aria-label',open?'Close navigation':'Open navigation')});
+ menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));menu.setAttribute('aria-label',open?'Hide more navigation links':'More navigation links');menu.textContent=open?'× Close':'☰ More'});
  window.addEventListener('hashchange',()=>showPage(location.hash.slice(1),false));
  if(location.hash)showPage(location.hash.slice(1),false);
  document.getElementById('year').textContent=new Date().getFullYear();
