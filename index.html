@@ -14,15 +14,12 @@
 <header class="site-header">
   <div class="container nav">
     <a class="brand" href="#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span data-brand>Enclosure Lab</span></a>
-    <nav id="mobileNavigation">
-      <a href="#how">How It Works</a>
-      <a href="products.html">Products</a>
-      <a href="#quote">Request a Quote</a>
-      <a href="#about">About</a>
-      <a href="manager-quotes.html">Manager Portal</a>
+    <nav id="mobileNavigation" aria-label="Main navigation">
+      <a class="mobile-primary" href="products.html">Products</a><a class="mobile-primary" href="#quote">Request a Quote</a><a class="mobile-primary" href="#how">How It Works</a>
+      <span class="mobile-more-links"><a href="#about">About</a><a href="manager-quotes.html">Manager Portal</a></span>
     </nav>
     <a class="nav-cta" href="#quote">Start a Quote</a>
-    <button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileNavigation">☰</button>
+    <button class="mobile-menu-toggle" type="button" aria-label="More navigation links" aria-expanded="false" aria-controls="mobileNavigation">☰ More</button>
   </div>
 </header>
 
@@ -177,8 +174,8 @@
  const toggle=document.querySelector(".mobile-menu-toggle");
  const nav=document.querySelector(".site-header .nav nav");
  if(!toggle||!nav)return;
- toggle.addEventListener("click",()=>{const open=nav.classList.toggle("mobile-open");nav.style.display=open?"flex":"none";nav.style.visibility=open?"visible":"hidden";nav.style.pointerEvents=open?"auto":"none";toggle.setAttribute("aria-expanded",String(open));toggle.setAttribute("aria-label",open?"Close navigation menu":"Open navigation menu");toggle.textContent=open?"×":"☰";});
- nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("mobile-open");nav.style.display="none";nav.style.visibility="hidden";nav.style.pointerEvents="none";toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-label","Open navigation menu");toggle.textContent="☰";}));
+ toggle.addEventListener("click",()=>{const open=nav.classList.toggle("mobile-open");toggle.setAttribute("aria-expanded",String(open));toggle.setAttribute("aria-label",open?"Hide additional navigation links":"More navigation links");toggle.textContent=open?"× Close":"☰ More";});
+ nav.querySelectorAll(".mobile-more-links a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("mobile-open");toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-label","More navigation links");toggle.textContent="☰ More";}));
 })();
 </script>
 </body>
