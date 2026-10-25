@@ -24,3 +24,81 @@ footer .brand-mark.logo-mark{width:42px;height:42px}
   .site-header .nav nav a:hover{background:#f4f6f8}
   .nav-cta{margin-left:auto}
 }
+
+
+/* Mobile navigation refinement: primary links sit in their own row beneath the logo. */
+@media(max-width:850px){
+  .site-header .nav{
+    height:auto;
+    min-height:76px;
+    flex-wrap:wrap;
+    gap:10px;
+    padding-top:10px;
+    padding-bottom:10px;
+  }
+  .site-header .brand{margin-right:auto}
+  .site-header .nav-cta{display:none}
+  .mobile-menu-toggle{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:auto;
+    min-width:92px;
+    height:42px;
+    padding:0 10px;
+    margin-left:0;
+    font-size:13px;
+    font-weight:700;
+    white-space:nowrap;
+  }
+  .site-header .nav nav,
+  .site-header .nav nav.mobile-open{
+    display:flex;
+    position:static;
+    order:3;
+    width:100%;
+    margin:0;
+    padding:0;
+    border:0;
+    border-radius:0;
+    box-shadow:none;
+    background:transparent;
+    flex-direction:row;
+    align-items:stretch;
+    justify-content:space-between;
+    gap:6px;
+  }
+  .site-header .nav nav .mobile-primary{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex:1 1 0;
+    min-width:0;
+    padding:10px 4px;
+    border:1px solid #dce1e6;
+    border-radius:8px;
+    background:#fff;
+    text-align:center;
+    font-size:clamp(10px,2.7vw,13px);
+    line-height:1.2;
+    white-space:normal;
+  }
+  .site-header .nav nav .mobile-more-links{
+    display:none;
+    flex-basis:100%;
+    flex-direction:column;
+    gap:4px;
+  }
+  .site-header .nav nav.mobile-open{flex-wrap:wrap}
+  .site-header .nav nav.mobile-open .mobile-more-links{display:flex}
+  .site-header .nav nav .mobile-more-links a{
+    display:block;
+    padding:12px;
+    border:1px solid #dce1e6;
+    border-radius:8px;
+    background:#fff;
+  }
+}
+@media(max-width:360px){
+  .site-header .nav nav .mobile-primary{font-size:10px;padding:9px 2px}
+}
