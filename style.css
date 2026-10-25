@@ -181,3 +181,6 @@ footer .brand-mark.logo-mark{width:42px;height:42px}
     color: #17202b !important;
   }
 }
+
+/* Keep About and Manager Portal visually separated in the desktop navigation. */
+@media(min-width:851px){.site-header .nav nav .mobile-more-links{display:flex;flex-direction:row;align-items:center;gap:26px;white-space:nowrap}.site-header .nav nav .mobile-more-links a{display:inline-block}}
