@@ -1039,10 +1039,10 @@ document.addEventListener("DOMContentLoaded", function () {
 .custom-speaker-boxes-intro .coming-soon{margin-top:12px}
 </style>
 <style id="custom-speaker-boxes-visibility-fix">
-/* Keep this new category visible despite the legacy prefab-only layout overrides. */
-h2.custom-speaker-boxes-group-title{display:block!important;visibility:visible!important;position:static!important;grid-column:1/-1!important;margin:28px 0 14px!important;color:#17202b!important;font-size:20px!important;font-weight:800!important;letter-spacing:.08em!important}
-.category.custom-speaker-boxes-category{display:block!important;visibility:visible!important;position:relative!important;width:100%!important;margin:0 0 22px!important;clear:both!important}
-.custom-speaker-boxes-category>button{width:100%}
-.custom-speaker-boxes-category .panel{width:100%}
+/* Override the legacy prefab-only rules, which hide every non-prefab category. */
+.categories>.category-group-title.custom-speaker-boxes-group-title{display:block!important;visibility:visible!important;position:static!important;grid-column:1/-1!important;margin:28px 0 14px!important;color:#17202b!important;font-size:20px!important;font-weight:800!important;letter-spacing:.08em!important}
+.categories .category.custom-speaker-boxes-category:not(.prefab-category){display:block!important;visibility:visible!important;position:relative!important;width:100%!important;margin:0 0 22px!important;clear:both!important}
+.categories .custom-speaker-boxes-category>button{display:block!important;width:100%!important}
+.categories .custom-speaker-boxes-category .panel{width:100%!important}
 </style>
 </body></html>
