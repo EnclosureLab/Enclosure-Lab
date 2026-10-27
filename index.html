@@ -9,13 +9,60 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=mobile-nav-3">
+<style>
+/* Enclosure Lab customer reviews, matched to the Lawson's Landscaping review experience */
+.enclosure-reviews{background:#f6f8fb;padding:72px 0}
+.enclosure-reviews .section-heading{max-width:760px;margin:0 auto 30px}
+.enclosure-reviews .section-heading .eyebrow{color:#2463a6}
+.enclosure-reviews .review-intro{background:#eaf2fb;border:1px solid #cbdced;border-radius:16px;padding:20px 22px;margin-bottom:24px}
+.enclosure-reviews .review-layout{display:grid;grid-template-columns:.72fr 1.28fr;gap:24px;align-items:start}
+.enclosure-reviews .review-aside{background:#172c46;color:#fff;border-radius:20px;padding:26px}
+.enclosure-reviews .review-aside h3{margin:0 0 12px;font-size:1.45rem}
+.enclosure-reviews .review-aside p{color:#d8e4f1}
+.enclosure-reviews .review-form{background:#fff;border:1px solid #d9e2ec;border-radius:20px;padding:26px}
+.enclosure-reviews .review-fields{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.enclosure-reviews .review-field{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:.9rem}
+.enclosure-reviews .review-field.full{grid-column:1/-1}
+.enclosure-reviews .review-field input,.enclosure-reviews .review-field select,.enclosure-reviews .review-field textarea{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:12px;font:inherit;background:#f9fbfd;color:#172c46}
+.enclosure-reviews .rating-field{border:0;padding:0;margin:0;min-width:0}
+.enclosure-reviews .rating-field legend{font-weight:700;margin-bottom:6px}
+.enclosure-reviews .star-rating{display:flex;flex-direction:row;gap:5px}
+.enclosure-reviews .star-rating input{position:absolute;opacity:0;width:1px;height:1px}
+.enclosure-reviews .star-rating label{font-size:2.3rem;line-height:1.2;color:#cbd5e1;cursor:pointer;transition:color .12s,transform .12s}
+.enclosure-reviews .star-rating label:hover{transform:scale(1.08)}
+.enclosure-reviews .star-rating:has(#elRating1:checked) label:nth-of-type(-n+1),.enclosure-reviews .star-rating:has(#elRating2:checked) label:nth-of-type(-n+2),.enclosure-reviews .star-rating:has(#elRating3:checked) label:nth-of-type(-n+3),.enclosure-reviews .star-rating:has(#elRating4:checked) label:nth-of-type(-n+4),.enclosure-reviews .star-rating:has(#elRating5:checked) label:nth-of-type(-n+5){color:#e0a126}
+.enclosure-reviews .review-submit-row{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-top:20px;flex-wrap:wrap}
+.enclosure-reviews .review-status{color:#245b39;font-weight:700;min-height:1.5em}
+.enclosure-reviews .reviews-shelf{margin-top:48px;padding-top:28px;border-top:1px solid #d9e2ec}
+.enclosure-reviews .reviews-shelf-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:18px}
+.enclosure-reviews .reviews-shelf-head h3{margin:0;font-size:clamp(1.45rem,3vw,2rem)}
+.enclosure-reviews .reviews-shelf-head p{margin:7px 0 0;color:#64748b}
+.enclosure-reviews .reviews-controls{display:flex;gap:8px;flex-shrink:0}
+.enclosure-reviews .reviews-controls button{width:42px;height:42px;border:1px solid #cbd5e1;border-radius:50%;background:#fff;color:#172c46;font-size:1.3rem;cursor:pointer}
+.enclosure-reviews .reviews-track{display:flex;gap:16px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:#5c91c8 #e2e8f0;padding:4px 2px 16px}
+.enclosure-reviews .review-card{position:relative;flex:0 0 min(340px,85%);scroll-snap-align:start;background:#fff;border:1px solid #d9e2ec;border-radius:18px;padding:22px;box-shadow:0 8px 24px #172c460d}
+.enclosure-reviews .review-card .stars{color:#d18b16;letter-spacing:.12em;font-size:1.1rem}
+.enclosure-reviews .review-card h4{margin:9px 0 4px;font-size:1.05rem}
+.enclosure-reviews .review-card p{margin:0;color:#64748b;overflow-wrap:anywhere}
+.enclosure-reviews .review-empty{min-width:100%;background:#eaf2fb;border:1px dashed #9db9d8;border-radius:16px;padding:24px;color:#172c46}
+.enclosure-reviews .review-empty strong{display:block;margin-bottom:4px}
+.enclosure-reviews .review-owner-tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:.85rem}
+.enclosure-reviews .review-owner-tools button{border:1px solid #cbd5e1;border-radius:7px;padding:7px 11px;background:#fff;color:#172c46;cursor:pointer}
+.enclosure-reviews .review-owner-actions{position:absolute;top:8px;right:8px;z-index:2;display:flex;gap:5px}
+.enclosure-reviews .review-owner-actions button{width:30px;height:30px;border:0;border-radius:50%;font-size:20px;line-height:1;cursor:pointer;box-shadow:0 1px 5px #0002}
+.enclosure-reviews .review-delete{background:#c62828;color:#fff}
+.enclosure-reviews .review-pin{background:#fff;color:#263a2b}
+.enclosure-reviews .review-pinned-label{display:inline-block;margin-bottom:8px;font-size:.8rem;font-weight:700;color:#8a6417}
+@media(max-width:760px){.enclosure-reviews .review-layout{grid-template-columns:1fr}.enclosure-reviews .review-fields{grid-template-columns:1fr}.enclosure-reviews .review-field.full{grid-column:auto}.enclosure-reviews .review-aside{padding:22px}.enclosure-reviews .review-form{padding:20px}}
+@media(max-width:560px){.enclosure-reviews .reviews-shelf-head{align-items:flex-start}.enclosure-reviews .reviews-controls button{width:38px;height:38px}.enclosure-reviews .review-card{flex-basis:88%}}
+</style>
 </head>
 <body>
 <header class="site-header">
   <div class="container nav">
     <a class="brand" href="#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span data-brand>Enclosure Lab</span></a>
     <nav id="mobileNavigation" aria-label="Main navigation">
-      <a class="mobile-primary" href="products.html">Products</a><a class="mobile-primary" href="#quote">Request a Quote</a><a class="mobile-primary" href="#how">How It Works</a>
+      <a class="mobile-primary" href="products.html">Products</a><a class="mobile-primary" href="#quote">Request a Quote</a><a class="mobile-primary" href="#how">How It Works</a><a class="mobile-primary" href="#reviews">Reviews</a>
       <span class="mobile-more-links"><a href="#about">About</a><a href="manager-quotes.html">Manager Portal</a></span>
     </nav>
     <a class="nav-cta" href="#quote">Start a Quote</a>
@@ -148,6 +195,36 @@
   </div>
 </section>
 
+
+<section id="reviews" class="section enclosure-reviews">
+  <div class="container">
+    <div class="section-heading"><p class="eyebrow">CUSTOMER FEEDBACK</p><h2>Reviews</h2><p>Have you ordered an enclosure from Enclosure Lab? Tell us about your experience and help other audio enthusiasts shop with confidence.</p></div>
+    <div class="review-intro"><strong>Have we built an enclosure for you?</strong><br>Share your experience and your review will appear in Customer Reviews after it is submitted.</div>
+    <div class="review-layout">
+      <aside class="review-aside"><h3>Thank you for your feedback!</h3><p>Honest feedback helps us improve our custom enclosures and customer experience.</p><p><strong>Enclosure Lab</strong><br>Custom audio enclosures, designed around your equipment.</p></aside>
+      <form class="review-form" id="enclosureReviewForm">
+        <div class="review-fields">
+          <label class="review-field">Your name *<input name="reviewerName" autocomplete="name" maxlength="100" required></label>
+          <label class="review-field">Product / service *<select name="service" required><option value="">Choose one</option><option>Custom subwoofer enclosure</option><option>Prefab enclosure</option><option>Custom speaker box</option><option>Other product</option></select></label>
+          <label class="review-field full">Your review *<textarea name="review" rows="5" maxlength="2000" placeholder="Tell us about your experience..." required></textarea></label>
+          <fieldset class="review-field full rating-field"><legend>Rating *</legend><div class="star-rating" role="radiogroup" aria-label="Choose a rating from 1 to 5">
+            <input type="radio" id="elRating1" name="rating" value="1" required><label for="elRating1" aria-label="1 star">★</label>
+            <input type="radio" id="elRating2" name="rating" value="2"><label for="elRating2" aria-label="2 stars">★</label>
+            <input type="radio" id="elRating3" name="rating" value="3"><label for="elRating3" aria-label="3 stars">★</label>
+            <input type="radio" id="elRating4" name="rating" value="4"><label for="elRating4" aria-label="4 stars">★</label>
+            <input type="radio" id="elRating5" name="rating" value="5"><label for="elRating5" aria-label="5 stars">★</label>
+          </div><small>Click a star to select your rating. All stars up to that number will fill in.</small></fieldset>
+        </div>
+        <div class="review-submit-row"><span class="note">Your review will appear in the Customer Reviews section below.</span><button class="button primary" type="submit">Submit Review →</button></div>
+        <p class="review-status" id="enclosureReviewStatus" aria-live="polite"></p>
+      </form>
+    </div>
+    <div class="reviews-shelf">
+      <div class="reviews-shelf-head"><div><h3>Customer Reviews</h3><p>Swipe or scroll sideways to browse customer reviews.</p><div id="enclosureReviewOwnerTools" class="review-owner-tools"><button type="button" id="enclosureReviewOwnerLogin">Manager sign in</button><span id="enclosureReviewOwnerStatus" aria-live="polite"></span></div></div><div class="reviews-controls"><button type="button" id="enclosureReviewsLeft" aria-label="Scroll reviews left">‹</button><button type="button" id="enclosureReviewsRight" aria-label="Scroll reviews right">›</button></div></div>
+      <div class="reviews-track" id="enclosureReviewsTrack" tabindex="0" aria-label="Enclosure Lab customer reviews carousel"><div class="review-empty"><strong>Reviews coming soon</strong><p>Customer reviews will appear here once they have been received.</p></div></div>
+    </div>
+  </div>
+</section>
 <section id="about" class="section about">
   <div class="container about-grid">
     <div><p class="eyebrow">WHY CUSTOM?</p><h2>Built around your equipment — not the other way around.</h2></div>
@@ -169,6 +246,29 @@
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js"></script>
+
+<script>
+(() => {
+ const track=document.getElementById('enclosureReviewsTrack');
+ if(!track)return;
+ document.getElementById('enclosureReviewsLeft').addEventListener('click',()=>track.scrollBy({left:-360,behavior:'smooth'}));
+ document.getElementById('enclosureReviewsRight').addEventListener('click',()=>track.scrollBy({left:360,behavior:'smooth'}));
+ const supabaseClient=window.supabase?.createClient('https://lblrmljsjimrrighqbdo.supabase.co','sb_publishable_s2YnH1DT5diDmM781NXxqw_gIJVxPRx');
+ const status=document.getElementById('enclosureReviewStatus');
+ const ownerTools=document.getElementById('enclosureReviewOwnerTools');
+ const ownerStatus=document.getElementById('enclosureReviewOwnerStatus');
+ const ownerLogin=document.getElementById('enclosureReviewOwnerLogin');
+ const ownerEmail='lawsonhughes53@gmail.com';
+ let isOwner=false;
+ function updateOwner(session){isOwner=!!(session?.user?.email&&session.user.email.toLowerCase()===ownerEmail);ownerLogin.textContent=isOwner?'Manager sign out':'Manager sign in';ownerStatus.textContent=isOwner?'Signed in as manager.':'';}
+ ownerLogin.addEventListener('click',async()=>{if(!supabaseClient){ownerStatus.textContent='Review service is unavailable.';return;}if(isOwner){const {error}=await supabaseClient.auth.signOut();if(error)ownerStatus.textContent='Could not sign out: '+error.message;return;}ownerStatus.textContent='Sending a secure sign-in link…';const {error}=await supabaseClient.auth.signInWithOtp({email:ownerEmail,options:{emailRedirectTo:window.location.href}});ownerStatus.textContent=error?'Could not send sign-in link: '+error.message:'Check '+ownerEmail+' for your secure sign-in link.';});
+ function cardFor(r){const card=document.createElement('article');card.className='review-card';if(r.is_pinned){const p=document.createElement('span');p.className='review-pinned-label';p.textContent='📌 Pinned';card.append(p);}if(isOwner){const actions=document.createElement('div');actions.className='review-owner-actions';const del=document.createElement('button');del.className='review-delete';del.type='button';del.textContent='×';del.title='Delete review';del.setAttribute('aria-label','Delete review');del.addEventListener('click',async()=>{if(!confirm('Delete this Enclosure Lab review? This cannot be undone.'))return;del.disabled=true;const {error}=await supabaseClient.from('landscaping_reviews').delete().eq('id',r.id).eq('service_received','Enclosure Lab');if(error){ownerStatus.textContent='Could not delete review: '+error.message;del.disabled=false;return;}await loadReviews();});const pin=document.createElement('button');pin.className='review-pin';pin.type='button';pin.textContent=r.is_pinned?'📌':'📍';pin.title=r.is_pinned?'Unpin review':'Pin review';pin.setAttribute('aria-label',pin.title);pin.addEventListener('click',async()=>{pin.disabled=true;const {error}=await supabaseClient.from('landscaping_reviews').update({is_pinned:!r.is_pinned}).eq('id',r.id).eq('service_received','Enclosure Lab');if(error){ownerStatus.textContent='Could not update pin: '+error.message;pin.disabled=false;return;}await loadReviews();});actions.append(del,pin);card.append(actions);}const stars=document.createElement('div');stars.className='stars';stars.textContent='★'.repeat(Math.max(0,Math.min(5,Number(r.rating)||0)) )+'☆'.repeat(5-Math.max(0,Math.min(5,Number(r.rating)||0)));stars.setAttribute('aria-label',r.rating+' out of 5 stars');const quote=document.createElement('p');quote.textContent=r.review;const name=document.createElement('h4');name.textContent=r.reviewer_name;const meta=document.createElement('p');const date=r.created_at?new Date(r.created_at).toLocaleDateString():'';meta.textContent=(r.product_type||'Enclosure Lab')+(date?' · '+date:'');card.append(stars,quote,name,meta);return card;}
+ async function loadReviews(){if(!supabaseClient){track.innerHTML='<div class="review-empty"><strong>Reviews coming soon</strong><p>The review service is not available right now.</p></div>';return;}const {data,error}=await supabaseClient.from('landscaping_reviews').select('id,reviewer_name,service_received,review,rating,created_at,is_pinned').eq('service_received','Enclosure Lab').order('is_pinned',{ascending:false}).order('created_at',{ascending:false});if(error){track.innerHTML='<div class="review-empty"><strong>Reviews coming soon</strong><p>Customer reviews will appear here once the review service is connected.</p></div>';console.error('Could not load Enclosure Lab reviews:',error.message);return;}track.innerHTML='';if(!data?.length){track.innerHTML='<div class="review-empty"><strong>Be the first to leave a review</strong><p>Customer reviews submitted through this form will appear here.</p></div>';return;}data.forEach(r=>track.append(cardFor(r)));}
+ if(supabaseClient){supabaseClient.auth.getSession().then(({data})=>updateOwner(data.session));supabaseClient.auth.onAuthStateChange((_event,session)=>{updateOwner(session);loadReviews();});}
+ document.getElementById('enclosureReviewForm').addEventListener('submit',async e=>{e.preventDefault();if(!supabaseClient){status.textContent='The review service is unavailable. Please try again later.';return;}const form=e.currentTarget;const d=new FormData(form);const payload={reviewer_name:String(d.get('reviewerName')||'').trim(),service_received:'Enclosure Lab',review:String(d.get('review')||'').trim(),rating:Number(d.get('rating')||0)};if(!payload.reviewer_name||!payload.review||payload.rating<1||payload.rating>5){status.textContent='Please complete all required fields and choose a rating.';return;}const button=form.querySelector('button[type="submit"]');button.disabled=true;status.textContent='Submitting your review…';const {error}=await supabaseClient.from('landscaping_reviews').insert(payload);button.disabled=false;if(error){status.textContent='Your review could not be posted: '+error.message;return;}form.reset();status.textContent='Thank you! Your review has been submitted.';await loadReviews();track.scrollTo({left:0,behavior:'smooth'});});
+ loadReviews();
+})();
+</script>
 <script>
 (() => {
  const toggle=document.querySelector(".mobile-menu-toggle");
