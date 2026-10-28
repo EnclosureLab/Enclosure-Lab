@@ -135,74 +135,19 @@
   </div>
 </section>
 
-<section id="quote" class="quote-section">
+<section id="quote" class="quote-section" style="padding:56px 0;background:#f4f6f8">
   <div class="container">
-    <div class="quote-intro">
-      <p class="eyebrow">START YOUR PROJECT</p>
-      <h2>Request a custom quote.</h2>
-      <p>The more information you provide, the more accurately we can design your enclosure.</p>
+    <div class="section-heading">
+      <p class="eyebrow">DESIGN YOUR ENCLOSURE</p>
+      <h2>Build your box in 3D.</h2>
+      <p>Adjust your enclosure dimensions, explore the model from any angle, and review a preliminary build plan in the interactive Enclosure Lab designer.</p>
     </div>
-    <form id="quoteForm" class="quote-form">
-      <div class="form-section">
-        <div class="form-title"><span>01</span><div><h3>Your information</h3><p>How should we contact you?</p></div></div>
-        <div class="form-grid">
-          <label>Full name<input name="name" required placeholder="John Smith"></label>
-          <label>Email<input name="email" type="email" required placeholder="lawsonhughes53@gmail.com"></label>
-          <label>Phone <span class="optional">optional</span><input name="phone" placeholder="(555) 555-5555"></label>
-        </div>
-      </div>
-
-      <div class="form-section">
-        <div class="form-title"><span>02</span><div><h3>Subwoofer information</h3><p>Give us the exact equipment you're building for.</p></div></div>
-        <div class="form-grid">
-          <label>Subwoofer brand<input name="brand" required placeholder="e.g. Sundown, Resilient Sounds, CT Sounds"></label>
-          <label>Model<input name="model" required placeholder="Exact model"></label>
-          <label>Subwoofer size
-            <select name="size" required><option value="">Select</option><option>8"</option><option>10"</option><option>12"</option><option>15"</option><option>18"</option><option>Other</option></select>
-          </label>
-          <label>Quantity<input name="quantity" type="number" min="1" max="20" value="1" required></label>
-          <label>RMS power per subwoofer <span class="optional">optional</span><input name="rms" placeholder="e.g. 1500W"></label>
-          <label>Subwoofer specifications link <span class="optional">optional</span><input name="specLink" type="url" placeholder="https://..."></label>
-        </div>
-      </div>
-
-      <div class="form-section">
-        <div class="form-title"><span>03</span><div><h3>Vehicle & available space</h3><p>Dimensions help us make the enclosure fit correctly.</p></div></div>
-        <div class="form-grid">
-          <label>Year<input name="year" placeholder="2020"></label>
-          <label>Make<input name="make" placeholder="GMC"></label>
-          <label>Model<input name="vehicle" placeholder="Yukon"></label>
-          <label>Maximum width <span class="optional">optional</span><input name="maxWidth" placeholder='e.g. 38"'></label>
-          <label>Maximum height <span class="optional">optional</span><input name="maxHeight" placeholder='e.g. 18"'></label>
-          <label>Maximum depth <span class="optional">optional</span><input name="maxDepth" placeholder='e.g. 22"'></label>
-        </div>
-      </div>
-
-      <div class="form-section">
-        <div class="form-title"><span>04</span><div><h3>Design preferences</h3><p>Tell us what you're looking for.</p></div></div>
-        <div class="form-grid">
-          <label>Enclosure type
-            <select name="type" required><option value="">Select</option><option>Sealed</option><option>Ported</option><option>4th Order</option><option>6th Order</option><option>Not sure — recommend one</option></select>
-          </label>
-          <label>Primary goal
-            <select name="goal" required><option value="">Select</option><option>Daily listening</option><option>Deep bass</option><option>SPL / loudest possible</option><option>Balanced</option><option>Not sure — recommend one</option></select>
-          </label>
-          <label>Finish
-            <select name="finish"><option>Carpet</option><option>Vinyl</option><option>Paint</option><option>Raw / unfinished</option><option>Not sure</option></select>
-          </label>
-          <label>Port preference <span class="optional">optional</span>
-            <select name="port"><option>I'm open to your recommendation</option><option>Slot port</option><option>Aero / round ports</option><option>Other</option></select>
-          </label>
-          <label class="full">Anything else we should know?<textarea name="notes" rows="5" placeholder="Mounting preferences, amp rack, unusual space constraints, goals, etc."></textarea></label>
-        </div>
-      </div>
-
-      <div class="submit-row">
-        <div><strong>No payment required.</strong><span>We'll review your request and contact you with your custom quote.</span></div>
-        <button class="button primary" type="submit">Submit Quote Request <span>→</span></button>
-      </div>
-      <p id="formStatus" class="form-status" aria-live="polite"></p>
-    </form>
+    <div style="border:1px solid #dce2e8;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 8px 30px rgba(20,35,50,.08)">
+      <iframe src="enclosure-designer.html" title="Interactive 3D subwoofer enclosure designer" loading="lazy" style="display:block;width:100%;height:1050px;border:0" allowfullscreen></iframe>
+    </div>
+    <p style="margin:12px 0 0;color:#687480;font-size:12px;line-height:1.5">Note: This is a design prototype. Verify port tuning, net airspace, driver clearances, and all panel measurements before cutting material.</p>
+  </div>
+</section>
   </div>
 </section>
 
