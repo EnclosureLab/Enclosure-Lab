@@ -145,10 +145,13 @@ function update3DPreview(){
  const svg=$('boxPreviewSvg');if(!svg)return;
  const w=Number($('width').value)||25,l=Number($('length').value)||30,d=Number($('depth').value)||16;
  const surface=previewSurface(),ported=$('type').value==='Ported',style=$('portStyle').value;
- // Use one consistent drawing scale for all three dimensions so the box proportions stay honest.
- const scale=Math.min(278/Math.max(w,1),164/Math.max(d,1),96/Math.max(l,1));
+ // Keep the enclosure's three axes in one consistent scale, but fit the complete box
+ // into the preview canvas. The previous formula squeezed length into a tiny fixed cap.
+ const rawScale=Math.min(278/Math.max(w,1),164/Math.max(d,1),180/Math.max(l,1));
+ const scale=rawScale;
  const fw=w*scale,fh=d*scale,dx=l*scale*.42,dy=-dx*.66;
- const x=58+(278-fw)*.18,y=78+(164-fh)*.12,right=x+fw,bottom=y+fh;
+ const boxMinX=58,boxMinY=78,boxMaxW=278,boxMaxH=164;
+ const x=boxMinX+(boxMaxW-fw)*.12,y=boxMinY+(boxMaxH-fh)*.12,right=x+fw,bottom=y+fh;
  const front='M '+x+' '+y+' L '+right+' '+y+' L '+right+' '+bottom+' L '+x+' '+bottom+' Z';
  const top='M '+x+' '+y+' L '+(x+dx)+' '+(y+dy)+' L '+(right+dx)+' '+(y+dy)+' L '+right+' '+y+' Z';
  const side='M '+right+' '+y+' L '+(right+dx)+' '+(y+dy)+' L '+(right+dx)+' '+(bottom+dy)+' L '+right+' '+bottom+' Z';
@@ -161,6 +164,7 @@ function update3DPreview(){
  // using the same scale as the enclosure. A driver that cannot physically fit should look too large,
  // rather than being silently shrunk to fit the panel.
  const driverOuterDiameter=size+1.25;
+ // Speaker face diameter uses the same inch-to-pixel scale as the enclosure.
  const rad=(driverOuterDiameter*scale)/2;
  let drivers='';
  for(let n=0;n<count;n++){const col=n%cols,row=Math.floor(n/cols);const cx=x+fw*.12+gapX*(col+.5),cy=y+fh*.13+gapY*(row+.5);const r=rad;drivers+='<g><circle cx="'+cx+'" cy="'+cy+'" r="'+(r+5)+'" fill="#08090b" stroke="#050607" stroke-width="2"/><circle cx="'+cx+'" cy="'+(cy+1)+'" r="'+(r+2)+'" fill="url(#surround)" stroke="#6c737d" stroke-width="1.4"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*.78)+'" fill="url(#cone)" stroke="#101216" stroke-width="2"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*.47)+'" fill="#252a30" stroke="#737b84" stroke-width="1.2"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*.23)+'" fill="url(#dust)" stroke="#0a0b0d" stroke-width="1.4"/>'+[[-.72,-.72],[.72,-.72],[-.72,.72],[.72,.72]].map(([a,b])=>'<circle cx="'+(cx+a*r)+'" cy="'+(cy+b*r)+'" r="1.8" fill="#c5cbd2" stroke="#252a30" stroke-width=".7"/>').join('')+'</g>';}
