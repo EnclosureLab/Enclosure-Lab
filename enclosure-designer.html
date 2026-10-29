@@ -10,8 +10,8 @@
 *{box-sizing:border-box}body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);background:#f4f6f8}
 .top{background:#fff;border-bottom:1px solid var(--line);padding:15px 22px;display:flex;align-items:center;gap:12px}.logo{background:#171717;color:#fff;font-weight:900;padding:9px 11px;border-radius:7px;letter-spacing:-1px}.brand{font-weight:800}.brand small{display:block;color:var(--muted);font-size:11px;letter-spacing:.12em;margin-top:3px}.top a{margin-left:auto;color:var(--blue);text-decoration:none;font-weight:700}
 .wrap{max-width:850px;margin:30px auto;padding:0 16px 32px}.intro{margin-bottom:20px}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--blue)}h1{font-size:clamp(27px,4vw,38px);margin:7px 0 8px;letter-spacing:-.035em}.intro p{color:var(--muted);line-height:1.6;margin:0;max-width:650px}
-.form-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 8px 28px #17202b0a}.section-title{padding:18px 22px;background:#fafbfc;border-bottom:1px solid var(--line);font-size:14px;font-weight:800}.fields{padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:18px}.field{display:grid;gap:7px;min-width:0}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:750}.field select,.field input{width:100%;min-width:0;padding:12px;border:1px solid #cbd3dc;border-radius:8px;background:#fff;color:var(--ink);font:inherit}.field select:focus,.field input:focus{outline:2px solid #1769aa38;border-color:var(--blue)}.help{font-size:11px;color:var(--muted);line-height:1.45}.unit{font-size:11px;font-weight:600;color:var(--muted);margin-left:4px}.hidden{display:none!important}.actions{padding:0 22px 22px}.primary{width:100%;border:0;border-radius:8px;background:var(--blue);color:#fff;font-weight:800;font-size:14px;padding:14px;cursor:pointer}.primary:hover{background:#0d558e}.summary{margin:0 22px 22px;padding:16px;border:1px solid var(--line);border-radius:9px;background:#f8fafc;line-height:1.65;font-size:13px;white-space:pre-line}.summary:empty{display:none}.notice{font-size:11px;color:var(--muted);padding:0 22px 20px;line-height:1.5}
-@media(max-width:600px){.top{padding:12px}.wrap{margin:22px auto;padding:0 10px 24px}.fields{grid-template-columns:1fr;padding:17px}.field.full{grid-column:auto}.section-title{padding:16px 17px}.actions{padding:0 17px 17px}.notice{padding:0 17px 17px}.summary{margin:0 17px 17px}}
+.form-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 8px 28px #17202b0a}.section-title{padding:18px 22px;background:#fafbfc;border-bottom:1px solid var(--line);font-size:14px;font-weight:800}.fields{padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:18px}.field{display:grid;gap:7px;min-width:0}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:750}.field select,.field input{width:100%;min-width:0;padding:12px;border:1px solid #cbd3dc;border-radius:8px;background:#fff;color:var(--ink);font:inherit}.field select:focus,.field input:focus{outline:2px solid #1769aa38;border-color:var(--blue)}.help{font-size:11px;color:var(--muted);line-height:1.45}.unit{font-size:11px;font-weight:600;color:var(--muted);margin-left:4px}.hidden{display:none!important}.actions{padding:0 22px 22px}.primary{width:100%;border:0;border-radius:8px;background:var(--blue);color:#fff;font-weight:800;font-size:14px;padding:14px;cursor:pointer}.primary:hover{background:#0d558e}.summary{margin:0 22px 22px;padding:16px;border:1px solid var(--line);border-radius:9px;background:#f8fafc;line-height:1.65;font-size:13px;white-space:pre-line}.summary:empty{display:none}.weight-estimate{margin:0 22px 18px;padding:13px 15px;border:1px solid var(--line);border-radius:9px;background:#f8fafc;font-size:13px;line-height:1.55}.weight-estimate strong{font-size:17px}.notice{font-size:11px;color:var(--muted);padding:0 22px 20px;line-height:1.5}
+@media(max-width:600px){.weight-estimate{margin:0 17px 17px}.top{padding:12px}.wrap{margin:22px auto;padding:0 10px 24px}.fields{grid-template-columns:1fr;padding:17px}.field.full{grid-column:auto}.section-title{padding:16px 17px}.actions{padding:0 17px 17px}.notice{padding:0 17px 17px}.summary{margin:0 17px 17px}}
 </style>
 </head>
 <body>
@@ -37,7 +37,8 @@
 <div class="field"><label for="quantity">Quantity of subwoofers</label><select id="quantity" name="quantity" required><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
 <div class="field full" id="tuningField"><label for="tuning">Target port tuning <span class="unit">(Hz)</span></label><select id="tuning" name="tuning"></select><div class="help">Required for ported boxes only. This field is hidden for sealed boxes.</div></div>
 </div>
-<div class="actions"><button class="primary" type="submit">Review Box Details</button></div>
+<div class="weight-estimate" id="weightEstimate" aria-live="polite">Estimated material weight: calculating…</div>
+<div class="actions"><button class="primary" type="submit">Add Custom Box to Checkout</button></div>
 <div class="summary" id="summary" aria-live="polite"></div>
 <div class="notice">This form currently collects and reviews your selections on this page. Online order submission, final pricing, shipping, and payment must be connected before customers can place a completed order.</div>
 </form>
@@ -48,9 +49,33 @@ if(new URLSearchParams(location.search).get('embed')==='1'){document.getElementB
 function fillMeasurements(id,min,max,selected){const el=$(id);for(let n=min;n<=max;n++){const o=document.createElement('option');o.value=String(n);o.textContent=n+' in';if(n===selected)o.selected=true;el.appendChild(o)}}
 fillMeasurements('width',8,60,25);fillMeasurements('length',8,60,30);fillMeasurements('depth',8,48,16);
 for(let hz=25;hz<=45.001;hz+=.5){const o=document.createElement('option');o.value=hz.toFixed(1);o.textContent=hz.toFixed(1)+' Hz';if(Math.abs(hz-32)<.001)o.selected=true;$('tuning').appendChild(o)}
-function updateTuning(){const ported=$('type').value==='Ported';$('tuningField').classList.toggle('hidden',!ported);$('tuning').required=ported}
-$('type').addEventListener('change',updateTuning);updateTuning();
-$('customBoxForm').addEventListener('submit',e=>{e.preventDefault();const d=[['Material',$('material').value],['Maximum dimensions',$('width').value+' W × '+$('length').value+' L × '+$('depth').value+' D inches'],['Box type',$('type').value],['Subwoofer model',$('model').value.trim()],['Subwoofer size',$('size').value+' inches'],['Quantity',$('quantity').value],['Target tuning',$('type').value==='Ported'?$('tuning').value+' Hz':'Not applicable (sealed)']];$('summary').textContent='YOUR BOX CONFIGURATION\n'+d.map(x=>x[0]+': '+x[1]).join('\n')+'\n\nThese details are ready to be used for your custom order.';$('summary').scrollIntoView({behavior:'smooth',block:'nearest'})});
+const CART_KEY='enclosureLabCart';
+function estimateBoxWeight(){
+ const w=Number($('width').value),l=Number($('length').value),d=Number($('depth').value),t=.75;
+ const density={'MDF (Suggested)':46.8,'Birch':45.9,'Plywood':34.3}[$('material').value]||46.8;
+ const innerW=Math.max(0,w-2*t),innerL=Math.max(0,l-2*t),innerD=Math.max(0,d-2*t);
+ const woodVolume=Math.max(0,(w*l*d-innerW*innerL*innerD)/1728);
+ const factor=$('type').value==='Ported'?1.18:1.08;
+ return Math.max(1,woodVolume*density*factor+1.5);
+}
+function updateWeight(){const weight=estimateBoxWeight();$('weightEstimate').innerHTML='<strong>Estimated material weight: '+weight.toFixed(1)+' lb</strong><br>Estimate assumes ¾-inch panels and your selected maximum dimensions. Includes an allowance for internal panels and assembly; actual weight can vary.';return weight}
+function updateTuning(){const ported=$('type').value==='Ported';$('tuningField').classList.toggle('hidden',!ported);$('tuning').required=ported;updateWeight()}
+$('type').addEventListener('change',updateTuning);
+['material','width','length','depth'].forEach(id=>$(id).addEventListener('change',updateWeight));
+updateTuning();
+$('customBoxForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const weight=updateWeight();
+ const config={material:$('material').value,width:Number($('width').value),length:Number($('length').value),depth:Number($('depth').value),type:$('type').value,model:$('model').value.trim(),size:$('size').value,quantity:Number($('quantity').value),tuning:$('type').value==='Ported'?Number($('tuning').value):null,weightLb:Number(weight.toFixed(1)),thicknessIn:.75};
+ const details='Custom subwoofer enclosure — '+config.type+' — '+config.quantity+' × '+config.size+' in ('+config.material+')';
+ const item={name:details,category:'enclosure',price:null,qty:1,weightLb:config.weightLb,configuration:config};
+ try{const cart=JSON.parse(localStorage.getItem(CART_KEY)||'[]');const index=cart.findIndex(i=>i.category==='enclosure'&&i.configuration);if(index>=0)cart[index]=item;else cart.push(item);localStorage.setItem(CART_KEY,JSON.stringify(cart));localStorage.setItem('enclosureLabCustomBoxConfig',JSON.stringify(config));}
+ catch(err){$('summary').textContent='Could not save this configuration in this browser. Please enable site storage and try again.';return}
+ const d=[['Material',config.material],['Maximum dimensions',config.width+' W × '+config.length+' L × '+config.depth+' D inches'],['Box type',config.type],['Subwoofer model',config.model],['Subwoofer size',config.size+' inches'],['Quantity',config.quantity],['Target tuning',config.tuning===null?'Not applicable (sealed)':config.tuning+' Hz'],['Estimated material weight',config.weightLb+' lb']];
+ $('summary').textContent='YOUR BOX CONFIGURATION\n'+d.map(x=>x[0]+': '+x[1]).join('\n')+'\n\nAdded to checkout. Final weight and shipping will be confirmed before the order is finalized.';
+ $('summary').scrollIntoView({behavior:'smooth',block:'nearest'});
+ setTimeout(()=>{if(new URLSearchParams(location.search).get('embed')==='1')window.top.location.href='checkout.html';else window.location.href='checkout.html';},500);
+});
 </script>
 </body>
 </html>
