@@ -114,7 +114,7 @@ const fW=Math.max(0,W-2*T),fH=Math.max(0,H-2*T),sideD=Math.max(0,D-2*T);
 $('cuts').innerHTML=[
 ['Top / Bottom',valid?fmt(fW)+' × '+fmt(D):'—',2],
 ['Front / Rear',valid?fmt(W)+' × '+fmt(H):'—',2],
-['Left / Right',valid?fmt(D)+' × '+fmt(fH):'—',2],
+['Left / Right',valid?fmt(D)+' × '+fmt(H):'—',2],
 ...(ported?[['Port partitions','Not finalized','—']]:[])
 ].map(r=>'<tr>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
 const warning=$('warning');warning.style.display='block';
