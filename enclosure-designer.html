@@ -143,7 +143,7 @@ function update3DPreview(){
  const svg=$('boxPreviewSvg');if(!svg)return;
  const w=Number($('width').value)||25,l=Number($('length').value)||30,d=Number($('depth').value)||16;
  const surface=previewSurface(),ported=$('type').value==='Ported',style=$('portStyle').value;
- const x=58,y=78,fw=245,fh=142,dx=56,dy=-37,right=x+fw,bottom=y+fh;
+ const x=58,y=78,fw=Math.max(150,Math.min(278,150+(w-8)*2.5)),fh=Math.max(82,Math.min(160,82+(d-8)*2.0)),dx=Math.max(25,Math.min(72,25+(l-8)*.98)),dy=-dx*.66,right=x+fw,bottom=y+fh;
  const front='M '+x+' '+y+' L '+right+' '+y+' L '+right+' '+bottom+' L '+x+' '+bottom+' Z';
  const top='M '+x+' '+y+' L '+(x+dx)+' '+(y+dy)+' L '+(right+dx)+' '+(y+dy)+' L '+right+' '+y+' Z';
  const side='M '+right+' '+y+' L '+(right+dx)+' '+(y+dy)+' L '+(right+dx)+' '+(bottom+dy)+' L '+right+' '+bottom+' Z';
@@ -155,8 +155,16 @@ function update3DPreview(){
  for(let n=0;n<count;n++){const col=n%cols,row=Math.floor(n/cols);const cx=x+fw*.12+gapX*(col+.5),cy=y+fh*.13+gapY*(row+.5);const r=Math.max(13,Math.min(rad, gapX*.42, gapY*.42));drivers+='<g><circle cx="'+cx+'" cy="'+cy+'" r="'+(r+5)+'" fill="#08090b" stroke="#050607" stroke-width="2"/><circle cx="'+cx+'" cy="'+(cy+1)+'" r="'+(r+2)+'" fill="url(#surround)" stroke="#6c737d" stroke-width="1.4"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*.78)+'" fill="url(#cone)" stroke="#101216" stroke-width="2"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*.47)+'" fill="#252a30" stroke="#737b84" stroke-width="1.2"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*.23)+'" fill="url(#dust)" stroke="#0a0b0d" stroke-width="1.4"/>'+[[-.72,-.72],[.72,-.72],[-.72,.72],[.72,.72]].map(([a,b])=>'<circle cx="'+(cx+a*r)+'" cy="'+(cy+b*r)+'" r="1.8" fill="#c5cbd2" stroke="#252a30" stroke-width=".7"/>').join('')+'</g>';}
  let port='';
  if(ported){
-  if(style==='Slot from panel'){const pw=fw*.34,ph=Math.max(12,fh*.12),px=x+fw*.59,py=bottom-ph-12;port='<path d="M '+px+' '+py+' h '+pw+' v '+ph+' h '+(-pw)+' Z" fill="#050607" stroke="#d0d5db" stroke-width="2.4"/><path d="M '+(px+4)+' '+(py+4)+' h '+(pw-8)+' v '+(ph-8)+' h '+(-(pw-8))+' Z" fill="#222830"/>';}
-  else if(style==='Slot side panel'){const pw=dx*.62,ph=fh*.32,px=right+dx*.22,py=y+fh*.43;port='<path d="M '+px+' '+py+' l '+pw+' '+(dy*.22)+' v '+ph+' l '+(-pw)+' '+(-dy*.12)+' Z" fill="#050607" stroke="#d0d5db" stroke-width="2.2"/>';}
+  if(style==='Slot from panel'){
+   const pw=Math.max(42,fw*.31),ph=Math.max(12,fh*.105),px=x+fw*.60,py=bottom-ph-13;
+   const inner=Math.max(5,ph*.35),turn=px-pw*.52;
+   port='<path d="M '+px+' '+py+' h '+pw+' v '+ph+' h '+(-pw)+' Z" fill="#080a0d" stroke="#d9dce0" stroke-width="2.2" stroke-linejoin="round"/><path d="M '+(px+4)+' '+(py+3)+' h '+(pw-8)+' v '+(ph-6)+' h '+(-(pw-8))+' Z" fill="#222831"/><path d="M '+(px+pw*.12)+' '+(py+ph*.5)+' H '+(px+pw*.88)+'" stroke="#65707d" stroke-width="1.3"/><path d="M '+(px+pw*.12)+' '+(py+ph*.5)+' V '+(py-ph*1.7)+' H '+(turn)+'" fill="none" stroke="#161a20" stroke-width="3" opacity=".9"/>';
+  }
+  else if(style==='Slot side panel'){
+   const pw=Math.max(17,dx*.48),ph=Math.max(34,fh*.36),px=right+dx*.26,py=y+fh*.37;
+   const a=dx*.24,b=dy*.24;
+   port='<path d="M '+px+' '+py+' l '+a+' '+b+' v '+ph+' l '+(-a)+' '+(-b*.45)+' Z" fill="#080a0d" stroke="#d9dce0" stroke-width="2.2" stroke-linejoin="round"/><path d="M '+(px+3)+' '+(py+5)+' l '+(a-6)+' '+(b*.9)+' v '+(ph-12)+' l '+(-(a-6))+' '+(-b*.42)+' Z" fill="#222831"/><path d="M '+(px+4)+' '+(py+ph*.55)+' l '+(a-8)+' '+(b*.9)+'" stroke="#65707d" stroke-width="1.3"/>';
+  }
   else if(style==='Hole front panel'){const r=Math.max(11,Math.min(19,fh*.13)),cx=x+fw*.78,cy=bottom-fh*.19;port='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="#050607" stroke="#d0d5db" stroke-width="3"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*.7)+'" fill="#242a32"/><ellipse cx="'+(cx-3)+'" cy="'+(cy-4)+'" rx="'+(r*.45)+'" ry="'+(r*.24)+'" fill="#58616c" opacity=".6"/>';}
   else {const cx=right+dx*.64,cy=y+fh*.67,rx=dx*.18,ry=fh*.13;port='<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" transform="rotate(-25 '+cx+' '+cy+')" fill="#050607" stroke="#d0d5db" stroke-width="3"/><ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(rx*.65)+'" ry="'+(ry*.65)+'" transform="rotate(-25 '+cx+' '+cy+')" fill="#252b33"/>';}
  }
