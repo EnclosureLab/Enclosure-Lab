@@ -186,10 +186,19 @@ function updateFree3DModel(){
  const frontMat=new THREE.MeshStandardMaterial({color:surface.front,roughness:.78,metalness:0});
  const sideMat=new THREE.MeshStandardMaterial({color:surface.side,roughness:.8});
  const topMat=new THREE.MeshStandardMaterial({color:surface.top,roughness:.8});
- const shell=new THREE.Mesh(new THREE.BoxGeometry(w,d,l),[sideMat,sideMat,topMat,topMat,frontMat,sideMat]);shell.castShadow=true;shell.receiveShadow=true;box3DGroup.add(shell);
+ const shell=new THREE.Mesh(new THREE.BoxGeometry(w,d,l),[sideMat,sideMat,topMat,topMat,frontMat,frontMat]);shell.castShadow=true;shell.receiveShadow=true;box3DGroup.add(shell);
  // Thin panel seams give the enclosure a constructed, board-like edge.
  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w,d,l)),new THREE.LineBasicMaterial({color:0x303741}));box3DGroup.add(edges);
  const frontZ=l/2+.035,frontY=0,frontX=0;
+ // Match the second paint color in the 3D model when two-tone paint is selected.
+ if(selectedFinish==='Paint'&&$('paintDesign').value==='Two-tone paint'){
+  const secondColor=$('designPaintColor').value||'#858990';
+  const twoToneMat=new THREE.MeshStandardMaterial({color:secondColor,roughness:.78,metalness:0});
+  const band=new THREE.Mesh(new THREE.BoxGeometry(w*.992,d*.36,.035),twoToneMat);
+  band.position.set(0,-d*.30,l/2+.045);band.receiveShadow=true;box3DGroup.add(band);
+  const sideBand=new THREE.Mesh(new THREE.BoxGeometry(.035,d*.36,l*.992),twoToneMat);
+  sideBand.position.set(w/2+.01,-d*.30,0);sideBand.receiveShadow=true;box3DGroup.add(sideBand);
+ }
  const addFrontDisk=(x,y,r,z,mat,depth=.22)=>{const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,depth,64),mat);mesh.rotation.x=Math.PI/2;mesh.position.set(x,y,z);mesh.castShadow=true;box3DGroup.add(mesh);return mesh;};
  const count=Math.max(1,Math.min(4,Number($('quantity').value)||1)),size=Number($('size').value)||12,outer=(size+1.25)/2;
  const cols=count===1?1:2,rows=count>2?2:1,spacingX=w/(cols+1),spacingY=d/(rows+1);
