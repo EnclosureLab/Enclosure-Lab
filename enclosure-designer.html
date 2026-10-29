@@ -26,16 +26,23 @@
 <div class="panel-head">Customize <span class="units">INCHES / FT³</span></div>
 <div class="tabs"><button class="active" data-tab="box">BOX</button><button data-tab="sub">SUBWOOFER</button><button data-tab="port">PORT</button></div>
 <div class="fields" id="boxFields">
-<div class="field wide"><label for="type">Type</label><select id="type"><option>Sealed Box</option><option>Ported Box</option><option>Bandpass (under development)</option></select><small>Bandpass support is planned and is not calculated yet.</small></div>
-<div class="two wide"><div class="field"><label for="width">Width (in)</label><input id="width" type="number" min="1" step=".125" value="25"></div><div class="field"><label for="height">Height (in)</label><input id="height" type="number" min="1" step=".125" value="15"></div></div>
-<div class="field"><label for="depth">Depth (in) — calculated</label><input id="depth" type="number" min="1" step=".125" value="16" readonly></div>
-<div class="field"><label for="targetVolume">Target net internal volume (ft³)</label><input id="targetVolume" type="number" min=".1" step=".1" value="2.5"><small>Adjust this value to calculate the required depth from width, height, material, and entered driver/port displacement.</small></div>
-<div class="two wide"><div class="field"><label for="thickness">Material thickness (in)</label><input id="thickness" type="number" min=".25" step=".125" value=".75"></div><div class="field"><label for="material">Material</label><select id="material"><option>MDF</option><option>Plywood</option></select></div></div>
+<div class="field wide"><label for="material">Material</label><select id="material"><option>Birch</option><option selected>MDF (Suggested)</option><option>Plywood</option></select></div>
+<div class="two wide"><div class="field"><label for="width">Max width (inches)</label><select id="width"><option value="8">8 in</option><option value="9">9 in</option><option value="10">10 in</option><option value="11">11 in</option><option value="12">12 in</option><option value="13">13 in</option><option value="14">14 in</option><option value="15">15 in</option><option value="16">16 in</option><option value="17">17 in</option><option value="18">18 in</option><option value="19">19 in</option><option value="20">20 in</option><option value="21">21 in</option><option value="22">22 in</option><option value="23">23 in</option><option value="24">24 in</option><option value="25" selected>25 in</option><option value="26">26 in</option><option value="27">27 in</option><option value="28">28 in</option><option value="29">29 in</option><option value="30">30 in</option><option value="31">31 in</option><option value="32">32 in</option><option value="33">33 in</option><option value="34">34 in</option><option value="35">35 in</option><option value="36">36 in</option><option value="37">37 in</option><option value="38">38 in</option><option value="39">39 in</option><option value="40">40 in</option><option value="41">41 in</option><option value="42">42 in</option><option value="43">43 in</option><option value="44">44 in</option><option value="45">45 in</option><option value="46">46 in</option><option value="47">47 in</option><option value="48">48 in</option></select></div><div class="field"><label for="height">Max height / length (inches)</label><select id="height"><option value="8">8 in</option><option value="9">9 in</option><option value="10">10 in</option><option value="11">11 in</option><option value="12">12 in</option><option value="13">13 in</option><option value="14">14 in</option><option value="15" selected>15 in</option><option value="16">16 in</option><option value="17">17 in</option><option value="18">18 in</option><option value="19">19 in</option><option value="20">20 in</option><option value="21">21 in</option><option value="22">22 in</option><option value="23">23 in</option><option value="24">24 in</option><option value="25">25 in</option><option value="26">26 in</option><option value="27">27 in</option><option value="28">28 in</option><option value="29">29 in</option><option value="30">30 in</option><option value="31">31 in</option><option value="32">32 in</option><option value="33">33 in</option><option value="34">34 in</option><option value="35">35 in</option><option value="36">36 in</option><option value="37">37 in</option><option value="38">38 in</option><option value="39">39 in</option><option value="40">40 in</option><option value="41">41 in</option><option value="42">42 in</option><option value="43">43 in</option><option value="44">44 in</option><option value="45">45 in</option><option value="46">46 in</option><option value="47">47 in</option><option value="48">48 in</option></select></div></div>
+<div class="field wide"><label for="depth">Max depth (inches)</label><select id="depth"><option value="8">8 in</option><option value="9">9 in</option><option value="10">10 in</option><option value="11">11 in</option><option value="12">12 in</option><option value="13">13 in</option><option value="14">14 in</option><option value="15">15 in</option><option value="16" selected>16 in</option><option value="17">17 in</option><option value="18">18 in</option><option value="19">19 in</option><option value="20">20 in</option><option value="21">21 in</option><option value="22">22 in</option><option value="23">23 in</option><option value="24">24 in</option><option value="25">25 in</option><option value="26">26 in</option><option value="27">27 in</option><option value="28">28 in</option><option value="29">29 in</option><option value="30">30 in</option><option value="31">31 in</option><option value="32">32 in</option><option value="33">33 in</option><option value="34">34 in</option><option value="35">35 in</option><option value="36">36 in</option><option value="37">37 in</option><option value="38">38 in</option><option value="39">39 in</option><option value="40">40 in</option><option value="41">41 in</option><option value="42">42 in</option><option value="43">43 in</option><option value="44">44 in</option><option value="45">45 in</option><option value="46">46 in</option><option value="47">47 in</option><option value="48">48 in</option></select></div>
+<div class="field wide"><label for="type">Enclosure type</label><select id="type"><option>Ported Box</option><option>Sealed Box</option></select></div>
+<div class="field wide"><label for="model">Subwoofer model</label><input id="model" type="text" maxlength="120" placeholder="Enter the exact subwoofer model"></div>
+<div class="field wide"><label for="size">Subwoofer size</label><select id="size"><option>6.5</option><option>8</option><option>10</option><option selected>12</option><option>15</option><option>18</option></select></div>
+<div class="field wide"><label for="quantity">Quantity of subwoofers</label><select id="quantity"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+<div class="field wide" id="tuningField"><label for="tuning">Target port tuning (Hz)</label><select id="tuning"><option value="25">25.0 Hz</option><option value="25.5">25.5 Hz</option><option value="26">26.0 Hz</option><option value="26.5">26.5 Hz</option><option value="27">27.0 Hz</option><option value="27.5">27.5 Hz</option><option value="28">28.0 Hz</option><option value="28.5">28.5 Hz</option><option value="29">29.0 Hz</option><option value="29.5">29.5 Hz</option><option value="30">30.0 Hz</option><option value="30.5">30.5 Hz</option><option value="31">31.0 Hz</option><option value="31.5">31.5 Hz</option><option value="32" selected>32.0 Hz</option><option value="32.5">32.5 Hz</option><option value="33">33.0 Hz</option><option value="33.5">33.5 Hz</option><option value="34">34.0 Hz</option><option value="34.5">34.5 Hz</option><option value="35">35.0 Hz</option><option value="35.5">35.5 Hz</option><option value="36">36.0 Hz</option><option value="36.5">36.5 Hz</option><option value="37">37.0 Hz</option><option value="37.5">37.5 Hz</option><option value="38">38.0 Hz</option><option value="38.5">38.5 Hz</option><option value="39">39.0 Hz</option><option value="39.5">39.5 Hz</option><option value="40">40.0 Hz</option><option value="40.5">40.5 Hz</option><option value="41">41.0 Hz</option><option value="41.5">41.5 Hz</option><option value="42">42.0 Hz</option><option value="42.5">42.5 Hz</option><option value="43">43.0 Hz</option><option value="43.5">43.5 Hz</option><option value="44">44.0 Hz</option><option value="44.5">44.5 Hz</option><option value="45">45.0 Hz</option></select><small>Required for ported boxes; hidden for sealed boxes.</small></div>
+<div class="field"><label for="targetVolume">Target net internal volume (ft³)</label><input id="targetVolume" type="number" min=".1" step=".1" value="2.5"><small>Used as a preliminary target for port calculations.</small></div>
+<div class="field"><label for="thickness">Material thickness (in)</label><select id="thickness"><option value=".5">0.5 in</option><option value=".625">0.625 in</option><option value=".75" selected>0.75 in</option><option value="1">1 in</option></select></div>
 <div class="field wide"><label for="front">Front panel</label><select id="front"><option>Single</option><option>Double baffle</option></select></div>
 </div>
 <div class="fields" id="subFields" hidden>
-<div class="field wide"><label for="size">Subwoofer size</label><select id="size"><option>6.5</option><option>8</option><option>10</option><option selected>12</option><option>15</option><option>18</option></select></div>
-<div class="field wide"><label for="quantity">Quantity</label><select id="quantity"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+<div class="field wide"><label for="cutout">Cutout diameter (in)</label><input id="cutout" type="number" step=".01" value="" placeholder="Enter manufacturer specification"></div>
+<div class="field wide"><label for="mounting">Mounting depth (in)</label><input id="mounting" type="number" step=".01" value="" placeholder="Enter manufacturer specification"></div>
+<div class="field wide"><label for="displacement">Driver displacement (ft³ each)</label><input id="displacement" type="number" step=".01" value="" placeholder="Enter manufacturer specification"><small>Confirm this value from the exact driver's manufacturer specifications.</small></div>
+<div class="field wide"><label for="offset">Horizontal offset from center (in)</label><input id="offset" type="number" step=".25" value="0"></div>
 <div class="field wide"><label for="cutout">Cutout diameter (in)</label><input id="cutout" type="number" step=".01" value="" placeholder="Enter manufacturer specification"></div>
 <div class="field wide"><label for="mounting">Mounting depth (in)</label><input id="mounting" type="number" step=".01" value="" placeholder="Enter manufacturer specification"></div>
 <div class="field wide"><label for="displacement">Driver displacement (ft³ each)</label><input id="displacement" type="number" step=".01" value="" placeholder="Enter manufacturer specification"><small>Confirm this value from the exact driver's manufacturer specifications.</small></div>
@@ -43,7 +50,7 @@
 </div>
 <div class="fields" id="portFields" hidden>
 <div class="field wide"><label for="portType">Port type</label><select id="portType"><option>Slot, front panel</option><option>Slot, right side</option><option>Round port</option></select></div>
-<div class="two wide"><div class="field"><label for="tuning">Target tuning (Hz)</label><input id="tuning" type="number" min="10" max="100" value="32"></div><div class="field"><label for="portArea">Port area (in²)</label><input id="portArea" type="number" min="1" step=".5" value="17.5"></div></div>
+<div class="field wide"><label for="portArea">Port area (in²)</label><input id="portArea" type="number" min="1" step=".5" value="17.5"></div>
 <div class="field wide"><label for="portWidth">Slot port width (in)</label><input id="portWidth" type="number" min=".5" step=".25" value="1.25" readonly><small>Rounded to practical ¼-inch increments; port area and length are recalculated from the displayed width.</small></div>
 <div class="field wide"><label for="portLength">Port length (in)</label><input id="portLength" type="number" min="1" step=".25" value="" readonly><small>Calculated from port area and target tuning as a preliminary estimate; bends and end corrections are not fully modeled.</small></div>
 </div>
@@ -72,13 +79,15 @@ if(takenApart){let i=0;boxGroup.children.forEach(o=>{o.position.x+=(i%3-1)*T*3;o
 const size=new THREE.Vector3(W,H,D);const center=new THREE.Vector3(0,H/2,0);controls.target.copy(center);if(!buildModel.first){camera.position.set(W*1.55,H*1.5,D*2.2);controls.update();buildModel.first=true;}else if(!takenApart)controls.target.copy(center);
 const max=Math.max(W,H,D);const floor=new THREE.GridHelper(Math.max(100,max*3),Math.max(10,Math.round(max*3/2)),0x82917c,0x8da187);floor.position.y=-.02;boxGroup.add(floor);drawPlan();}
 function updateReadout(){
-const W=Number($('width').value),H=Number($('height').value),T=Number($('thickness').value);
+const W=Number($('width').value),H=Number($('height').value),D=Number($('depth').value),T=Number($('thickness').value);
 const Q=Math.max(1,Number($('quantity').value)||1);
 const rawDisp=$('displacement').value.trim(),dispKnown=rawDisp!==''&&Number.isFinite(Number(rawDisp))&&Number(rawDisp)>=0;
 const disp=dispKnown?Number(rawDisp)*Q:0,area=Number($('portArea').value),tuning=Number($('tuning').value),target=Number($('targetVolume').value);
-const type=$('type').value,ported=type==='Ported Box',bandpass=type.startsWith('Bandpass');
+const type=$('type').value,ported=type==='Ported Box',bandpass=false;
+$('tuningField').hidden=!ported;
+$('tuning').required=ported;
 const iw=W-2*T,ih=H-2*T,base=iw*ih,portType=$('portType').value,slot=portType.startsWith('Slot');
-const inputsValid=[W,H,T,target].every(Number.isFinite)&&W>0&&H>0&&T>0&&target>0&&iw>0&&ih>0;
+const inputsValid=[W,H,D,T,target].every(Number.isFinite)&&W>0&&H>0&&D>0&&T>0&&target>0&&iw>0&&ih>0&&D>2*T;
 let portLength=NaN,portVol=0,portWidth=NaN,actualArea=area,portValid=!ported;
 if(ported){
  portValid=Number.isFinite(area)&&area>0&&Number.isFinite(tuning)&&tuning>0&&slot&&ih>0&&area<=iw*ih;
@@ -96,14 +105,16 @@ if(ported){
 $('portWidth').value=ported&&portValid?portWidth.toFixed(3):'';
 $('portLength').value=ported&&portValid?portLength.toFixed(3):'';
 const grossRequired=target+(dispKnown?disp:0)+(ported&&portValid?portVol:0);
-const depth=inputsValid&&(!ported||portValid)&&!bandpass?grossRequired*1728/base+2*T:NaN;
-$('depth').value=Number.isFinite(depth)&&depth>0?depth.toFixed(3):'';
-const D=Number.isFinite(depth)?depth:NaN,valid=inputsValid&&Number.isFinite(D)&&D>2*T;
+const depth=D;
+const valid=inputsValid&&Number.isFinite(D)&&D>2*T&&(!ported||portValid);
 const gross=valid?iw*ih*(D-2*T)/1728:NaN;
 const net=valid?gross-(dispKnown?disp:0)-(ported&&portValid?portVol:0):NaN;
 const fmt=(n,d=3)=>Number.isFinite(n)?n.toFixed(d):'—';
 const rows=[
 ['External dimensions',valid?fmt(W)+' × '+fmt(H)+' × '+fmt(D)+' in':'Invalid / incomplete'],
+['Subwoofer model',$('model').value.trim()||'Not entered'],
+['Subwoofer setup',$('quantity').value+' × '+$('size').value+'-inch'],
+['Material',$('material').value],
 ['Material thickness',fmt(T)+' in'],
 ['Gross internal volume',valid?fmt(gross)+' ft³':'—'],
 ['Estimated net airspace',valid&&dispKnown?fmt(net)+' ft³':(valid?'Enter driver displacement':'—')],
