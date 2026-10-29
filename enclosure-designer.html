@@ -1,161 +1,55 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Enclosure Designer | Enclosure Lab</title>
-<meta name="description" content="Design a custom subwoofer enclosure with a rotatable 3D preview, enclosure settings, and preliminary build plan.">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Custom Box Order | Enclosure Lab</title>
+<meta name="description" content="Configure a custom subwoofer enclosure order with Enclosure Lab.">
 <style>
-:root{--ink:#17202b;--muted:#687480;--line:#dce2e8;--blue:#1769aa;--pale:#f3f6f8;--navy:#172c46}*{box-sizing:border-box}body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);background:#f5f7f9}button,input,select{font:inherit}button{cursor:pointer}.top{background:#fff;border-bottom:1px solid var(--line);padding:12px 22px;display:flex;align-items:center;gap:12px}.logo{background:#171717;color:#fff;font-weight:900;padding:9px 11px;border-radius:7px;letter-spacing:-1px}.brand{font-weight:800}.brand small{display:block;color:var(--muted);font-size:11px;letter-spacing:.12em;margin-top:3px}.top a{margin-left:auto;color:var(--blue);text-decoration:none;font-weight:700}.layout{max-width:1600px;margin:auto;padding:16px;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px}.main,.panel,.bottom{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}.switch{display:flex;border-bottom:1px solid var(--line)}.switch button{border:0;background:#f3f5f7;padding:13px 22px;color:#59636e;font-weight:700}.switch button.active{background:#fff;color:var(--ink);box-shadow:inset 0 -3px var(--blue)}.toolbar{background:#292d31;color:#fff;display:flex;flex-wrap:wrap;gap:5px;padding:7px}.toolbar button{background:transparent;border:0;color:#fff;border-radius:5px;padding:8px 11px}.toolbar button:hover,.toolbar button.active{background:#4a5057}.stage{height:530px;background:#9dbb98;position:relative;overflow:hidden;touch-action:pan-y}.stage canvas{display:block;width:100%;height:100%;outline:none}.hint{position:absolute;left:12px;bottom:10px;background:#ffffffd9;border-radius:6px;padding:7px 10px;font-size:12px;color:#263a2b;pointer-events:none}.viewtools{position:absolute;right:10px;top:10px;display:flex;gap:6px}.viewtools button{border:1px solid #ffffffa6;background:#ffffffd9;border-radius:7px;padding:7px 9px}.plan-view{height:100%;padding:24px;display:none;align-items:center;justify-content:center}.plan-view svg{max-height:100%;max-width:100%;background:#fff;border:1px solid #cbd5e1}.panel{padding:0}.panel-head{padding:16px;border-bottom:1px solid var(--line);font-weight:800;display:flex;justify-content:space-between}.units{font-size:11px;color:var(--muted);font-weight:500}.tabs{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--line)}.tabs button{padding:13px 3px;border:0;background:#f4f6f8;color:#69727d;font-size:12px;font-weight:800}.tabs button.active{background:#fff;color:var(--blue);box-shadow:inset 0 -2px var(--blue)}.fields{padding:16px;display:grid;gap:13px}.fields[hidden]{display:none!important}.field{display:grid;gap:6px}.field label{font-size:12px;font-weight:750}.field input,.field select{width:100%;min-width:0;border:1px solid #cbd3dc;border-radius:6px;padding:10px;background:#fff;color:var(--ink)}.field small,.note{font-size:11px;color:var(--muted);line-height:1.45}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.primary{border:0;border-radius:6px;background:var(--blue);color:#fff;font-weight:800;padding:13px}.primary:hover{background:#0d558e}.warning{display:none;background:#fff4dc;border:1px solid #efd59c;border-radius:8px;padding:12px;font-size:12px;line-height:1.5;color:#694a0c}.tables{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.bottom{padding:16px}.bottom h2{font-size:15px;margin:0 0 12px}.data{width:100%;border-collapse:collapse;font-size:12px}.data td,.data th{padding:9px 8px;border-bottom:1px solid #e7ebef;text-align:left}.data th{background:#f4f6f8}.data tr:last-child td{border:0}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actions button{background:#fff;border:1px solid #cbd3dc;border-radius:6px;padding:9px 11px;font-size:12px;font-weight:700}.foot{max-width:1600px;margin:0 auto;padding:0 16px 24px;color:var(--muted);font-size:12px;line-height:1.5}.toast{font-size:12px;color:#245b39;min-height:16px}@media(max-width:1000px){.layout{grid-template-columns:1fr}.panel{order:-1}.fields{grid-template-columns:repeat(2,minmax(0,1fr))}.fields .wide{grid-column:1/-1}.stage{height:440px}}@media(max-width:620px){.layout{padding:8px;gap:8px}.top{padding:10px 12px}.stage{height:340px}.fields{grid-template-columns:1fr}.fields .wide{grid-column:auto}.tables{grid-template-columns:1fr}.switch button{padding:12px;font-size:12px}.toolbar button{padding:7px;font-size:12px}}
+:root{--ink:#17202b;--muted:#687480;--line:#dce2e8;--blue:#1769aa;--pale:#f3f6f8}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);background:#f4f6f8}
+.top{background:#fff;border-bottom:1px solid var(--line);padding:15px 22px;display:flex;align-items:center;gap:12px}.logo{background:#171717;color:#fff;font-weight:900;padding:9px 11px;border-radius:7px;letter-spacing:-1px}.brand{font-weight:800}.brand small{display:block;color:var(--muted);font-size:11px;letter-spacing:.12em;margin-top:3px}.top a{margin-left:auto;color:var(--blue);text-decoration:none;font-weight:700}
+.wrap{max-width:850px;margin:30px auto;padding:0 16px 32px}.intro{margin-bottom:20px}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--blue)}h1{font-size:clamp(27px,4vw,38px);margin:7px 0 8px;letter-spacing:-.035em}.intro p{color:var(--muted);line-height:1.6;margin:0;max-width:650px}
+.form-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 8px 28px #17202b0a}.section-title{padding:18px 22px;background:#fafbfc;border-bottom:1px solid var(--line);font-size:14px;font-weight:800}.fields{padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:18px}.field{display:grid;gap:7px;min-width:0}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:750}.field select,.field input{width:100%;min-width:0;padding:12px;border:1px solid #cbd3dc;border-radius:8px;background:#fff;color:var(--ink);font:inherit}.field select:focus,.field input:focus{outline:2px solid #1769aa38;border-color:var(--blue)}.help{font-size:11px;color:var(--muted);line-height:1.45}.unit{font-size:11px;font-weight:600;color:var(--muted);margin-left:4px}.hidden{display:none!important}.actions{padding:0 22px 22px}.primary{width:100%;border:0;border-radius:8px;background:var(--blue);color:#fff;font-weight:800;font-size:14px;padding:14px;cursor:pointer}.primary:hover{background:#0d558e}.summary{margin:0 22px 22px;padding:16px;border:1px solid var(--line);border-radius:9px;background:#f8fafc;line-height:1.65;font-size:13px;white-space:pre-line}.summary:empty{display:none}.notice{font-size:11px;color:var(--muted);padding:0 22px 20px;line-height:1.5}
+@media(max-width:600px){.top{padding:12px}.wrap{margin:22px auto;padding:0 10px 24px}.fields{grid-template-columns:1fr;padding:17px}.field.full{grid-column:auto}.section-title{padding:16px 17px}.actions{padding:0 17px 17px}.notice{padding:0 17px 17px}.summary{margin:0 17px 17px}}
 </style>
 </head>
 <body>
-
-<main class="layout">
-<section>
-<div class="main">
-<div class="switch"><button id="modelTab" class="active">3D MODEL</button><button id="planTab">PLAN</button></div>
-<div class="toolbar"><button id="viewBtn">View: Exterior</button><button id="transparentBtn">Transparent: Off</button><button id="dimensionsBtn" class="active">Dimensions: On</button><button id="apartBtn">Take Apart: Off</button><button id="resetBtn">Reset View</button></div>
-<div class="stage" id="stage"><div id="threeRoot" style="position:absolute;inset:0"></div><div class="plan-view" id="planView"><svg id="planSvg" viewBox="0 0 520 280" width="520" height="280" aria-label="Front panel plan"></svg></div><div class="hint" id="hint">Drag to orbit · scroll/pinch to zoom · right-drag to pan</div><div class="viewtools"><button id="zoomIn" aria-label="Zoom in">＋</button><button id="zoomOut" aria-label="Zoom out">−</button></div></div>
+<header class="top"><div class="logo">E+L</div><div class="brand">ENCLOSURE LAB<small>CUSTOM SUBWOOFER ENCLOSURES</small></div><a href="index.html">← Back to Home</a></header>
+<main class="wrap">
+<div class="intro"><div class="eyebrow">CUSTOM ENCLOSURE ORDER</div><h1>Build your box</h1><p>Tell us what you need for your custom subwoofer enclosure. Select your material, maximum available dimensions, box style, and subwoofer details below.</p></div>
+<form class="form-card" id="customBoxForm">
+<div class="section-title">1. Material & maximum dimensions</div>
+<div class="fields">
+<div class="field full"><label for="material">Material</label><select id="material" name="material" required><option value="Birch">Birch</option><option value="MDF (Suggested)" selected>MDF (Suggested)</option><option value="Plywood">Plywood</option></select></div>
+<div class="field"><label for="width">Max width <span class="unit">(inches)</span></label><select id="width" name="width" required></select></div>
+<div class="field"><label for="length">Max length <span class="unit">(inches)</span></label><select id="length" name="length" required></select></div>
+<div class="field full"><label for="depth">Max depth <span class="unit">(inches)</span></label><select id="depth" name="depth" required></select><div class="help">Choose the maximum space available for the enclosure. Select a measurement; typing is disabled.</div></div>
 </div>
-<div class="tables">
-<div class="bottom"><h2>ENCLOSURE PARAMETERS</h2><table class="data"><tbody id="params"></tbody></table></div>
-<div class="bottom"><h2>PRELIMINARY CUT LIST</h2><table class="data"><thead><tr><th>Panel</th><th>Size (in)</th><th>Qty</th></tr></thead><tbody id="cuts"></tbody></table><p class="note">Port partitions and double-baffle pieces are added only after port layout and joinery are resolved.</p><div class="actions"><button id="copyBtn">Copy build sheet</button><button id="printBtn">Print build sheet</button></div><div class="toast" id="toast"></div></div>
+<div class="section-title">2. Box type</div>
+<div class="fields">
+<div class="field full"><label for="type">Enclosure style</label><select id="type" name="type" required><option value="Ported">Ported</option><option value="Sealed">Sealed</option></select></div>
 </div>
-</section>
-<aside class="panel">
-<div class="panel-head">Customize <span class="units">INCHES / FT³</span></div>
-<div class="tabs"><button class="active" data-tab="box">BOX</button><button data-tab="sub">SUBWOOFER</button><button data-tab="port">PORT</button></div>
-<div class="fields" id="boxFields">
-<div class="field wide"><label for="material">Material</label><select id="material"><option>Birch</option><option selected>MDF (Suggested)</option><option>Plywood</option></select></div>
-<div class="two wide"><div class="field"><label for="width">Max width (inches)</label><select id="width"><option value="8">8 in</option><option value="9">9 in</option><option value="10">10 in</option><option value="11">11 in</option><option value="12">12 in</option><option value="13">13 in</option><option value="14">14 in</option><option value="15">15 in</option><option value="16">16 in</option><option value="17">17 in</option><option value="18">18 in</option><option value="19">19 in</option><option value="20">20 in</option><option value="21">21 in</option><option value="22">22 in</option><option value="23">23 in</option><option value="24">24 in</option><option value="25" selected>25 in</option><option value="26">26 in</option><option value="27">27 in</option><option value="28">28 in</option><option value="29">29 in</option><option value="30">30 in</option><option value="31">31 in</option><option value="32">32 in</option><option value="33">33 in</option><option value="34">34 in</option><option value="35">35 in</option><option value="36">36 in</option><option value="37">37 in</option><option value="38">38 in</option><option value="39">39 in</option><option value="40">40 in</option><option value="41">41 in</option><option value="42">42 in</option><option value="43">43 in</option><option value="44">44 in</option><option value="45">45 in</option><option value="46">46 in</option><option value="47">47 in</option><option value="48">48 in</option></select></div><div class="field"><label for="height">Max length (inches)</label><select id="height"><option value="8">8 in</option><option value="9">9 in</option><option value="10">10 in</option><option value="11">11 in</option><option value="12">12 in</option><option value="13">13 in</option><option value="14">14 in</option><option value="15" selected>15 in</option><option value="16">16 in</option><option value="17">17 in</option><option value="18">18 in</option><option value="19">19 in</option><option value="20">20 in</option><option value="21">21 in</option><option value="22">22 in</option><option value="23">23 in</option><option value="24">24 in</option><option value="25">25 in</option><option value="26">26 in</option><option value="27">27 in</option><option value="28">28 in</option><option value="29">29 in</option><option value="30">30 in</option><option value="31">31 in</option><option value="32">32 in</option><option value="33">33 in</option><option value="34">34 in</option><option value="35">35 in</option><option value="36">36 in</option><option value="37">37 in</option><option value="38">38 in</option><option value="39">39 in</option><option value="40">40 in</option><option value="41">41 in</option><option value="42">42 in</option><option value="43">43 in</option><option value="44">44 in</option><option value="45">45 in</option><option value="46">46 in</option><option value="47">47 in</option><option value="48">48 in</option></select></div></div>
-<div class="field wide"><label for="depth">Max depth (inches)</label><select id="depth"><option value="8">8 in</option><option value="9">9 in</option><option value="10">10 in</option><option value="11">11 in</option><option value="12">12 in</option><option value="13">13 in</option><option value="14">14 in</option><option value="15">15 in</option><option value="16" selected>16 in</option><option value="17">17 in</option><option value="18">18 in</option><option value="19">19 in</option><option value="20">20 in</option><option value="21">21 in</option><option value="22">22 in</option><option value="23">23 in</option><option value="24">24 in</option><option value="25">25 in</option><option value="26">26 in</option><option value="27">27 in</option><option value="28">28 in</option><option value="29">29 in</option><option value="30">30 in</option><option value="31">31 in</option><option value="32">32 in</option><option value="33">33 in</option><option value="34">34 in</option><option value="35">35 in</option><option value="36">36 in</option><option value="37">37 in</option><option value="38">38 in</option><option value="39">39 in</option><option value="40">40 in</option><option value="41">41 in</option><option value="42">42 in</option><option value="43">43 in</option><option value="44">44 in</option><option value="45">45 in</option><option value="46">46 in</option><option value="47">47 in</option><option value="48">48 in</option></select></div>
-<div class="field wide"><label for="type">Enclosure type</label><select id="type"><option>Ported Box</option><option>Sealed Box</option></select></div>
-<div class="field wide"><label for="model">Subwoofer model</label><input id="model" type="text" maxlength="120" placeholder="Enter the exact subwoofer model"></div>
-<div class="field wide"><label for="size">Subwoofer size</label><select id="size"><option>6.5</option><option>8</option><option>10</option><option selected>12</option><option>15</option><option>18</option></select></div>
-<div class="field wide"><label for="quantity">Quantity of subwoofers</label><select id="quantity"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
-<div class="field wide" id="tuningField"><label for="tuning">Target port tuning (Hz)</label><select id="tuning"><option value="25">25.0 Hz</option><option value="25.5">25.5 Hz</option><option value="26">26.0 Hz</option><option value="26.5">26.5 Hz</option><option value="27">27.0 Hz</option><option value="27.5">27.5 Hz</option><option value="28">28.0 Hz</option><option value="28.5">28.5 Hz</option><option value="29">29.0 Hz</option><option value="29.5">29.5 Hz</option><option value="30">30.0 Hz</option><option value="30.5">30.5 Hz</option><option value="31">31.0 Hz</option><option value="31.5">31.5 Hz</option><option value="32" selected>32.0 Hz</option><option value="32.5">32.5 Hz</option><option value="33">33.0 Hz</option><option value="33.5">33.5 Hz</option><option value="34">34.0 Hz</option><option value="34.5">34.5 Hz</option><option value="35">35.0 Hz</option><option value="35.5">35.5 Hz</option><option value="36">36.0 Hz</option><option value="36.5">36.5 Hz</option><option value="37">37.0 Hz</option><option value="37.5">37.5 Hz</option><option value="38">38.0 Hz</option><option value="38.5">38.5 Hz</option><option value="39">39.0 Hz</option><option value="39.5">39.5 Hz</option><option value="40">40.0 Hz</option><option value="40.5">40.5 Hz</option><option value="41">41.0 Hz</option><option value="41.5">41.5 Hz</option><option value="42">42.0 Hz</option><option value="42.5">42.5 Hz</option><option value="43">43.0 Hz</option><option value="43.5">43.5 Hz</option><option value="44">44.0 Hz</option><option value="44.5">44.5 Hz</option><option value="45">45.0 Hz</option></select><small>Required for ported boxes; hidden for sealed boxes.</small></div>
-<div class="field"><label for="targetVolume">Target net internal volume (ft³)</label><input id="targetVolume" type="number" min=".1" step=".1" value="2.5"><small>Used as a preliminary target for port calculations.</small></div>
-<div class="field"><label for="thickness">Material thickness (in)</label><select id="thickness"><option value=".5">0.5 in</option><option value=".625">0.625 in</option><option value=".75" selected>0.75 in</option><option value="1">1 in</option></select></div>
-<div class="field wide"><label for="front">Front panel</label><select id="front"><option>Single</option><option>Double baffle</option></select></div>
+<div class="section-title">3. Subwoofer information</div>
+<div class="fields">
+<div class="field full"><label for="model">Subwoofer model</label><input id="model" name="model" type="text" maxlength="140" placeholder="Enter the brand and exact model" required></div>
+<div class="field"><label for="size">Subwoofer size</label><select id="size" name="size" required><option value="6.5">6.5 inches</option><option value="8">8 inches</option><option value="10">10 inches</option><option value="12" selected>12 inches</option><option value="15">15 inches</option><option value="18">18 inches</option></select></div>
+<div class="field"><label for="quantity">Quantity of subwoofers</label><select id="quantity" name="quantity" required><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+<div class="field full" id="tuningField"><label for="tuning">Target port tuning <span class="unit">(Hz)</span></label><select id="tuning" name="tuning"></select><div class="help">Required for ported boxes only. This field is hidden for sealed boxes.</div></div>
 </div>
-<div class="fields" id="subFields" hidden>
-<div class="field wide"><label for="cutout">Cutout diameter (in)</label><input id="cutout" type="number" step=".01" value="" placeholder="Enter manufacturer specification"></div>
-<div class="field wide"><label for="mounting">Mounting depth (in)</label><input id="mounting" type="number" step=".01" value="" placeholder="Enter manufacturer specification"></div>
-<div class="field wide"><label for="displacement">Driver displacement (ft³ each)</label><input id="displacement" type="number" step=".01" value="" placeholder="Enter manufacturer specification"><small>Confirm this value from the exact driver's manufacturer specifications.</small></div>
-<div class="field wide"><label for="offset">Horizontal offset from center (in)</label><input id="offset" type="number" step=".25" value="0"></div>
-<div class="field wide"><label for="cutout">Cutout diameter (in)</label><input id="cutout" type="number" step=".01" value="" placeholder="Enter manufacturer specification"></div>
-<div class="field wide"><label for="mounting">Mounting depth (in)</label><input id="mounting" type="number" step=".01" value="" placeholder="Enter manufacturer specification"></div>
-<div class="field wide"><label for="displacement">Driver displacement (ft³ each)</label><input id="displacement" type="number" step=".01" value="" placeholder="Enter manufacturer specification"><small>Confirm this value from the exact driver's manufacturer specifications.</small></div>
-<div class="field wide"><label for="offset">Horizontal offset from center (in)</label><input id="offset" type="number" step=".25" value="0"></div>
-</div>
-<div class="fields" id="portFields" hidden>
-<div class="field wide"><label for="portType">Port type</label><select id="portType"><option>Slot, front panel</option><option>Slot, right side</option><option>Round port</option></select></div>
-<div class="field wide"><label for="portArea">Port area (in²)</label><input id="portArea" type="number" min="1" step=".5" value="17.5"></div>
-<div class="field wide"><label for="portWidth">Slot port width (in)</label><input id="portWidth" type="number" min=".5" step=".25" value="1.25" readonly><small>Rounded to practical ¼-inch increments; port area and length are recalculated from the displayed width.</small></div>
-<div class="field wide"><label for="portLength">Port length (in)</label><input id="portLength" type="number" min="1" step=".25" value="" readonly><small>Calculated from port area and target tuning as a preliminary estimate; bends and end corrections are not fully modeled.</small></div>
-</div>
-<div class="fields"><div class="field wide"><button class="primary" id="calculate">Calculate / Update Model</button><div class="warning" id="warning"></div></div><div class="field wide note">3D orbit, zoom, and pan use browser-based controls. This prototype is for design exploration; verify all measurements and tuning before cutting wood.</div></div>
-</aside>
+<div class="actions"><button class="primary" type="submit">Review Box Details</button></div>
+<div class="summary" id="summary" aria-live="polite"></div>
+<div class="notice">This form currently collects and reviews your selections on this page. Online order submission, final pricing, shipping, and payment must be connected before customers can place a completed order.</div>
+</form>
 </main>
-<div class="foot">Enclosure Lab design prototype. The preview updates from your dimensions and supports mouse/touch orbit controls. Port tuning, port folds, bracing, exact driver-fit checks, and final cut validation require further engineering before a design is build-ready.</div>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js"}}</script>
-<script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js';
-import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/controls/OrbitControls.js';
-const $=id=>document.getElementById(id);let scene,camera,renderer,controls,boxGroup,labels=[],showDims=true,transparent=false,takenApart=false,inside=false,planMode=false;
-const stage=$('stage'),root=$('threeRoot');
-function init3d(){scene=new THREE.Scene();scene.background=new THREE.Color('#9dbb98');camera=new THREE.PerspectiveCamera(42,1,.1,3000);camera.position.set(34,25,38);renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;root.appendChild(renderer.domElement);controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.075;controls.target.set(0,0,0);controls.minDistance=8;controls.maxDistance=180;controls.update();scene.add(new THREE.HemisphereLight(0xffffff,0x5b634f,2.1));const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(20,35,25);scene.add(light);window.addEventListener('resize',resize);resize();animate();buildModel();}
-function resize(){if(!renderer)return;const r=stage.getBoundingClientRect();camera.aspect=r.width/Math.max(r.height,1);camera.updateProjectionMatrix();renderer.setSize(r.width,r.height,false);}
-function animate(){requestAnimationFrame(animate);if(controls)controls.update();if(renderer&&!planMode)renderer.render(scene,camera);}
-function clearGroup(){if(!boxGroup)return;scene.remove(boxGroup);boxGroup.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose();}});labels=[];}
-function mat(color,opacity=1,wire=false){return new THREE.MeshStandardMaterial({color,roughness:.82,transparent:opacity<1,opacity,wireframe:wire,side:THREE.DoubleSide});}
-function panel(w,h,d,x,y,z,color,opacity=1,wire=false){const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(color,opacity,wire));mesh.position.set(x,y,z);boxGroup.add(mesh);return mesh;}
-function buildModel(){if(!scene)return;updateReadout();clearGroup();boxGroup=new THREE.Group();scene.add(boxGroup);const W=Math.max(1,+$('width').value||20),H=Math.max(1,+$('height').value||10),D=Math.max(1,+$('depth').value||16),T=Math.max(.25,+$('thickness').value||.625),scale=1;const wood=$('material').value==='MDF'?0xd4b77d:0xc69b60,alpha=transparent?.32:1;const x=W/2,y=H/2,z=D/2;
-if(!inside){panel(W,H,T,0,y,-z,wood,alpha);panel(W,H,T,0,y,z,wood,alpha);panel(T,H,D,-x+T/2,y,0,wood,alpha);panel(T,H,D,x-T/2,y,0,wood,alpha);panel(W-2*T,T,D,0,T/2,0,wood,alpha);panel(W-2*T,T,D,0,H-T/2,0,wood,alpha);
-if($('type').value!=='Sealed Box'){const pw=Math.min(Math.max(.5,+$('portWidth').value||2),W/3),ph=H-2*T,plen=Math.min(Math.max(1,+$('portLength').value||18),D-T);panel(pw,ph,T,-W/2+T+pw/2,T+ph/2,-D/2+T,0x986d3e,alpha);panel(pw,ph,Math.max(T,plen),-W/2+T+pw/2,T+ph/2,-D/2+T+Math.max(T,plen)/2,0x986d3e,alpha);}
-const dia=Math.max(1,+$('cutout').value||14),offset=+$('offset').value||0;const ring=new THREE.Mesh(new THREE.TorusGeometry(dia/2,.32,12,64),mat(0x252525));ring.position.set(Math.max(-W/2+dia/2+T,Math.min(W/2-dia/2-T,offset)),H*.53,z+T*.55);boxGroup.add(ring);const cone=new THREE.Mesh(new THREE.CircleGeometry(dia*.44,64),mat(0x454545));cone.position.set(ring.position.x,ring.position.y,z+T*.58);boxGroup.add(cone);
-}else{panel(W-2*T,H-2*T,T,0,H/2,0,0x333333,.98);panel(T,H-2*T,D,-W/2+T/2,H/2,0,wood,alpha);panel(T,H-2*T,D,W/2-T/2,H/2,0,wood,alpha);panel(W-2*T,T,D,0,T/2,0,wood,alpha);panel(W-2*T,T,D,0,H-T/2,0,wood,alpha);panel(W-2*T,H-2*T,T,0,H/2,-D/2+T,wood,alpha);panel(T,H-2*T,D,-W/2+T/2,H/2,0,wood,alpha);panel(T,H-2*T,D,W/2-T/2,H/2,0,wood,alpha);if($('type').value!=='Sealed Box'){const pw=Math.min(Math.max(.5,+$('portWidth').value||2),W/3),plen=Math.min(Math.max(1,+$('portLength').value||18),D-T);panel(pw,H-2*T,T,-W/2+T+pw/2,H/2,-D/2+T,0x986d3e);panel(pw,H-2*T,plen,-W/2+T+pw/2,H/2,-D/2+T+plen/2,0x986d3e);}}
-if(takenApart){let i=0;boxGroup.children.forEach(o=>{o.position.x+=(i%3-1)*T*3;o.position.y+=(Math.floor(i/3)%3-1)*T*2;o.position.z+=(i%2?1:-1)*T*2;i++;});}
-const size=new THREE.Vector3(W,H,D);const center=new THREE.Vector3(0,H/2,0);controls.target.copy(center);if(!buildModel.first){camera.position.set(W*1.55,H*1.5,D*2.2);controls.update();buildModel.first=true;}else if(!takenApart)controls.target.copy(center);
-const max=Math.max(W,H,D);const floor=new THREE.GridHelper(Math.max(100,max*3),Math.max(10,Math.round(max*3/2)),0x82917c,0x8da187);floor.position.y=-.02;boxGroup.add(floor);drawPlan();}
-function updateReadout(){
-const W=Number($('width').value),H=Number($('height').value),D=Number($('depth').value),T=Number($('thickness').value);
-const Q=Math.max(1,Number($('quantity').value)||1);
-const rawDisp=$('displacement').value.trim(),dispKnown=rawDisp!==''&&Number.isFinite(Number(rawDisp))&&Number(rawDisp)>=0;
-const disp=dispKnown?Number(rawDisp)*Q:0,area=Number($('portArea').value),tuning=Number($('tuning').value),target=Number($('targetVolume').value);
-const type=$('type').value,ported=type==='Ported Box',bandpass=false;
-$('tuningField').hidden=!ported;
-$('tuning').required=ported;
-const iw=W-2*T,ih=H-2*T,base=iw*ih,portType=$('portType').value,slot=portType.startsWith('Slot');
-const inputsValid=[W,H,D,T,target].every(Number.isFinite)&&W>0&&H>0&&D>0&&T>0&&target>0&&iw>0&&ih>0&&D>2*T;
-let portLength=NaN,portVol=0,portWidth=NaN,actualArea=area,portValid=!ported;
-if(ported){
- portValid=Number.isFinite(area)&&area>0&&Number.isFinite(tuning)&&tuning>0&&slot&&ih>0&&area<=iw*ih;
- if(portValid){
-  // Straight slot-port Helmholtz estimate. End correction is approximate, not universal.
-  portWidth=Math.round((area/ih)*4)/4;
-  actualArea=portWidth*ih;
-  const equivalentDiameter=Math.sqrt(4*actualArea/Math.PI);
-  // Approximate straight slot-port end correction; wall-mounted ports need layout-specific correction.
-  portLength=(13503*13503*actualArea)/(4*Math.PI*Math.PI*tuning*tuning*target*1728)-0.732*equivalentDiameter;
-  portValid=Number.isFinite(portLength)&&portLength>=1&&portWidth>=0.5&&actualArea>0;
-  if(portValid){portVol=actualArea*portLength/1728;}
- }
-}
-$('portWidth').value=ported&&portValid?portWidth.toFixed(3):'';
-$('portLength').value=ported&&portValid?portLength.toFixed(3):'';
-const grossRequired=target+(dispKnown?disp:0)+(ported&&portValid?portVol:0);
-const depth=D;
-const valid=inputsValid&&Number.isFinite(D)&&D>2*T&&(!ported||portValid);
-const gross=valid?iw*ih*(D-2*T)/1728:NaN;
-const net=valid?gross-(dispKnown?disp:0)-(ported&&portValid?portVol:0):NaN;
-const fmt=(n,d=3)=>Number.isFinite(n)?n.toFixed(d):'—';
-const rows=[
-['External dimensions',valid?fmt(W)+' × '+fmt(H)+' × '+fmt(D)+' in':'Invalid / incomplete'],
-['Subwoofer model',$('model').value.trim()||'Not entered'],
-['Subwoofer setup',$('quantity').value+' × '+$('size').value+'-inch'],
-['Material',$('material').value],
-['Material thickness',fmt(T)+' in'],
-['Gross internal volume',valid?fmt(gross)+' ft³':'—'],
-['Estimated net airspace',valid&&dispKnown?fmt(net)+' ft³':(valid?'Enter driver displacement':'—')],
-['Target net volume',fmt(target)+' ft³'],
-['Target tuning',ported?fmt(tuning,2)+' Hz':'N/A'],
-['Port area',ported&&portValid?fmt(actualArea)+' in²':'N/A'],
-['Port inlet',ported&&portValid?fmt(portWidth)+' × '+fmt(ih)+' in':'Not calculated'],
-['Estimated straight port length',ported&&portValid?fmt(portLength)+' in':'Not calculated']
-];
-$('params').innerHTML=rows.map(r=>'<tr><td>'+r[0]+'</td><td><b>'+r[1]+'</b></td></tr>').join('');
-const fW=Math.max(0,W-2*T),fH=Math.max(0,H-2*T),sideD=Math.max(0,D-2*T);
-$('cuts').innerHTML=[
-['Top / Bottom',valid?fmt(fW)+' × '+fmt(D):'—',2],
-['Front / Rear',valid?fmt(W)+' × '+fmt(H):'—',2],
-['Left / Right',valid?fmt(D)+' × '+fmt(H):'—',2],
-...(ported?[['Port partitions','Not finalized','—']]:[])
-].map(r=>'<tr>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
-const warning=$('warning');warning.style.display='block';
-if(bandpass)warning.textContent='Bandpass calculations are not implemented. Do not use these dimensions as a build plan.';
-else if(!inputsValid)warning.textContent='Enter valid positive width, height, thickness, and target volume. Internal width and height must be positive.';
-else if(ported&&!portValid)warning.textContent=slot?'The selected area/tuning produces a port shorter than the 1-inch minimum or invalid dimensions. Increase area or lower tuning; no ported depth is calculated.':'Round-port geometry is not supported by this slot-port estimator. No ported depth is calculated.';
-else if(!dispKnown)warning.textContent='Enter the exact driver displacement from the manufacturer. Depth is provisional until then; port length remains a straight-slot estimate with approximate end correction.';
-else if(ported&&net>0)warning.textContent='Preliminary only: straight-slot Helmholtz estimate with approximate end correction. Port folds, opening geometry, bracing, driver fit, and measured tuning are not verified.';
-else if(ported&&net<=0)warning.textContent='Driver and port displacement leave no usable target airspace. This design is invalid as entered.';
-else warning.textContent='Geometric volume uses the entered dimensions and driver displacement. Verify actual driver fit, bracing, panel joints, and material thickness before cutting.';
-}
-function drawPlan(){const W=+$('width').value,H=+$('height').value;const svg=$('planSvg');svg.innerHTML='<rect x="35" y="25" width="450" height="230" fill="#fff" stroke="#d5dbe2"/><rect x="70" y="45" width="380" height="190" fill="#e8d5ad" stroke="#594c36" stroke-width="2"/><circle cx="160" cy="140" r="54" fill="#343434" stroke="#171717" stroke-width="6"/><circle cx="160" cy="140" r="39" fill="#777" stroke="#555" stroke-width="4"/><text x="260" y="135" font-size="15" fill="#17202b">'+W+' in × '+H+' in front reference</text><text x="260" y="158" font-size="11" fill="#687480">Not a dimensioned manufacturing drawing</text>'}
-function setTab(t){document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));$('boxFields').hidden=t!=='box';$('subFields').hidden=t!=='sub';$('portFields').hidden=t!=='port'}
-document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
-['width','height','depth','model','targetVolume','thickness','material','front','type','cutout','mounting','offset','quantity','displacement','portWidth','portLength','portArea','tuning','portType'].forEach(id=>$(id).addEventListener('change',()=>{buildModel();}));
-$('calculate').addEventListener('click',()=>{buildModel();$('toast').textContent='Model and preliminary tables updated.'});
-$('modelTab').addEventListener('click',()=>{planMode=false;$('modelTab').classList.add('active');$('planTab').classList.remove('active');root.style.display='block';$('planView').style.display='none';$('hint').style.display='block';resize()});
-$('planTab').addEventListener('click',()=>{planMode=true;$('planTab').classList.add('active');$('modelTab').classList.remove('active');root.style.display='none';$('planView').style.display='flex';$('hint').style.display='none';drawPlan()});
-$('viewBtn').addEventListener('click',()=>{inside=!inside;$('viewBtn').textContent='View: '+(inside?'Interior':'Exterior');buildModel()});
-$('transparentBtn').addEventListener('click',()=>{transparent=!transparent;$('transparentBtn').textContent='Transparent: '+(transparent?'On':'Off');buildModel()});
-$('dimensionsBtn').addEventListener('click',()=>{showDims=!showDims;$('dimensionsBtn').classList.toggle('active',showDims);$('hint').textContent=showDims?'Drag to orbit · scroll/pinch to zoom · right-drag to pan':'Drag to orbit · scroll/pinch to zoom · right-drag to pan'});
-$('apartBtn').addEventListener('click',()=>{takenApart=!takenApart;$('apartBtn').textContent='Take Apart: '+(takenApart?'On':'Off');buildModel()});
-$('resetBtn').addEventListener('click',()=>{inside=false;takenApart=false;transparent=false;$('viewBtn').textContent='View: Exterior';$('apartBtn').textContent='Take Apart: Off';$('transparentBtn').textContent='Transparent: Off';camera.position.set(34,25,38);controls.target.set(0,(+$('height').value||10)/2,0);controls.update();buildModel()});
-$('zoomIn').addEventListener('click',()=>{camera.position.multiplyScalar(.85);controls.update()});$('zoomOut').addEventListener('click',()=>{camera.position.multiplyScalar(1.18);controls.update()});
-$('copyBtn').addEventListener('click',async()=>{const text='ENCLOSURE LAB — PRELIMINARY BUILD SHEET\nType: '+$('type').value+'\nDimensions: '+$('width').value+' × '+$('height').value+' × '+$('depth').value+' in\nMaterial: '+$('material').value+' ('+$('thickness').value+' in)\nSubwoofer: '+$('quantity').value+' × '+$('size').value+'-inch subwoofer\nTarget tuning: '+$('tuning').value+' Hz\nPort area: '+$('portArea').value+' in²; entered length '+$('portLength').value+' in\n\n'+$('cuts').innerText+'\n\nPreliminary only: verify all port calculations and clearances before cutting.';try{await navigator.clipboard.writeText(text);$('toast').textContent='Build sheet copied.'}catch(e){$('toast').textContent=text}});
-$('printBtn').addEventListener('click',()=>window.print());
-init3d();updateReadout();
+<script>
+const $=id=>document.getElementById(id);
+function fillMeasurements(id,min,max,selected){const el=$(id);for(let n=min;n<=max;n++){const o=document.createElement('option');o.value=String(n);o.textContent=n+' in';if(n===selected)o.selected=true;el.appendChild(o)}}
+fillMeasurements('width',8,60,25);fillMeasurements('length',8,60,30);fillMeasurements('depth',8,48,16);
+for(let hz=25;hz<=45.001;hz+=.5){const o=document.createElement('option');o.value=hz.toFixed(1);o.textContent=hz.toFixed(1)+' Hz';if(Math.abs(hz-32)<.001)o.selected=true;$('tuning').appendChild(o)}
+function updateTuning(){const ported=$('type').value==='Ported';$('tuningField').classList.toggle('hidden',!ported);$('tuning').required=ported}
+$('type').addEventListener('change',updateTuning);updateTuning();
+$('customBoxForm').addEventListener('submit',e=>{e.preventDefault();const d=[['Material',$('material').value],['Maximum dimensions',$('width').value+' W × '+$('length').value+' L × '+$('depth').value+' D inches'],['Box type',$('type').value],['Subwoofer model',$('model').value.trim()],['Subwoofer size',$('size').value+' inches'],['Quantity',$('quantity').value],['Target tuning',$('type').value==='Ported'?$('tuning').value+' Hz':'Not applicable (sealed)']];$('summary').textContent='YOUR BOX CONFIGURATION\n'+d.map(x=>x[0]+': '+x[1]).join('\n')+'\n\nThese details are ready to be used for your custom order.';$('summary').scrollIntoView({behavior:'smooth',block:'nearest'})});
 </script>
-</body></html>
+</body>
+</html>
