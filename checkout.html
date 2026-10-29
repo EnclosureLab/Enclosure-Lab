@@ -54,10 +54,11 @@ document.getElementById("discountCode").addEventListener("keydown",e=>{if(e.key=
 document.getElementById("discountCode").value=localStorage.getItem("enclosureLabDiscountCode")||"";
 function estimateShipping(cart, zip, fulfillment){
  if(fulfillment==="pickup") return 0;
- const shippable=cart.filter(i=>i.category!=="enclosure" && !/custom.*enclosure|enclosure.*quote/i.test(i.name||""));
- if(!shippable.length) return 0;
- const z=String(zip||"").replace(/\\D/g,"").slice(0,5);
- if(z.length!==5) return null;
+ const enclosures=cart.filter(i=>i.category==="enclosure"&&i.configuration&&Number(i.weightLb||i.configuration.weightLb)>0);
+ const shippable=cart.filter(i=>i.category!=="enclosure"&&!/custom.*enclosure|enclosure.*quote/i.test(i.name||""));
+ if(!enclosures.length&&!shippable.length)return 0;
+ const z=String(zip||"").replace(/\D/g,"").slice(0,5);
+ if(z.length!==5)return null;
  const state=document.getElementById("state").value.trim().toUpperCase();
  const localStates=["TN","AL","GA","NC","SC","KY","VA","MS"];
  const nearbyStates=["FL","WV","OH","IN","IL","MO","AR"];
@@ -72,6 +73,7 @@ function estimateShipping(cart, zip, fulfillment){
  };
  let total=0;
  shippable.forEach(item=>{const qty=Math.max(1,Number(item.qty)||1),unit=rateFor(item);total+=unit+(qty-1)*Math.max(3,unit*.45)});
+ enclosures.forEach(item=>{const weight=Math.max(1,Number(item.weightLb||item.configuration.weightLb)||1);total+=18+Math.max(0,weight-10)*0.85});
  total+=zone;
  return Math.round(total*100)/100;
 }
@@ -99,7 +101,7 @@ function renderCart(){
  document.getElementById("tax").textContent=money(tax);
  const shipping=estimateShipping(cart,document.getElementById("zip").value,delivery.value);
  document.getElementById("shippingCost").textContent=shipping===null?"Enter ZIP code":money(shipping);
- document.getElementById("shippingNote").textContent=delivery.value==="pickup"?"Local pickup is free.":shipping===null?"Enter a valid 5-digit ZIP code to see estimated shipping.":"Estimated shipping only; final cost may vary. Custom enclosures are excluded.";
+ document.getElementById("shippingNote").textContent=delivery.value==="pickup"?"Local pickup is free.":shipping===null?"Enter a valid 5-digit ZIP code to see estimated shipping.":"Rough weight-based estimate; final carrier pricing and packaging may change the cost.";
  document.getElementById("amountDue").textContent=money(taxable+tax+(shipping||0));
  document.getElementById("quoteItems").textContent=cart.some(i=>i.price==null)?"Price confirmed after review":"None";
  document.getElementById("submitOrder").disabled=!cart.length;
@@ -114,7 +116,7 @@ updateDelivery();
 document.getElementById("checkoutForm").addEventListener("submit",e=>{
  e.preventDefault();const cart=getCart();if(!cart.length)return;
  const f=new FormData(e.currentTarget);const subtotal=cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);const discount=getAppliedDiscount(subtotal),discountAmount=discount.amount;const taxable=Math.max(0,subtotal-discountAmount);const tax=Math.round(taxable*0.0925*100)/100;const shipping=estimateShipping(cart,f.get("zip"),f.get("delivery"));const total=taxable+tax+(shipping||0);
- const items=cart.map(i=>"- "+i.name+" x "+i.qty+" — "+(i.price==null?"price to be confirmed":money(i.price)+" each")).join("\n");
+ const items=cart.map(i=>"- "+i.name+" x "+i.qty+" — "+(i.price==null?"price to be confirmed":money(i.price)+" each")+(i.category==="enclosure"&&i.weightLb?"\n  Estimated material weight: "+i.weightLb+" lb\n  Configuration: "+JSON.stringify(i.configuration):"")).join("\n");
  const body=["Enclosure Lab order request","", "Name: "+f.get("name"),"Email: "+f.get("email"),"Phone: "+(f.get("phone")||"Not provided"),"Fulfillment: "+(f.get("delivery")==="pickup"?"Local pickup":"Shipping") ,...(f.get("delivery")==="shipping"?["Address: "+f.get("address"),"City: "+f.get("city"),"State: "+f.get("state"),"ZIP: "+f.get("zip")]:[]),"","Items:",items,"","Subtotal: "+money(subtotal),"Discount: "+(discountAmount>0?discount.code+" (-"+money(discountAmount)+")":"None"),"Estimated tax (9.25%): "+money(tax),"Estimated shipping: "+(shipping===null?"ZIP code required":money(shipping)),"Estimated total: "+money(total),"Shipping: estimated; final cost may vary","Notes: "+(f.get("notes")||"None"),"","No payment has been collected. Please confirm pricing and next steps."].join("\n");
  document.getElementById("formStatus").textContent="Your email app will open with the order request. Review it and press Send to submit it.";
  window.location.href="mailto:lawsonhughes53@gmail.com?subject="+encodeURIComponent("Enclosure Lab order request")+"&body="+encodeURIComponent(body);
