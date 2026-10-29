@@ -143,7 +143,10 @@ function update3DPreview(){
  const svg=$('boxPreviewSvg');if(!svg)return;
  const w=Number($('width').value)||25,l=Number($('length').value)||30,d=Number($('depth').value)||16;
  const surface=previewSurface(),ported=$('type').value==='Ported',style=$('portStyle').value;
- const x=58,y=78,fw=150+((Math.max(8,Math.min(60,w))-8)/52)*128,fh=82+((Math.max(8,Math.min(48,d))-8)/40)*78,dx=25+((Math.max(8,Math.min(60,l))-8)/52)*47,dy=-dx*.66,right=x+fw,bottom=y+fh;
+ // Use one consistent drawing scale for all three dimensions so the box proportions stay honest.
+ const scale=Math.min(278/Math.max(w,1),164/Math.max(d,1),96/Math.max(l,1));
+ const fw=w*scale,fh=d*scale,dx=l*scale*.42,dy=-dx*.66;
+ const x=58+(278-fw)*.18,y=78+(164-fh)*.12,right=x+fw,bottom=y+fh;
  const front='M '+x+' '+y+' L '+right+' '+y+' L '+right+' '+bottom+' L '+x+' '+bottom+' Z';
  const top='M '+x+' '+y+' L '+(x+dx)+' '+(y+dy)+' L '+(right+dx)+' '+(y+dy)+' L '+right+' '+y+' Z';
  const side='M '+right+' '+y+' L '+(right+dx)+' '+(y+dy)+' L '+(right+dx)+' '+(bottom+dy)+' L '+right+' '+bottom+' Z';
@@ -152,7 +155,11 @@ function update3DPreview(){
  const usableW=fw*.76,usableH=fh*.67,gapX=usableW/cols,gapY=usableH/rows;
  // Keep driver diameter tied to the selected speaker size, not the enclosure dimensions.
  // The enclosure only affects available placement space; it must not visually shrink the driver.
- const rad=Math.max(13,Math.min(39,39*(size/18)));
+ // Approximate the driver's outside diameter (nominal size plus basket/surround allowance)
+ // using the same scale as the enclosure. A driver that cannot physically fit should look too large,
+ // rather than being silently shrunk to fit the panel.
+ const driverOuterDiameter=size+1.25;
+ const rad=(driverOuterDiameter*scale)/2;
  let drivers='';
  for(let n=0;n<count;n++){const col=n%cols,row=Math.floor(n/cols);const cx=x+fw*.12+gapX*(col+.5),cy=y+fh*.13+gapY*(row+.5);const r=rad;drivers+='<g><circle cx="'+cx+'" cy="'+cy+'" r="'+(r+5)+'" fill="#08090b" stroke="#050607" stroke-width="2"/><circle cx="'+cx+'" cy="'+(cy+1)+'" r="'+(r+2)+'" fill="url(#surround)" stroke="#6c737d" stroke-width="1.4"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*.78)+'" fill="url(#cone)" stroke="#101216" stroke-width="2"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*.47)+'" fill="#252a30" stroke="#737b84" stroke-width="1.2"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*.23)+'" fill="url(#dust)" stroke="#0a0b0d" stroke-width="1.4"/>'+[[-.72,-.72],[.72,-.72],[-.72,.72],[.72,.72]].map(([a,b])=>'<circle cx="'+(cx+a*r)+'" cy="'+(cy+b*r)+'" r="1.8" fill="#c5cbd2" stroke="#252a30" stroke-width=".7"/>').join('')+'</g>';}
  let port='';
