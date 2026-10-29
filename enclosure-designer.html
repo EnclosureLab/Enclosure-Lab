@@ -143,7 +143,7 @@ function update3DPreview(){
  const svg=$('boxPreviewSvg');if(!svg)return;
  const w=Number($('width').value)||25,l=Number($('length').value)||30,d=Number($('depth').value)||16;
  const surface=previewSurface(),ported=$('type').value==='Ported',style=$('portStyle').value;
- const x=58,y=78,fw=Math.max(150,Math.min(278,150+(w-8)*2.5)),fh=Math.max(82,Math.min(160,82+(d-8)*2.0)),dx=Math.max(25,Math.min(72,25+(l-8)*.98)),dy=-dx*.66,right=x+fw,bottom=y+fh;
+ const x=58,y=78,fw=150+((Math.max(8,Math.min(60,w))-8)/52)*128,fh=82+((Math.max(8,Math.min(48,d))-8)/40)*78,dx=25+((Math.max(8,Math.min(60,l))-8)/52)*47,dy=-dx*.66,right=x+fw,bottom=y+fh;
  const front='M '+x+' '+y+' L '+right+' '+y+' L '+right+' '+bottom+' L '+x+' '+bottom+' Z';
  const top='M '+x+' '+y+' L '+(x+dx)+' '+(y+dy)+' L '+(right+dx)+' '+(y+dy)+' L '+right+' '+y+' Z';
  const side='M '+right+' '+y+' L '+(right+dx)+' '+(y+dy)+' L '+(right+dx)+' '+(bottom+dy)+' L '+right+' '+bottom+' Z';
@@ -156,14 +156,12 @@ function update3DPreview(){
  let port='';
  if(ported){
   if(style==='Slot from panel'){
-   const pw=Math.max(42,fw*.31),ph=Math.max(12,fh*.105),px=x+fw*.60,py=bottom-ph-13;
-   const inner=Math.max(5,ph*.35),turn=px-pw*.52;
-   port='<path d="M '+px+' '+py+' h '+pw+' v '+ph+' h '+(-pw)+' Z" fill="#080a0d" stroke="#d9dce0" stroke-width="2.2" stroke-linejoin="round"/><path d="M '+(px+4)+' '+(py+3)+' h '+(pw-8)+' v '+(ph-6)+' h '+(-(pw-8))+' Z" fill="#222831"/><path d="M '+(px+pw*.12)+' '+(py+ph*.5)+' H '+(px+pw*.88)+'" stroke="#65707d" stroke-width="1.3"/><path d="M '+(px+pw*.12)+' '+(py+ph*.5)+' V '+(py-ph*1.7)+' H '+(turn)+'" fill="none" stroke="#161a20" stroke-width="3" opacity=".9"/>';
+   const pw=Math.max(38,fw*.29),ph=Math.max(11,fh*.095),px=x+fw*.63,py=bottom-ph-13;
+   port='<path d="M '+px+' '+py+' h '+pw+' v '+ph+' h '+(-pw)+' Z" fill="#050608" stroke="#d9dce0" stroke-width="2.2" stroke-linejoin="round"/><path d="M '+(px+4)+' '+(py+3)+' h '+(pw-8)+' v '+Math.max(3,ph-6)+' h '+(-(pw-8))+' Z" fill="#252b33"/><path d="M '+(px+7)+' '+(py+ph*.5)+' H '+(px+pw-7)+'" stroke="#687381" stroke-width="1.4"/>';
   }
   else if(style==='Slot side panel'){
-   const pw=Math.max(17,dx*.48),ph=Math.max(34,fh*.36),px=right+dx*.26,py=y+fh*.37;
-   const a=dx*.24,b=dy*.24;
-   port='<path d="M '+px+' '+py+' l '+a+' '+b+' v '+ph+' l '+(-a)+' '+(-b*.45)+' Z" fill="#080a0d" stroke="#d9dce0" stroke-width="2.2" stroke-linejoin="round"/><path d="M '+(px+3)+' '+(py+5)+' l '+(a-6)+' '+(b*.9)+' v '+(ph-12)+' l '+(-(a-6))+' '+(-b*.42)+' Z" fill="#222831"/><path d="M '+(px+4)+' '+(py+ph*.55)+' l '+(a-8)+' '+(b*.9)+'" stroke="#65707d" stroke-width="1.3"/>';
+   const a=dx*.30,b=dy*.30,pw=Math.max(18,dx*.30),ph=Math.max(30,fh*.36),px=right+dx*.32,py=y+fh*.34+dy*.32;
+   port='<path d="M '+px+' '+py+' l '+a+' '+b+' v '+ph+' l '+(-a)+' '+(-b)+' Z" fill="#050608" stroke="#d9dce0" stroke-width="2.2" stroke-linejoin="round"/><path d="M '+(px+3)+' '+(py+5)+' l '+(a-6)+' '+(b*.72)+' v '+(ph-10)+' l '+(-(a-6))+' '+(-b*.72)+' Z" fill="#252b33"/><path d="M '+(px+4)+' '+(py+ph*.5)+' l '+(a-8)+' '+b+'" stroke="#687381" stroke-width="1.3"/>';
   }
   else if(style==='Hole front panel'){const r=Math.max(11,Math.min(19,fh*.13)),cx=x+fw*.78,cy=bottom-fh*.19;port='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="#050607" stroke="#d0d5db" stroke-width="3"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*.7)+'" fill="#242a32"/><ellipse cx="'+(cx-3)+'" cy="'+(cy-4)+'" rx="'+(r*.45)+'" ry="'+(r*.24)+'" fill="#58616c" opacity=".6"/>';}
   else {const cx=right+dx*.64,cy=y+fh*.67,rx=dx*.18,ry=fh*.13;port='<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" transform="rotate(-25 '+cx+' '+cy+')" fill="#050607" stroke="#d0d5db" stroke-width="3"/><ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(rx*.65)+'" ry="'+(ry*.65)+'" transform="rotate(-25 '+cx+' '+cy+')" fill="#252b33"/>';}
