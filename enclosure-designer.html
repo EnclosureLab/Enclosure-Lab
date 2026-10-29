@@ -152,7 +152,7 @@ function previewSurface(){
  if(selectedFinish==='Raw')return {front:'#b99b70',side:'#8e7656',top:'#d5bd96',label:$('rawMaterial').value};
  if(selectedFinish==='Paint'){
   const actual=selectedPaintColor==='Custom Color'?($('customPaintHex').value||'#707780'):(paintMap[selectedPaintColor]||'#171717');
-  return {front:actual,side:shadeColor(actual,.62),top:shadeColor(actual,1.22),label:selectedPaintColor==='Custom Color'?'Custom paint':selectedPaintColor+' paint'};
+  return {front:actual,side:actual,top:actual,label:selectedPaintColor==='Custom Color'?'Custom paint':selectedPaintColor+' paint'};
  }
  const type=$('wrapType').value;
  let col=selectedWrapColor==='Custom Color'?($('customWrapHex').value||'#707780'):(paintMap[selectedWrapColor]||'#171717');
@@ -183,9 +183,9 @@ function updateFree3DModel(){
  const w=Math.max(8,Number($('width').value)||25),l=Math.max(8,Number($('length').value)||30),d=Math.max(8,Number($('depth').value)||16);
  const surface=previewSurface(),ported=$('type').value==='Ported',style=$('portStyle').value;
  // Three.js uses real world units in inches: X=width, Y=depth/height, Z=length.
- const frontMat=new THREE.MeshStandardMaterial({color:surface.front,roughness:.78,metalness:0});
- const sideMat=new THREE.MeshStandardMaterial({color:surface.side,roughness:.8});
- const topMat=new THREE.MeshStandardMaterial({color:surface.top,roughness:.8});
+ const frontMat=new THREE.MeshBasicMaterial({color:surface.front});
+ const sideMat=new THREE.MeshBasicMaterial({color:surface.side});
+ const topMat=new THREE.MeshBasicMaterial({color:surface.top});
  const shell=new THREE.Mesh(new THREE.BoxGeometry(w,d,l),[sideMat,sideMat,topMat,topMat,frontMat,frontMat]);shell.castShadow=true;shell.receiveShadow=true;box3DGroup.add(shell);
  // Thin panel seams give the enclosure a constructed, board-like edge.
  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w,d,l)),new THREE.LineBasicMaterial({color:0x303741}));box3DGroup.add(edges);
