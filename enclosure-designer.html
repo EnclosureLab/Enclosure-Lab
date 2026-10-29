@@ -63,15 +63,69 @@ function animate(){requestAnimationFrame(animate);if(controls)controls.update();
 function clearGroup(){if(!boxGroup)return;scene.remove(boxGroup);boxGroup.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose();}});labels=[];}
 function mat(color,opacity=1,wire=false){return new THREE.MeshStandardMaterial({color,roughness:.82,transparent:opacity<1,opacity,wireframe:wire,side:THREE.DoubleSide});}
 function panel(w,h,d,x,y,z,color,opacity=1,wire=false){const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(color,opacity,wire));mesh.position.set(x,y,z);boxGroup.add(mesh);return mesh;}
-function buildModel(){if(!scene)return;clearGroup();boxGroup=new THREE.Group();scene.add(boxGroup);const W=Math.max(1,+$('width').value||20),H=Math.max(1,+$('height').value||10),D=Math.max(1,+$('depth').value||16),T=Math.max(.25,+$('thickness').value||.625),scale=1;const wood=$('material').value==='MDF'?0xd4b77d:0xc69b60,alpha=transparent?.32:1;const x=W/2,y=H/2,z=D/2;
+function buildModel(){if(!scene)return;updateReadout();clearGroup();boxGroup=new THREE.Group();scene.add(boxGroup);const W=Math.max(1,+$('width').value||20),H=Math.max(1,+$('height').value||10),D=Math.max(1,+$('depth').value||16),T=Math.max(.25,+$('thickness').value||.625),scale=1;const wood=$('material').value==='MDF'?0xd4b77d:0xc69b60,alpha=transparent?.32:1;const x=W/2,y=H/2,z=D/2;
 if(!inside){panel(W,H,T,0,y,-z,wood,alpha);panel(W,H,T,0,y,z,wood,alpha);panel(T,H,D,-x+T/2,y,0,wood,alpha);panel(T,H,D,x-T/2,y,0,wood,alpha);panel(W-2*T,T,D,0,T/2,0,wood,alpha);panel(W-2*T,T,D,0,H-T/2,0,wood,alpha);
 if($('type').value!=='Sealed Box'){const pw=Math.min(Math.max(.5,+$('portWidth').value||2),W/3),ph=H-2*T,plen=Math.min(Math.max(1,+$('portLength').value||18),D-T);panel(pw,ph,T,-W/2+T+pw/2,T+ph/2,-D/2+T,0x986d3e,alpha);panel(pw,ph,Math.max(T,plen),-W/2+T+pw/2,T+ph/2,-D/2+T+Math.max(T,plen)/2,0x986d3e,alpha);}
 const dia=Math.max(1,+$('cutout').value||14),offset=+$('offset').value||0;const ring=new THREE.Mesh(new THREE.TorusGeometry(dia/2,.32,12,64),mat(0x252525));ring.position.set(Math.max(-W/2+dia/2+T,Math.min(W/2-dia/2-T,offset)),H*.53,z+T*.55);boxGroup.add(ring);const cone=new THREE.Mesh(new THREE.CircleGeometry(dia*.44,64),mat(0x454545));cone.position.set(ring.position.x,ring.position.y,z+T*.58);boxGroup.add(cone);
 }else{panel(W-2*T,H-2*T,T,0,H/2,0,0x333333,.98);panel(T,H-2*T,D,-W/2+T/2,H/2,0,wood,alpha);panel(T,H-2*T,D,W/2-T/2,H/2,0,wood,alpha);panel(W-2*T,T,D,0,T/2,0,wood,alpha);panel(W-2*T,T,D,0,H-T/2,0,wood,alpha);panel(W-2*T,H-2*T,T,0,H/2,-D/2+T,wood,alpha);panel(T,H-2*T,D,-W/2+T/2,H/2,0,wood,alpha);panel(T,H-2*T,D,W/2-T/2,H/2,0,wood,alpha);if($('type').value!=='Sealed Box'){const pw=Math.min(Math.max(.5,+$('portWidth').value||2),W/3),plen=Math.min(Math.max(1,+$('portLength').value||18),D-T);panel(pw,H-2*T,T,-W/2+T+pw/2,H/2,-D/2+T,0x986d3e);panel(pw,H-2*T,plen,-W/2+T+pw/2,H/2,-D/2+T+plen/2,0x986d3e);}}
 if(takenApart){let i=0;boxGroup.children.forEach(o=>{o.position.x+=(i%3-1)*T*3;o.position.y+=(Math.floor(i/3)%3-1)*T*2;o.position.z+=(i%2?1:-1)*T*2;i++;});}
 const size=new THREE.Vector3(W,H,D);const center=new THREE.Vector3(0,H/2,0);controls.target.copy(center);if(!buildModel.first){camera.position.set(W*1.55,H*1.5,D*2.2);controls.update();buildModel.first=true;}else if(!takenApart)controls.target.copy(center);
-const max=Math.max(W,H,D);const floor=new THREE.GridHelper(Math.max(100,max*3),Math.max(10,Math.round(max*3/2)),0x82917c,0x8da187);floor.position.y=-.02;boxGroup.add(floor);updateReadout();drawPlan();}
-function updateReadout(){const W=+$('width').value,H=+$('height').value,T=+$('thickness').value,Q=Math.max(1,+$('quantity').value||1),disp=Math.max(0,+$('displacement').value||0)*Q,area=Math.max(1,+$('portArea').value||1),tuning=Math.max(10,+$('tuning').value||32),target=Math.max(.1,+$('targetVolume').value||2.5);const base=(W-2*T)*(H-2*T);const ported=$('type').value==='Ported Box';const estimatedPortLen=Math.max(1,((13503*13503*area)/(4*Math.PI*Math.PI*tuning*tuning*target*1728))-0.732*Math.sqrt(area));$('portWidth').value=(area/Math.max(.1,H-2*T)).toFixed(2);$('portLength').value=ported?estimatedPortLen.toFixed(2):'0';const portVol=ported?area*estimatedPortLen/1728:0;const requiredGross=target+disp+portVol;const depth=base>0?requiredGross*1728/base+2*T:0;$('depth').value=depth>0?depth.toFixed(2):'';const D=depth;const valid=[W,H,D,T].every(Number.isFinite)&&W>2*T&&H>2*T&&D>2*T;const gross=valid?(W-2*T)*(H-2*T)*(D-2*T)/1728:0;const net=gross-disp-(ported?portVol:0);const rows=[['External dimensions',W+' × '+H+' × '+D+' in'],['Material thickness',T+' in'],['Gross internal volume',valid?gross.toFixed(2)+' ft³':'Invalid'],['Estimated net airspace',valid?net.toFixed(2)+' ft³':'Invalid'],['Target tuning',$('type').value==='Ported Box'?$('tuning').value+' Hz':'N/A'],['Port area',$('type').value==='Ported Box'?$('portArea').value+' in²':'N/A'],['Port inlet', $('type').value==='Ported Box'?$('portWidth').value+' × '+Math.max(0,H-2*T).toFixed(2)+' in':'N/A'],['Port length', $('type').value==='Ported Box'?$('portLength').value+' in':'N/A']];$('params').innerHTML=rows.map(r=>'<tr><td>'+r[0]+'</td><td><b>'+r[1]+'</b></td></tr>').join('');const fW=Math.max(0,W-2*T),fH=Math.max(0,H-2*T),sideD=Math.max(0,D-2*T);$('cuts').innerHTML=[['Top / Bottom',W.toFixed(2)+' × '+D.toFixed(2),2],['Front / Rear',fW.toFixed(2)+' × '+fH.toFixed(2),2],['Left / Right',sideD.toFixed(2)+' × '+fH.toFixed(2),2],...( $('type').value==='Ported Box'?[['Port partitions','Not finalized','—']]:[])].map(r=>'<tr>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');const warning=$('warning');if(!valid){warning.style.display='block';warning.textContent='Invalid dimensions. Each external dimension must exceed twice the material thickness.'}else if($('type').value.startsWith('Bandpass')){warning.style.display='block';warning.textContent='Bandpass is not implemented; no build-ready measurements are available.'}else if($('type').value==='Ported Box'&&net<=0){warning.style.display='block';warning.textContent='The entered port and driver displacement consume the estimated airspace. This design is not buildable as entered.'}else{warning.style.display='block';warning.textContent='Preliminary estimates only. Depth and port length are calculated estimates; verify airspace, port geometry, driver fit, and tuning before cutting.'}}
+const max=Math.max(W,H,D);const floor=new THREE.GridHelper(Math.max(100,max*3),Math.max(10,Math.round(max*3/2)),0x82917c,0x8da187);floor.position.y=-.02;boxGroup.add(floor);drawPlan();}
+function updateReadout(){
+const W=Number($('width').value),H=Number($('height').value),T=Number($('thickness').value);
+const Q=Math.max(1,Number($('quantity').value)||1);
+const rawDisp=$('displacement').value.trim(),dispKnown=rawDisp!==''&&Number.isFinite(Number(rawDisp))&&Number(rawDisp)>=0;
+const disp=dispKnown?Number(rawDisp)*Q:0,area=Number($('portArea').value),tuning=Number($('tuning').value),target=Number($('targetVolume').value);
+const type=$('type').value,ported=type==='Ported Box',bandpass=type.startsWith('Bandpass');
+const iw=W-2*T,ih=H-2*T,base=iw*ih,portType=$('portType').value,slot=portType.startsWith('Slot');
+const inputsValid=[W,H,T,target].every(Number.isFinite)&&W>0&&H>0&&T>0&&target>0&&iw>0&&ih>0;
+let portLength=NaN,portVol=0,portWidth=NaN,portValid=!ported;
+if(ported){
+ portValid=Number.isFinite(area)&&area>0&&Number.isFinite(tuning)&&tuning>0&&slot&&ih>0&&area<=iw*ih;
+ if(portValid){
+  // Straight slot-port Helmholtz estimate. End correction is approximate, not universal.
+  portLength=(13503*13503*area)/(4*Math.PI*Math.PI*tuning*tuning*target*1728)-0.732*Math.sqrt(area);
+  portValid=Number.isFinite(portLength)&&portLength>0;
+  if(portValid){portWidth=area/ih;portVol=area*portLength/1728;}
+ }
+}
+$('portWidth').value=ported&&portValid?portWidth.toFixed(3):'';
+$('portLength').value=ported&&portValid?portLength.toFixed(3):'';
+const grossRequired=target+(dispKnown?disp:0)+(ported&&portValid?portVol:0);
+const depth=inputsValid&&(!ported||portValid)&&!bandpass?grossRequired*1728/base+2*T:NaN;
+$('depth').value=Number.isFinite(depth)&&depth>0?depth.toFixed(3):'';
+const D=Number.isFinite(depth)?depth:NaN,valid=inputsValid&&Number.isFinite(D)&&D>2*T;
+const gross=valid?iw*ih*(D-2*T)/1728:NaN;
+const net=valid?gross-(dispKnown?disp:0)-(ported&&portValid?portVol:0):NaN;
+const fmt=(n,d=3)=>Number.isFinite(n)?n.toFixed(d):'—';
+const rows=[
+['External dimensions',valid?fmt(W)+' × '+fmt(H)+' × '+fmt(D)+' in':'Invalid / incomplete'],
+['Material thickness',fmt(T)+' in'],
+['Gross internal volume',valid?fmt(gross)+' ft³':'—'],
+['Estimated net airspace',valid&&dispKnown?fmt(net)+' ft³':(valid?'Enter driver displacement':'—')],
+['Target net volume',fmt(target)+' ft³'],
+['Target tuning',ported?fmt(tuning,2)+' Hz':'N/A'],
+['Port area',ported?fmt(area)+' in²':'N/A'],
+['Port inlet',ported&&portValid?fmt(portWidth)+' × '+fmt(ih)+' in':'Not calculated'],
+['Estimated straight port length',ported&&portValid?fmt(portLength)+' in':'Not calculated']
+];
+$('params').innerHTML=rows.map(r=>'<tr><td>'+r[0]+'</td><td><b>'+r[1]+'</b></td></tr>').join('');
+const fW=Math.max(0,W-2*T),fH=Math.max(0,H-2*T),sideD=Math.max(0,D-2*T);
+$('cuts').innerHTML=[
+['Top / Bottom',valid?fmt(fW)+' × '+fmt(sideD):'—',2],
+['Front / Rear',valid?fmt(W)+' × '+fmt(H):'—',2],
+['Left / Right',valid?fmt(sideD)+' × '+fmt(fH):'—',2],
+...(ported?[['Port partitions','Not finalized','—']]:[])
+].map(r=>'<tr>'+r.map(x=>'<td>'+x+'</td>').join('')+'</tr>').join('');
+const warning=$('warning');warning.style.display='block';
+if(bandpass)warning.textContent='Bandpass calculations are not implemented. Do not use these dimensions as a build plan.';
+else if(!inputsValid)warning.textContent='Enter valid positive width, height, thickness, and target volume. Internal width and height must be positive.';
+else if(ported&&!portValid)warning.textContent=slot?'The selected port settings produce no valid positive straight-port length. Check area and tuning; no ported depth is calculated.':'Round-port geometry is not supported by this slot-port estimator. No ported depth is calculated.';
+else if(!dispKnown)warning.textContent='Enter the exact driver displacement from the manufacturer. Depth is provisional until then; port length remains a straight-slot estimate with approximate end correction.';
+else if(ported&&net>0)warning.textContent='Preliminary only: straight-slot Helmholtz estimate with approximate end correction. Port folds, opening geometry, bracing, driver fit, and measured tuning are not verified.';
+else if(ported&&net<=0)warning.textContent='Driver and port displacement leave no usable target airspace. This design is invalid as entered.';
+else warning.textContent='Geometric volume uses the entered dimensions and driver displacement. Verify actual driver fit, bracing, panel joints, and material thickness before cutting.';
+}
 function drawPlan(){const W=+$('width').value,H=+$('height').value;const svg=$('planSvg');svg.innerHTML='<rect x="35" y="25" width="450" height="230" fill="#fff" stroke="#d5dbe2"/><rect x="70" y="45" width="380" height="190" fill="#e8d5ad" stroke="#594c36" stroke-width="2"/><circle cx="160" cy="140" r="54" fill="#343434" stroke="#171717" stroke-width="6"/><circle cx="160" cy="140" r="39" fill="#777" stroke="#555" stroke-width="4"/><text x="260" y="135" font-size="15" fill="#17202b">'+W+' in × '+H+' in front reference</text><text x="260" y="158" font-size="11" fill="#687480">Not a dimensioned manufacturing drawing</text>'}
 function setTab(t){document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));$('boxFields').hidden=t!=='box';$('subFields').hidden=t!=='sub';$('portFields').hidden=t!=='port'}
 document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
