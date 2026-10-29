@@ -91,6 +91,8 @@
 <script>
 const $=id=>document.getElementById(id);
 if(new URLSearchParams(location.search).get('embed')==='1'){document.getElementById('formHeader').remove();document.body.style.background='transparent';document.querySelector('.wrap').style.marginTop='0';}
+function reportEmbedHeight(){if(new URLSearchParams(location.search).get('embed')!=='1')return;const root=document.documentElement;const body=document.body;const height=Math.max(root.scrollHeight,root.offsetHeight,body.scrollHeight,body.offsetHeight);window.parent.postMessage({type:'enclosure-designer-height',height},location.origin);}
+if(new URLSearchParams(location.search).get('embed')==='1'){if('ResizeObserver'in window){new ResizeObserver(reportEmbedHeight).observe(document.body);}window.addEventListener('load',reportEmbedHeight);window.addEventListener('resize',reportEmbedHeight);setTimeout(reportEmbedHeight,100);setTimeout(reportEmbedHeight,500);}
 function fillMeasurements(id,min,max,selected){const el=$(id);for(let n=min;n<=max;n++){const o=document.createElement('option');o.value=String(n);o.textContent=n+' in';if(n===selected)o.selected=true;el.appendChild(o)}}
 fillMeasurements('width',8,60,25);fillMeasurements('length',8,60,30);fillMeasurements('depth',8,48,16);
 for(let hz=25;hz<=45.001;hz+=.5){const o=document.createElement('option');o.value=hz.toFixed(1);o.textContent=hz.toFixed(1)+' Hz';if(Math.abs(hz-32)<.001)o.selected=true;$('tuning').appendChild(o)}
