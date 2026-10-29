@@ -128,6 +128,7 @@ function setupFinishDesigner(){
   if(which==='paint')selectedPaintColor=selected;else selectedWrapColor=selected;
   document.querySelectorAll('#'+containerId+' .color-choice').forEach(b=>{const active=b===btn;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active));});
   document.getElementById(which==='paint'?'customPaintField':'customWrapField').classList.toggle('hidden',selected!=='Custom Color');
+  update3DPreview();
  }));}
  bindColors('paintColors','paint');bindColors('wrapColors','wrap');
  $('paintDesign').addEventListener('change',()=>{const active=$('paintDesign').value!=='None';$('paintNotesField').classList.toggle('hidden',!active);$('designPaintColorField').classList.toggle('hidden',!active);update3DPreview();});
@@ -137,7 +138,8 @@ function setupFinishDesigner(){
 setupFinishDesigner();
 document.querySelectorAll('[data-port-style]').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
 document.querySelectorAll('[data-box-type]').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
-['size','quantity','tuning','paintDesign','wrapDesign','paintNotes','wrapNotes','customPaintName','customWrapName'].forEach(id=>{const el=$(id);if(el){el.addEventListener('input',update3DPreview);el.addEventListener('change',update3DPreview);}});
+['size','quantity','tuning','paintDesign','wrapDesign','paintNotes','wrapNotes','customPaintName','customWrapName','wrapType','rawMaterial'].forEach(id=>{const el=$(id);if(el){el.addEventListener('input',update3DPreview);el.addEventListener('change',update3DPreview);}});
+document.querySelectorAll('.finish-toggle').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
 
 ['paintDesign','wrapDesign','paintNotes','wrapNotes','customPaintName','customWrapName'].forEach(id=>{const el=$(id);if(el){el.addEventListener('input',update3DPreview);el.addEventListener('change',update3DPreview);}});
 document.querySelectorAll('.finish-toggle').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
@@ -145,7 +147,23 @@ document.querySelectorAll('.finish-toggle').forEach(b=>b.addEventListener('click
 let previewRotation=0,previewDragStart=null;
 function hexToRgb(hex){const m=/^#?([0-9a-f]{6})$/i.exec(hex||'');return m?{r:parseInt(m[1].slice(0,2),16),g:parseInt(m[1].slice(2,4),16),b:parseInt(m[1].slice(4,6),16)}:{r:90,g:96,b:105};}
 function shadeColor(hex,amount){const c=hexToRgb(hex);return '#'+[c.r,c.g,c.b].map(v=>Math.max(0,Math.min(255,Math.round(v*amount))).toString(16).padStart(2,'0')).join('');}
-function previewSurface(){if(selectedFinish==='Raw')return {front:'#b99b70',side:'#8e7656',top:'#d5bd96',label:$('rawMaterial').value};if(selectedFinish==='Paint'){const col=selectedPaintColor==='Custom Color'? '#707780':({'Black':'#171717','White':'#f7f7f7','Red':'#cf3038','Blue':'#2862bd','Dark Blue':'#142c5c','Green':'#27804b','Yellow':'#f1cf36','Orange':'#ed792c','Purple':'#7947a8','Pink':'#ec90b4','Gray':'#858990','Silver':'#c3c8ce','Gold':'#c5a04a','Bronze':'#936344'}[selectedPaintColor]||'#171717');return {front:col,side:shadeColor(col,.62),top:shadeColor(col,1.22),label:selectedPaintColor==='Custom Color'?$('customPaintName').value||'Custom paint':selectedPaintColor+' paint'};}const type=$('wrapType').value;let col=selectedWrapColor==='Custom Color'?'#707780':({'Black':'#171717','White':'#f7f7f7','Red':'#cf3038','Blue':'#2862bd','Dark Blue':'#142c5c','Green':'#27804b','Purple':'#7947a8','Silver':'#c3c8ce','Gold':'#c5a04a','Bronze':'#936344','Gray':'#858990'}[selectedWrapColor]||'#171717');if(type==='Carpet wrap')return {front:'#353535',side:'#222222',top:'#4a4a4a',label:'Carpet wrap'};if(type==='Carbon fiber')return {front:'#292d32',side:'#181a1d',top:'#41464d',label:'Carbon fiber'+(selectedWrapColor==='Black'?'':' · '+selectedWrapColor)};if(type==='Forged carbon fiber')return {front:'#34383d',side:'#1d2024',top:'#50555b',label:'Forged carbon fiber'+(selectedWrapColor==='Black'?'':' · '+selectedWrapColor)};return {front:col,side:shadeColor(col,.62),top:shadeColor(col,1.22),label:type+' · '+selectedWrapColor};}
+function previewSurface(){
+ const paintMap={'Black':'#171717','White':'#f7f7f7','Red':'#cf3038','Blue':'#2862bd','Dark Blue':'#142c5c','Green':'#27804b','Yellow':'#f1cf36','Orange':'#ed792c','Purple':'#7947a8','Pink':'#ec90b4','Gray':'#858990','Silver':'#c3c8ce','Gold':'#c5a04a','Bronze':'#936344'};
+ if(selectedFinish==='Raw')return {front:'#b99b70',side:'#8e7656',top:'#d5bd96',label:$('rawMaterial').value};
+ if(selectedFinish==='Paint'){
+  const col=selectedPaintColor==='Custom Color'?($('customPaintName').value.trim()||'#707780'):paintMap[selectedPaintColor]||'#171717';
+  const customHex=/^#[0-9a-f]{6}$/i.test(col)?col:null;
+  const actual=customHex||paintMap[selectedPaintColor]||'#171717';
+  return {front:actual,side:shadeColor(actual,.62),top:shadeColor(actual,1.22),label:selectedPaintColor==='Custom Color'?'Custom paint':selectedPaintColor+' paint'};
+ }
+ const type=$('wrapType').value;
+ let col=selectedWrapColor==='Custom Color'?($('customWrapName').value.trim()||'#707780'):paintMap[selectedWrapColor]||'#171717';
+ if(!/^#[0-9a-f]{6}$/i.test(col))col=paintMap[selectedWrapColor]||'#171717';
+ if(type==='Carpet wrap')return {front:'#353535',side:'#222222',top:'#4a4a4a',label:'Carpet wrap'};
+ if(type==='Carbon fiber')return {front:col,side:shadeColor(col,.62),top:shadeColor(col,1.22),label:'Carbon fiber · '+selectedWrapColor};
+ if(type==='Forged carbon fiber')return {front:col,side:shadeColor(col,.62),top:shadeColor(col,1.22),label:'Forged carbon fiber · '+selectedWrapColor};
+ return {front:col,side:shadeColor(col,.62),top:shadeColor(col,1.22),label:type+' · '+selectedWrapColor};
+}
 let box3DScene=null,box3DCamera=null,box3DRenderer=null,box3DControls=null,box3DGroup=null,box3DResizeObserver=null;
 function initFree3DPreview(){
  const host=$('box3DCanvas');if(!host||!window.THREE||box3DRenderer)return;
