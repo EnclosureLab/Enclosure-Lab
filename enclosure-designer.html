@@ -156,8 +156,8 @@ function update3DPreview(){
  let port='';
  if(ported){
   if(style==='Slot front panel'){
-   const pw=Math.max(38,fw*.29),ph=Math.max(11,fh*.095),px=x+fw*.63,py=bottom-ph-13;
-   port='<path d="M '+px+' '+py+' h '+pw+' v '+ph+' h '+(-pw)+' Z" fill="#050608" stroke="#d9dce0" stroke-width="2.2" stroke-linejoin="round"/><path d="M '+(px+4)+' '+(py+3)+' h '+(pw-8)+' v '+Math.max(3,ph-6)+' h '+(-(pw-8))+' Z" fill="#252b33"/><path d="M '+(px+7)+' '+(py+ph*.5)+' H '+(px+pw-7)+'" stroke="#687381" stroke-width="1.4"/>';
+   const pw=Math.max(15,fw*.055),ph=fh*.88,px=x+fw-pw-10,py=y+fh*.06;
+   port='<path d="M '+px+' '+py+' h '+pw+' v '+ph+' h '+(-pw)+' Z" fill="#050608" stroke="#d9dce0" stroke-width="2.2" stroke-linejoin="round"/><path d="M '+(px+3)+' '+(py+4)+' h '+Math.max(6,pw-6)+' v '+Math.max(8,ph-8)+' h '+(-Math.max(6,pw-6))+' Z" fill="#252b33"/><path d="M '+(px+5)+' '+(py+ph*.5)+' H '+(px+pw-5)+'" stroke="#687381" stroke-width="1.3"/>';
   }
   else if(style==='Slot side panel'){
    const sw=dx*.30,sh=fh*.82,sx=right+dx*.28,sy=y+fh*.09+dy*.09;
