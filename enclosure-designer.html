@@ -38,7 +38,7 @@
 <div class="field full" id="tuningField"><label for="tuning">Target port tuning <span class="unit">(Hz)</span></label><select id="tuning" name="tuning"></select><div class="help">Required for ported boxes only. This field is hidden for sealed boxes.</div></div>
 </div>
 <div class="weight-estimate" id="weightEstimate" aria-live="polite">Estimated material weight: calculating…</div>
-<div class="actions"><button class="primary" type="submit">Add Custom Box to Checkout</button></div>
+<div class="actions"><button class="primary" type="submit">Add to Cart</button></div>
 <div class="summary" id="summary" aria-live="polite"></div>
 <div class="notice">This form currently collects and reviews your selections on this page. Online order submission, final pricing, shipping, and payment must be connected before customers can place a completed order.</div>
 </form>
@@ -72,7 +72,7 @@ $('customBoxForm').addEventListener('submit',e=>{
  try{const cart=JSON.parse(localStorage.getItem(CART_KEY)||'[]');const index=cart.findIndex(i=>i.category==='enclosure'&&i.configuration);if(index>=0)cart[index]=item;else cart.push(item);localStorage.setItem(CART_KEY,JSON.stringify(cart));localStorage.setItem('enclosureLabCustomBoxConfig',JSON.stringify(config));}
  catch(err){$('summary').textContent='Could not save this configuration in this browser. Please enable site storage and try again.';return}
  const d=[['Material',config.material],['Maximum dimensions',config.width+' W × '+config.length+' L × '+config.depth+' D inches'],['Box type',config.type],['Subwoofer model',config.model],['Subwoofer size',config.size+' inches'],['Quantity',config.quantity],['Target tuning',config.tuning===null?'Not applicable (sealed)':config.tuning+' Hz'],['Estimated material weight',config.weightLb+' lb']];
- $('summary').textContent='YOUR BOX CONFIGURATION\n'+d.map(x=>x[0]+': '+x[1]).join('\n')+'\n\nAdded to checkout. Final weight and shipping will be confirmed before the order is finalized.';
+ $('summary').textContent='CUSTOM BOX ADDED TO CART\n'+d.map(x=>x[0]+': '+x[1]).join('\n')+'\n\nAdded to cart. The custom enclosure price will be confirmed after review; estimated weight is used for preliminary shipping.';
  $('summary').scrollIntoView({behavior:'smooth',block:'nearest'});
  setTimeout(()=>{if(new URLSearchParams(location.search).get('embed')==='1')window.top.location.href='checkout.html';else window.location.href='checkout.html';},500);
 });
