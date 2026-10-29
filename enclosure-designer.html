@@ -44,8 +44,8 @@
 <div class="fields" id="portFields" hidden>
 <div class="field wide"><label for="portType">Port type</label><select id="portType"><option>Slot, front panel</option><option>Slot, right side</option><option>Round port</option></select></div>
 <div class="two wide"><div class="field"><label for="tuning">Target tuning (Hz)</label><input id="tuning" type="number" min="10" max="100" value="32"></div><div class="field"><label for="portArea">Port area (in²)</label><input id="portArea" type="number" min="1" step=".5" value="17.5"></div></div>
-<div class="field wide"><label for="portWidth">Slot port width (in)</label><input id="portWidth" type="number" min=".5" step=".125" value="2" readonly></div>
-<div class="field wide"><label for="portLength">Port length (in)</label><input id="portLength" type="number" min="1" step=".25" value="18" readonly><small>Calculated from port area and target tuning as a preliminary estimate; bends and end corrections are not fully modeled.</small></div>
+<div class="field wide"><label for="portWidth">Slot port width (in)</label><input id="portWidth" type="number" min=".5" step=".25" value="1.25" readonly><small>Rounded to practical ¼-inch increments; port area and length are recalculated from the displayed width.</small></div>
+<div class="field wide"><label for="portLength">Port length (in)</label><input id="portLength" type="number" min="1" step=".25" value="" readonly><small>Calculated from port area and target tuning as a preliminary estimate; bends and end corrections are not fully modeled.</small></div>
 </div>
 <div class="fields"><div class="field wide"><button class="primary" id="calculate">Calculate / Update Model</button><div class="warning" id="warning"></div></div><div class="field wide note">3D orbit, zoom, and pan use browser-based controls. This prototype is for design exploration; verify all measurements and tuning before cutting wood.</div></div>
 </aside>
@@ -79,14 +79,18 @@ const disp=dispKnown?Number(rawDisp)*Q:0,area=Number($('portArea').value),tuning
 const type=$('type').value,ported=type==='Ported Box',bandpass=type.startsWith('Bandpass');
 const iw=W-2*T,ih=H-2*T,base=iw*ih,portType=$('portType').value,slot=portType.startsWith('Slot');
 const inputsValid=[W,H,T,target].every(Number.isFinite)&&W>0&&H>0&&T>0&&target>0&&iw>0&&ih>0;
-let portLength=NaN,portVol=0,portWidth=NaN,portValid=!ported;
+let portLength=NaN,portVol=0,portWidth=NaN,actualArea=area,portValid=!ported;
 if(ported){
  portValid=Number.isFinite(area)&&area>0&&Number.isFinite(tuning)&&tuning>0&&slot&&ih>0&&area<=iw*ih;
  if(portValid){
   // Straight slot-port Helmholtz estimate. End correction is approximate, not universal.
-  portLength=(13503*13503*area)/(4*Math.PI*Math.PI*tuning*tuning*target*1728)-0.732*Math.sqrt(area);
-  portValid=Number.isFinite(portLength)&&portLength>0;
-  if(portValid){portWidth=area/ih;portVol=area*portLength/1728;}
+  portWidth=Math.round((area/ih)*4)/4;
+  actualArea=portWidth*ih;
+  const equivalentDiameter=Math.sqrt(4*actualArea/Math.PI);
+  // Approximate straight slot-port end correction; wall-mounted ports need layout-specific correction.
+  portLength=(13503*13503*actualArea)/(4*Math.PI*Math.PI*tuning*tuning*target*1728)-0.732*equivalentDiameter;
+  portValid=Number.isFinite(portLength)&&portLength>=1&&portWidth>=0.5&&actualArea>0;
+  if(portValid){portVol=actualArea*portLength/1728;}
  }
 }
 $('portWidth').value=ported&&portValid?portWidth.toFixed(3):'';
@@ -105,7 +109,7 @@ const rows=[
 ['Estimated net airspace',valid&&dispKnown?fmt(net)+' ft³':(valid?'Enter driver displacement':'—')],
 ['Target net volume',fmt(target)+' ft³'],
 ['Target tuning',ported?fmt(tuning,2)+' Hz':'N/A'],
-['Port area',ported?fmt(area)+' in²':'N/A'],
+['Port area',ported&&portValid?fmt(actualArea)+' in²':'N/A'],
 ['Port inlet',ported&&portValid?fmt(portWidth)+' × '+fmt(ih)+' in':'Not calculated'],
 ['Estimated straight port length',ported&&portValid?fmt(portLength)+' in':'Not calculated']
 ];
@@ -120,7 +124,7 @@ $('cuts').innerHTML=[
 const warning=$('warning');warning.style.display='block';
 if(bandpass)warning.textContent='Bandpass calculations are not implemented. Do not use these dimensions as a build plan.';
 else if(!inputsValid)warning.textContent='Enter valid positive width, height, thickness, and target volume. Internal width and height must be positive.';
-else if(ported&&!portValid)warning.textContent=slot?'The selected port settings produce no valid positive straight-port length. Check area and tuning; no ported depth is calculated.':'Round-port geometry is not supported by this slot-port estimator. No ported depth is calculated.';
+else if(ported&&!portValid)warning.textContent=slot?'The selected area/tuning produces a port shorter than the 1-inch minimum or invalid dimensions. Increase area or lower tuning; no ported depth is calculated.':'Round-port geometry is not supported by this slot-port estimator. No ported depth is calculated.';
 else if(!dispKnown)warning.textContent='Enter the exact driver displacement from the manufacturer. Depth is provisional until then; port length remains a straight-slot estimate with approximate end correction.';
 else if(ported&&net>0)warning.textContent='Preliminary only: straight-slot Helmholtz estimate with approximate end correction. Port folds, opening geometry, bracing, driver fit, and measured tuning are not verified.';
 else if(ported&&net<=0)warning.textContent='Driver and port displacement leave no usable target airspace. This design is invalid as entered.';
