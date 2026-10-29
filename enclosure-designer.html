@@ -169,7 +169,22 @@ function update3DPreview(){
  }
  let pattern='';
  const pd=$('paintDesign')?.value||'None',wd=$('wrapDesign')?.value||'None';
- if(selectedFinish==='Paint'&&pd==='Splatter paint')pattern='<g fill="'+shadeColor(surface.front,.35)+'"><circle cx="88" cy="111" r="4"/><circle cx="130" cy="178" r="3"/><circle cx="194" cy="102" r="4"/><circle cx="255" cy="169" r="3"/><circle cx="226" cy="127" r="2.5"/><circle cx="155" cy="202" r="2.5"/></g>';
+ if(selectedFinish==='Paint'&&pd==='Splatter paint'){
+  const light=shadeColor(surface.front,.72),mid=shadeColor(surface.front,.48),dark=shadeColor(surface.front,.22);
+  const splats=[];
+  // Irregular paint bursts: tapered arms, connected blobs, drips, and fine overspray.
+  const bursts=[[.18,.22,1],[.43,.36,0],[.72,.25,2],[.82,.68,1],[.32,.76,2],[.59,.58,0]];
+  bursts.forEach((b,i)=>{
+   const cx=x+fw*b[0],cy=y+fh*b[1],s=Math.max(3,fh*(i%3===0?.12:i%3===1?.085:.065)),col=[light,mid,dark][b[2]];
+   splats.push('<g fill="'+col+'" stroke="'+col+'" stroke-linecap="round" stroke-linejoin="round">');
+   splats.push('<path d="M '+(cx-s*.9)+' '+(cy-s*.12)+' Q '+(cx-s*.72)+' '+(cy-s*.82)+' '+(cx-s*.15)+' '+(cy-s*.62)+' Q '+(cx+s*.15)+' '+(cy-s*1.03)+' '+(cx+s*.42)+' '+(cy-s*.55)+' Q '+(cx+s*1.02)+' '+(cy-s*.47)+' '+(cx+s*.76)+' '+(cy-s*.02)+' Q '+(cx+s*1.08)+' '+(cy+s*.38)+' '+(cx+s*.43)+' '+(cy+s*.43)+' Q '+(cx+s*.13)+' '+(cy+s*.88)+' '+(cx-s*.18)+' '+(cy+s*.48)+' Q '+(cx-s*.82)+' '+(cy+s*.58)+' '+(cx-s*.9)+' '+(cy-s*.12)+' Z"/>');
+   splats.push('<path d="M '+(cx+s*.18)+' '+(cy+s*.28)+' Q '+(cx+s*.28)+' '+(cy+s*.8)+' '+(cx+s*.16)+' '+(cy+s*1.28)+' Q '+(cx+s*.04)+' '+(cy+s*1.42)+' '+(cx-s*.01)+' '+(cy+s*1.22)+' L '+(cx-s*.03)+' '+(cy+s*.35)+' Z" opacity=".9"/>');
+   for(let j=0;j<5;j++){const ang=(i*47+j*71)*Math.PI/180,dist=s*(1.15+(j%3)*.34),rr=Math.max(.55,s*(j%2?.045:.075));splats.push('<ellipse cx="'+(cx+Math.cos(ang)*dist)+'" cy="'+(cy+Math.sin(ang)*dist)+'" rx="'+rr*1.35+'" ry="'+rr+'" transform="rotate('+(j*23)+' '+(cx+Math.cos(ang)*dist)+' '+(cy+Math.sin(ang)*dist)+')"/>');}
+   splats.push('</g>');
+  });
+  const flecks=Array.from({length:82},(_,i)=>{const fx=x+fw*((i*37%97)+1)/99,fy=y+fh*((i*61%89)+2)/92,rr=i%9===0?1.5:i%4===0?1:.55,col=i%3===0?light:i%3===1?mid:dark;return '<ellipse cx="'+fx+'" cy="'+fy+'" rx="'+(rr*(i%5===0?1.9:1))+'" ry="'+(rr*.62)+'" transform="rotate('+((i*29)%160)+' '+fx+' '+fy+')" fill="'+col+'" opacity="'+(i%4===0?.9:.68)+'"/>';}).join('');
+  pattern='<g>'+splats.join('')+flecks+'</g>';
+ }
  if(selectedFinish==='Paint'&&pd==='Two-tone paint')pattern='<path d="M '+x+' '+(y+fh*.63)+' H '+right+' V '+bottom+' H '+x+' Z" fill="'+shadeColor(surface.front,.48)+'"/>';
  if(selectedFinish==='Paint'&&pd==='Metallic / flake')pattern='<g fill="#fff" opacity=".7">'+Array.from({length:28},(_,i)=>'<circle cx="'+(x+12+(i*37)%220)+'" cy="'+(y+10+(i*23)%120)+'" r="'+(i%3===0?1.5:.8)+'"/>').join('')+'</g>';
  if(selectedFinish==='Paint'&&pd==='Color fade / gradient')pattern='<path d="'+front+'" fill="url(#fadeFinish)" opacity=".9"/>';
