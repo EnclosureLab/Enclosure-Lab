@@ -184,7 +184,7 @@ function updateFree3DModel(){
  const w=Math.max(8,Number($('width').value)||25),l=Math.max(8,Number($('length').value)||30),d=Math.max(8,Number($('depth').value)||16);
  const surface=previewSurface(),ported=$('type').value==='Ported',style=$('portStyle').value;
  // Three.js uses real world units in inches: X=width, Y=depth/height, Z=length.
- const rawFinish=selectedFinish==='Raw'||selectedFinish==='Unfinished'||selectedWrapType==='Raw / unfinished';
+ const rawFinish=selectedFinish==='Raw';
  const frontMat=new THREE.MeshStandardMaterial({color:rawFinish?0xb99a70:surface.front,roughness:.88,metalness:0});
  const sideMat=new THREE.MeshStandardMaterial({color:rawFinish?0xa98960:surface.side,roughness:.88,metalness:0});
  const topMat=new THREE.MeshStandardMaterial({color:rawFinish?0xc4a77e:surface.top,roughness:.88,metalness:0});
