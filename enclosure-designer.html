@@ -33,7 +33,7 @@
 <div class="section-title">2. Box type</div>
 <select id="type" name="type" required class="hidden"><option value="Ported">Ported</option><option value="Sealed">Sealed</option></select>
 <div class="box-type-options">
-  <div class="box-type-card selected" id="portedTypeCard"><button type="button" class="box-type-toggle" data-box-type="Ported" aria-expanded="true"><span><strong>Ported</strong><small>More output and stronger low-bass performance</small></span><span class="box-type-check">✓</span></button><div class="box-type-details" id="portedTypeDetails">
+  <div class="box-type-card selected" id="portedTypeCard"><button type="button" class="box-type-toggle" data-box-type="Ported" onclick="selectEnclosureType('Ported',event)" aria-expanded="true"><span><strong>Ported</strong><small>More output and stronger low-bass performance</small></span><span class="box-type-check">✓</span></button><div class="box-type-details" id="portedTypeDetails">
   <p class="port-style-heading">Choose port style</p>
   <div class="port-style-slider" id="portStyleOptions">
     <button type="button" class="port-style-choice selected" data-port-style="Slot front panel" aria-pressed="true"><strong>Slot front panel</strong><small>Slot opening on the front panel</small></button>
@@ -43,7 +43,7 @@
   </div>
   <input type="hidden" id="portStyle" name="portStyle" value="Slot front panel">
 </div></div>
-  <div class="box-type-card" id="sealedTypeCard"><button type="button" class="box-type-toggle" data-box-type="Sealed" aria-expanded="false"><span><strong>Sealed</strong><small>Compact design with controlled bass response</small></span><span class="box-type-check">✓</span></button><div class="box-type-details hidden" id="sealedTypeDetails">A closed enclosure with no port. The tuning frequency field is not needed for this style.</div></div>
+  <div class="box-type-card" id="sealedTypeCard"><button type="button" class="box-type-toggle" data-box-type="Sealed" onclick="selectEnclosureType('Sealed',event)" aria-expanded="false"><span><strong>Sealed</strong><small>Compact design with controlled bass response</small></span><span class="box-type-check">✓</span></button><div class="box-type-details hidden" id="sealedTypeDetails">A closed enclosure with no port. The tuning frequency field is not needed for this style.</div></div>
 </div>
 <div class="section-title">3. Box finish &amp; paint color</div>
 <div class="finish-options">
@@ -384,6 +384,19 @@ function estimateBoxWeight(){
  return Math.max(1,woodVolume*density*factor+1.5);
 }
 function updateWeight(){const weight=estimateBoxWeight();$('weightEstimate').innerHTML='<strong>Estimated material weight: '+weight.toFixed(1)+' lb</strong><br>Estimate assumes ¾-inch panels and the selected maximum dimensions. Includes an allowance for internal panels and assembly; actual weight can vary.';return weight}
+window.selectEnclosureType=function(value,event){
+ if(event){event.preventDefault();event.stopPropagation();}
+ const type=document.getElementById('type');
+ if(!type||!['Ported','Sealed'].includes(value))return;
+ type.value=value;
+ document.getElementById('portedTypeCard').classList.toggle('selected',value==='Ported');
+ document.getElementById('sealedTypeCard').classList.toggle('selected',value==='Sealed');
+ document.getElementById('portedTypeDetails').classList.toggle('hidden',value!=='Ported');
+ document.getElementById('sealedTypeDetails').classList.toggle('hidden',value!=='Sealed');
+ document.querySelectorAll('.box-type-toggle').forEach(b=>b.setAttribute('aria-expanded',String(b.dataset.boxType===value)));
+ updateTuning();
+ update3DPreview();
+};
 function updateTuning(){const ported=$('type').value==='Ported';$('tuningField').classList.toggle('hidden',!ported);$('tuning').required=ported;updateWeight()}
 document.querySelectorAll('.port-style-choice').forEach(btn=>btn.addEventListener('click',e=>{
  e.preventDefault();e.stopPropagation();
@@ -391,36 +404,9 @@ document.querySelectorAll('.port-style-choice').forEach(btn=>btn.addEventListene
  document.querySelectorAll('.port-style-choice').forEach(b=>{const active=b===btn;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active));});
  update3DPreview();
 }));
-document.querySelectorAll('.box-type-toggle').forEach(btn=>btn.addEventListener('click',e=>{
- e.preventDefault();e.stopPropagation();
- const value=btn.dataset.boxType;
- $('type').value=value;
- document.querySelectorAll('.box-type-card').forEach(card=>card.classList.toggle('selected',card.id===(value==='Ported'?'portedTypeCard':'sealedTypeCard')));
- document.querySelectorAll('.box-type-toggle').forEach(b=>b.setAttribute('aria-expanded',String(b.dataset.boxType===value)));
- $('portedTypeDetails').classList.toggle('hidden',value!=='Ported');
- $('sealedTypeDetails').classList.toggle('hidden',value!=='Sealed');
- updateTuning();
- update3DPreview();
-}));
 $('type').addEventListener('change',updateTuning);
 ['material','width','length','depth'].forEach(id=>$(id).addEventListener('change',updateWeight));
 updateTuning();
-// Delegated capture handler keeps Box Type cards responsive even if other
-// page-level handlers are changed or the cards are re-rendered.
-document.querySelector('.box-type-options').addEventListener('click',function(event){
- const button=event.target.closest('button[data-box-type]');
- if(!button)return;
- event.preventDefault();
- const value=button.dataset.boxType;
- if(!['Ported','Sealed'].includes(value))return;
- $('type').value=value;
- document.querySelectorAll('.box-type-card').forEach(card=>card.classList.toggle('selected',card.id===(value==='Ported'?'portedTypeCard':'sealedTypeCard')));
- $('portedTypeDetails').classList.toggle('hidden',value!=='Ported');
- $('sealedTypeDetails').classList.toggle('hidden',value!=='Sealed');
- document.querySelectorAll('.box-type-toggle').forEach(b=>b.setAttribute('aria-expanded',String(b.dataset.boxType===value)));
- updateTuning();
- update3DPreview();
-});;
 $('customBoxForm').addEventListener('submit',e=>{
  e.preventDefault();
  const weight=updateWeight();
