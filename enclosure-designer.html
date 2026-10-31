@@ -94,7 +94,7 @@
 </form>
 <aside class="preview-card"><div class="live-preview">
   <div class="preview-heading"><div><div class="eyebrow">LIVE PROJECT PREVIEW</div><h2>Visualize your enclosure</h2><p>Updates as you change your dimensions, box style, port, and finish.</p></div><span class="preview-live"><i></i> Live</span></div>
-  <div class="preview-mode-controls" style="display:flex;gap:8px;margin:12px 0 8px;align-items:stretch"><style>.preview-mode-controls button{flex:1 1 0;width:auto!important;min-width:0;padding:10px 8px;font-size:13px;white-space:nowrap}.preview-mode-controls button.primary{flex:1 1 0}</style><button type="button" id="previewExteriorBtn" class="primary" aria-pressed="true">Exterior</button><button type="button" id="previewInteriorBtn" class="secondary" aria-pressed="false">Interior</button><button type="button" id="previewExplodedBtn" class="secondary" aria-pressed="false">Exploded</button></div><div class="preview-stage" id="previewStage" tabindex="0" aria-label="Interactive 3D enclosure preview. Drag to rotate, scroll or pinch to zoom, and right-drag to pan.">
+<div class="preview-stage" id="previewStage" tabindex="0" aria-label="Interactive 3D enclosure preview. Drag to rotate, scroll or pinch to zoom, and right-drag to pan.">
     <svg id="boxPreviewSvg" viewBox="0 0 420 270" role="img" aria-label="Three-dimensional preview of your subwoofer enclosure" style="display:none"></svg>
     <div id="box3DCanvas" style="position:absolute;inset:0;width:100%;height:100%;touch-action:none"></div>
   </div>
@@ -191,7 +191,7 @@ function updateFree3DModel(){
  const topMat=new THREE.MeshBasicMaterial({color:raw?'#c9aa7b':surface.top,side:THREE.DoubleSide});
  const insideMat=new THREE.MeshBasicMaterial({color:raw?'#d0b58c':'#c9b99f',side:THREE.DoubleSide});
  const edgeMat=new THREE.LineBasicMaterial({color:0x303030});
- const exploded=box3DViewMode==='exploded',interior=box3DViewMode==='interior';
+ const exploded=false,interior=false;
  const gap=exploded?Math.max(1.4,t*2):0;
  const addPanel=(name,ww,hh,dd,x,y,z,mat,offset=[0,0,0])=>{
   const geo=new THREE.BoxGeometry(ww,hh,dd);
