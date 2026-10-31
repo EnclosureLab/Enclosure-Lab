@@ -94,7 +94,7 @@
 </form>
 <aside class="preview-card"><div class="live-preview">
   <div class="preview-heading"><div><div class="eyebrow">LIVE PROJECT PREVIEW</div><h2>Visualize your enclosure</h2><p>Updates as you change your dimensions, box style, port, and finish.</p></div><span class="preview-live"><i></i> Live</span></div>
-  <div class="preview-stage" id="previewStage" tabindex="0" aria-label="Interactive 3D enclosure preview. Drag to rotate, scroll or pinch to zoom, and right-drag to pan.">
+  <div style="display:flex;gap:8px;margin:12px 0 8px"><button type="button" id="previewExteriorBtn" class="primary" aria-pressed="true">Exterior</button><button type="button" id="previewInteriorBtn" class="secondary" aria-pressed="false">Interior</button></div><div class="preview-stage" id="previewStage" tabindex="0" aria-label="Interactive 3D enclosure preview. Drag to rotate, scroll or pinch to zoom, and right-drag to pan.">
     <svg id="boxPreviewSvg" viewBox="0 0 420 270" role="img" aria-label="Three-dimensional preview of your subwoofer enclosure" style="display:none"></svg>
     <div id="box3DCanvas" style="position:absolute;inset:0;width:100%;height:100%;touch-action:none"></div>
   </div>
@@ -161,7 +161,7 @@ function previewSurface(){
  if(type==='Forged carbon fiber')return {front:col,side:shadeColor(col,.62),top:shadeColor(col,1.22),label:'Forged carbon fiber · '+selectedWrapColor};
  return {front:col,side:shadeColor(col,.62),top:shadeColor(col,1.22),label:type+' · '+selectedWrapColor};
 }
-let box3DScene=null,box3DCamera=null,box3DRenderer=null,box3DControls=null,box3DGroup=null,box3DResizeObserver=null;
+let box3DScene=null,box3DCamera=null,box3DRenderer=null,box3DControls=null,box3DGroup=null,box3DResizeObserver=null,box3DViewMode="exterior";
 function initFree3DPreview(){
  const host=$('box3DCanvas');if(!host||!window.THREE||box3DRenderer)return;
  box3DScene=new THREE.Scene();box3DScene.background=new THREE.Color('#f7f8fa');
@@ -190,15 +190,29 @@ function updateFree3DModel(){
  const frontMat=new THREE.MeshBasicMaterial({color:surface.front});
  const sideMat=new THREE.MeshBasicMaterial({color:surface.side});
  const topMat=new THREE.MeshBasicMaterial({color:surface.top});
- const shell=new THREE.Mesh(new THREE.BoxGeometry(w,h,l),[sideMat,sideMat,topMat,topMat,frontMat,frontMat]);
- box3DGroup.add(shell);
- // Simple edge lines only: no simulated speaker hardware, port walls, bolts, or decorative geometry.
- const edges=new THREE.LineSegments(
-  new THREE.EdgesGeometry(new THREE.BoxGeometry(w,h,l)),
-  new THREE.LineBasicMaterial({color:0x303844})
- );
- box3DGroup.add(edges);
- // Simple CAD-style subwoofer: a flat mounting ring, cone and dust cap.
+ const edgeMat=new THREE.LineBasicMaterial({color:0x303844});
+ const addPanel=(ww,hh,dd,x,y,z,mat)=>{
+  const mesh=new THREE.Mesh(new THREE.BoxGeometry(ww,hh,dd),mat);mesh.position.set(x,y,z);box3DGroup.add(mesh);
+  const outline=new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry),edgeMat);outline.position.copy(mesh.position);box3DGroup.add(outline);
+ };
+ if(box3DViewMode==='exterior'){
+  const shell=new THREE.Mesh(new THREE.BoxGeometry(w,h,l),[sideMat,sideMat,topMat,topMat,frontMat,frontMat]);box3DGroup.add(shell);
+  box3DGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w,h,l)),edgeMat));
+ }else{
+  const t=Math.max(.5,Number($('thickness')?.value)||.75);
+  const wood=new THREE.MeshBasicMaterial({color:selectedFinish==='Raw'?'#b99b70':surface.side,side:THREE.DoubleSide});
+  addPanel(w,t,l,0,-h/2+t/2,0,wood);
+  addPanel(w,t,l,0,h/2-t/2,0,wood);
+  addPanel(t,h,l,-w/2+t/2,0,0,wood);addPanel(t,h,l,w/2-t/2,0,0,wood);
+  addPanel(w,h,t,0,0,-l/2+t/2,wood);addPanel(w,h,t,0,0,l/2-t/2,wood);
+  if($('type').value==='Ported'){
+   const dl=Math.max(t*2,l*.58),dx=$('portStyle').value==='Slot side panel'?w*.28:-w*.28;
+   addPanel(t,h-t*2,dl,dx,0,l/2-dl/2-t,wood);
+   addPanel(w*.42,t,l*.18,w*.25,-h/2+t*1.5,-l*.22,wood);
+  }
+ }
+ // Subwoofer is shown in the exterior view.
+ if(box3DViewMode==='exterior'){
  const count=Math.max(1,Math.min(4,Number($('quantity').value)||1));
  const speakerSize=Number($('size').value)||12;
  const radius=Math.min((speakerSize+1.1)/2,Math.min(w/(count>1?2.5:1.35),h/(count>2?2.5:1.35))*.48);
@@ -217,8 +231,9 @@ function updateFree3DModel(){
   const cap=new THREE.Mesh(new THREE.CircleGeometry(radius*.25,32),capMat);
   cap.position.set(x,y,l/2+.055);box3DGroup.add(cap);
  }
- // Show a simple flat port marker only when the selected enclosure is ported.
- if($('type').value==='Ported'){
+ }
+ // Show the port opening on the exterior view only.
+ if(box3DViewMode==='exterior'&&$('type').value==='Ported'){
   const style=$('portStyle').value;
   const mat=new THREE.MeshBasicMaterial({color:0x111318});
   if(style==='Hole front panel'||style==='Hole side panel'){
@@ -335,6 +350,8 @@ document.querySelectorAll('#paintColors .color-choice').forEach(b=>b.addEventLis
 document.querySelectorAll('#wrapColors .color-choice').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
 document.querySelectorAll('.finish-toggle').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
 const stage=$('previewStage');stage.addEventListener('pointerdown',e=>{previewDragStart={x:e.clientX,rotation:previewRotation};stage.setPointerCapture(e.pointerId);});stage.addEventListener('pointermove',e=>{if(!previewDragStart)return;previewRotation=Math.max(-35,Math.min(35,previewDragStart.rotation+(e.clientX-previewDragStart.x)*.65));update3DPreview();});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>stage.addEventListener(ev,()=>{previewDragStart=null;}));
+$('previewExteriorBtn')?.addEventListener('click',()=>{box3DViewMode='exterior';$('previewExteriorBtn').className='primary';$('previewInteriorBtn').className='secondary';$('previewExteriorBtn').setAttribute('aria-pressed','true');$('previewInteriorBtn').setAttribute('aria-pressed','false');update3DPreview();});
+$('previewInteriorBtn')?.addEventListener('click',()=>{box3DViewMode='interior';$('previewInteriorBtn').className='primary';$('previewExteriorBtn').className='secondary';$('previewInteriorBtn').setAttribute('aria-pressed','true');$('previewExteriorBtn').setAttribute('aria-pressed','false');update3DPreview();});
 update3DPreview();
 function estimateBoxWeight(){
  const w=Number($('width').value),l=Number($('length').value),d=Number($('depth').value),t=.75;
