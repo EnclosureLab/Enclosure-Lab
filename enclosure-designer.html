@@ -292,7 +292,9 @@ function updateFree3DModel(){
  line([new THREE.Vector3(w/2+dg,-h/2,-l/2),new THREE.Vector3(w/2+dg,h/2,-l/2)]);
  line([new THREE.Vector3(w/2+dg,-h/2,l/2),new THREE.Vector3(w/2+dg,-h/2,-l/2)]);
  box3DControls.target.set(0,0,0);
- const aspect=Math.max(.65,box3DRenderer.domElement.clientWidth/Math.max(1,box3DRenderer.domElement.clientHeight));\n const fitSpan=Math.max(w,h,l);\n const dist=(fitSpan/2)/Math.tan(THREE.MathUtils.degToRad(box3DCamera.fov/2))*1.65/Math.min(1,aspect);
+ const aspect=Math.max(.65,box3DRenderer.domElement.clientWidth/Math.max(1,box3DRenderer.domElement.clientHeight));
+ const fitSpan=Math.max(w,h,l);
+ const dist=(fitSpan/2)/Math.tan(THREE.MathUtils.degToRad(box3DCamera.fov/2))*1.65/Math.min(1,aspect);
  box3DCamera.position.set(dist*.95,dist*.72,dist*1.15);
  box3DCamera.near=.1;box3DCamera.far=span*30;box3DCamera.updateProjectionMatrix();
  box3DControls.minDistance=span*.45;box3DControls.maxDistance=span*6;
