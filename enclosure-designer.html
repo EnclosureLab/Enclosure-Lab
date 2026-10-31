@@ -405,6 +405,28 @@ document.querySelectorAll('.box-type-toggle').forEach(btn=>btn.addEventListener(
 $('type').addEventListener('change',updateTuning);
 ['material','width','length','depth'].forEach(id=>$(id).addEventListener('change',updateWeight));
 updateTuning();
+// Delegated capture handler keeps Box Type cards responsive even if other
+// page-level handlers are changed or the cards are re-rendered.
+document.addEventListener('click',function(event){
+ const button=event.target.closest('.box-type-toggle');
+ if(!button)return;
+ event.preventDefault();
+ event.stopPropagation();
+ const value=button.dataset.boxType;
+ const typeSelect=$('type');
+ if(!typeSelect||!['Ported','Sealed'].includes(value))return;
+ typeSelect.value=value;
+ document.querySelectorAll('.box-type-card').forEach(card=>{
+  card.classList.toggle('selected',card.id===(value==='Ported'?'portedTypeCard':'sealedTypeCard'));
+ });
+ document.querySelectorAll('.box-type-toggle').forEach(b=>{
+  b.setAttribute('aria-expanded',String(b.dataset.boxType===value));
+ });
+ $('portedTypeDetails')?.classList.toggle('hidden',value!=='Ported');
+ $('sealedTypeDetails')?.classList.toggle('hidden',value!=='Sealed');
+ updateTuning();
+ update3DPreview();
+},true);
 $('customBoxForm').addEventListener('submit',e=>{
  e.preventDefault();
  const weight=updateWeight();
