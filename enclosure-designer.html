@@ -180,102 +180,65 @@ function initFree3DPreview(){
 }
 function updateFree3DModel(){
  if(!window.THREE)return;initFree3DPreview();if(!box3DGroup)return;
- while(box3DGroup.children.length){const obj=box3DGroup.children.pop();obj.traverse?.(n=>{if(n.geometry)n.geometry.dispose();if(n.material){(Array.isArray(n.material)?n.material:[n.material]).forEach(m=>m.dispose());}});}
- const w=Math.max(8,Number($('width').value)||25),l=Math.max(8,Number($('length').value)||30),d=Math.max(8,Number($('depth').value)||16);
- const surface=previewSurface(),ported=$('type').value==='Ported',style=$('portStyle').value;
- // Three.js uses real world units in inches: X=width, Y=depth/height, Z=length.
- const rawFinish=selectedFinish==='Raw';
- const frontMat=new THREE.MeshStandardMaterial({color:rawFinish?0xb99a70:surface.front,roughness:.88,metalness:0});
- const sideMat=new THREE.MeshStandardMaterial({color:rawFinish?0xa98960:surface.side,roughness:.88,metalness:0});
- const topMat=new THREE.MeshStandardMaterial({color:rawFinish?0xc4a77e:surface.top,roughness:.88,metalness:0});
- const shell=new THREE.Mesh(new THREE.BoxGeometry(w,d,l),[sideMat,sideMat,topMat,topMat,frontMat,frontMat]);box3DGroup.add(shell);
- const edgeMat=new THREE.LineBasicMaterial({color:0x303844});
- const edges=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w,d,l)),edgeMat);box3DGroup.add(edges);
- const frontZ=l/2+.035,frontY=0,frontX=0;
- // Match the second paint color in the 3D model when two-tone paint is selected.
- if(selectedFinish==='Paint'&&$('paintDesign').value==='Two-tone paint'){
-  const secondColor=$('designPaintColor').value||'#858990';
-  const twoToneMat=new THREE.MeshStandardMaterial({color:secondColor,roughness:.78,metalness:0});
-  const band=new THREE.Mesh(new THREE.BoxGeometry(w*.992,d*.36,.035),twoToneMat);
-  band.position.set(0,-d*.30,l/2+.045);band.receiveShadow=true;box3DGroup.add(band);
-  const sideBand=new THREE.Mesh(new THREE.BoxGeometry(.035,d*.36,l*.992),twoToneMat);
-  sideBand.position.set(w/2+.01,-d*.30,0);sideBand.receiveShadow=true;box3DGroup.add(sideBand);
+ while(box3DGroup.children.length){
+  const obj=box3DGroup.children.pop();
+  obj.traverse?.(n=>{if(n.geometry)n.geometry.dispose();if(n.material){(Array.isArray(n.material)?n.material:[n.material]).forEach(m=>m.dispose());}});
  }
- const addFrontDisk=(x,y,r,z,mat,depth=.22)=>{const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,depth,64),mat);mesh.rotation.x=Math.PI/2;mesh.position.set(x,y,z);mesh.castShadow=true;box3DGroup.add(mesh);return mesh;};
- const count=Math.max(1,Math.min(4,Number($('quantity').value)||1)),size=Number($('size').value)||12,outer=(size+1.25)/2;
- const cols=count===1?1:2,rows=count>2?2:1,spacingX=w/(cols+1),spacingY=d/(rows+1);
- const rubber=new THREE.MeshPhysicalMaterial({color:0x101216,roughness:.72,metalness:.04}),rim=new THREE.MeshPhysicalMaterial({color:0x68717c,roughness:.24,metalness:.78,clearcoat:.5}),coneMat=new THREE.MeshPhysicalMaterial({color:0x20252c,roughness:.48,metalness:.12,clearcoat:.28}),dustMat=new THREE.MeshPhysicalMaterial({color:0x08090b,roughness:.22,metalness:.18,clearcoat:.7}),boltMat=new THREE.MeshStandardMaterial({color:0xc8cdd3,metalness:.82,roughness:.2});
- for(let i=0;i<count;i++){const cx=(i%cols-(cols-1)/2)*spacingX,cy=((rows-1)/2-Math.floor(i/cols))*spacingY,r=outer;
-  addFrontDisk(cx,cy,r,frontZ+.1,rubber,.34);
-  const torus=(radius,tube,mat,z)=>{const m=new THREE.Mesh(new THREE.TorusGeometry(radius,tube,12,64),mat);m.position.set(cx,cy,z);m.castShadow=true;box3DGroup.add(m);};
-  torus(r*.88,r*.12,rim,frontZ+.32);torus(r*.72,r*.075,rubber,frontZ+.36);
-  addFrontDisk(cx,cy,r*.68,frontZ+.37,coneMat,.08);torus(r*.43,r*.045,rim,frontZ+.43);addFrontDisk(cx,cy,r*.22,frontZ+.45,dustMat,.12);
-  for(const [a,b] of [[-.72,-.72],[.72,-.72],[-.72,.72],[.72,.72]]){const bolt=new THREE.Mesh(new THREE.CylinderGeometry(.13,.13,.08,16),boltMat);bolt.rotation.x=Math.PI/2;bolt.position.set(cx+a*r,cy+b*r,frontZ+.42);box3DGroup.add(bolt);}
- }
- if(ported){
-  // Render the port as an actual-looking dark opening cut into the selected face.
-  // Front panel faces +Z; right side panel faces +X. Dimensions are in inches.
-  const aperture=new THREE.MeshStandardMaterial({color:0x030405,roughness:.96,side:THREE.DoubleSide});
-  const innerWall=new THREE.MeshStandardMaterial({color:0x171b21,roughness:.9,side:THREE.DoubleSide});
-  const lip=new THREE.MeshStandardMaterial({color:surface.front,roughness:.82});
-  const lipSide=new THREE.MeshStandardMaterial({color:surface.side,roughness:.82});
-  const onFront=style==='Slot front panel'||style==='Hole front panel';
-  const isSlot=style==='Slot front panel'||style==='Slot side panel';
-  if(isSlot&&onFront){
-   const pw=Math.min(Math.max(1.5,w*.085),w*.18),ph=d*.88;
-   const px=w*.5-pw*.72,py=0,z=frontZ+.055;
-   const opening=new THREE.Mesh(new THREE.BoxGeometry(pw,ph,.045),aperture);opening.position.set(px,py,z);box3DGroup.add(opening);
-   const topWall=new THREE.Mesh(new THREE.BoxGeometry(pw*.88,.12,.18),innerWall);topWall.position.set(px,d*.0+ph/2-.06,z-.055);box3DGroup.add(topWall);
-   const bottomWall=topWall.clone();bottomWall.position.y=-ph/2+.06;box3DGroup.add(bottomWall);
-   const leftWall=new THREE.Mesh(new THREE.BoxGeometry(.1,ph,.16),innerWall);leftWall.position.set(px-pw/2+.05,0,z-.05);box3DGroup.add(leftWall);
-   const rightWall=leftWall.clone();rightWall.position.x=px+pw/2-.05;box3DGroup.add(rightWall);
-   const border=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(pw,ph,.08)),new THREE.LineBasicMaterial({color:0x373d46}));border.position.set(px,0,z+.025);box3DGroup.add(border);
-  } else if(isSlot&&!onFront){
-   const sw=Math.min(Math.max(1.5,l*.085),l*.18),sh=d*.88;
-   // A tall slot near the front edge of the RIGHT side panel, running the full visible height.
-   const sx=w/2+.055,sz=l/2-sw/2-.3;
-   const opening=new THREE.Mesh(new THREE.BoxGeometry(.045,sh,sw),aperture);opening.position.set(sx,0,sz);box3DGroup.add(opening);
-   const topWall=new THREE.Mesh(new THREE.BoxGeometry(.16,.12,sw*.88),innerWall);topWall.position.set(sx-.04,sh/2-.06,sz);box3DGroup.add(topWall);
-   const bottomWall=topWall.clone();bottomWall.position.y=-sh/2+.06;box3DGroup.add(bottomWall);
-   const sideWall=new THREE.Mesh(new THREE.BoxGeometry(.16,sh,.12),innerWall);sideWall.position.set(sx-.04,0,sz-sw/2+.06);box3DGroup.add(sideWall);
-   const sideWall2=sideWall.clone();sideWall2.position.z=sz+sw/2-.06;box3DGroup.add(sideWall2);
-   const border=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(.08,sh,sw)),new THREE.LineBasicMaterial({color:0x373d46}));border.position.set(sx,0,sz);box3DGroup.add(border);
-  } else {
-   const r=Math.min(Math.max(1.15,d*.13),Math.min(w,l)*.16);
-   if(onFront){
-    const px=w*.29,py=-d*.22,z=frontZ+.055;
-    const hole=new THREE.Mesh(new THREE.CircleGeometry(r,64),aperture);hole.position.set(px,py,z);box3DGroup.add(hole);
-    const inner=new THREE.Mesh(new THREE.CircleGeometry(r*.78,64),innerWall);inner.position.set(px,py,z-.025);box3DGroup.add(inner);
-    const tor=new THREE.Mesh(new THREE.TorusGeometry(r,.09,12,64),lip);tor.position.set(px,py,z+.025);box3DGroup.add(tor);
-   } else {
-    const px=w/2+.055,py=-d*.22,pz=l*.22;
-    const hole=new THREE.Mesh(new THREE.CircleGeometry(r,64),aperture);hole.rotation.y=Math.PI/2;hole.position.set(px,py,pz);box3DGroup.add(hole);
-    const inner=new THREE.Mesh(new THREE.CircleGeometry(r*.78,64),innerWall);inner.rotation.y=Math.PI/2;inner.position.set(px-.025,py,pz);box3DGroup.add(inner);
-    const tor=new THREE.Mesh(new THREE.TorusGeometry(r,.09,12,64),lipSide);tor.rotation.y=Math.PI/2;tor.position.set(px+.025,py,pz);box3DGroup.add(tor);
-   }
+ const w=Math.max(8,Number($('width').value)||25),l=Math.max(8,Number($('length').value)||30),h=Math.max(8,Number($('depth').value)||16);
+ const surface=previewSurface();
+ // Use unlit materials so the CAD preview matches the selected color exactly.
+ const frontMat=new THREE.MeshBasicMaterial({color:surface.front});
+ const sideMat=new THREE.MeshBasicMaterial({color:surface.side});
+ const topMat=new THREE.MeshBasicMaterial({color:surface.top});
+ const shell=new THREE.Mesh(new THREE.BoxGeometry(w,h,l),[sideMat,sideMat,topMat,topMat,frontMat,frontMat]);
+ box3DGroup.add(shell);
+ // Simple edge lines only: no simulated speaker hardware, port walls, bolts, or decorative geometry.
+ const edges=new THREE.LineSegments(
+  new THREE.EdgesGeometry(new THREE.BoxGeometry(w,h,l)),
+  new THREE.LineBasicMaterial({color:0x303844})
+ );
+ box3DGroup.add(edges);
+ // Show a simple flat port marker only when the selected enclosure is ported.
+ if($('type').value==='Ported'){
+  const style=$('portStyle').value;
+  const mat=new THREE.MeshBasicMaterial({color:0x111318});
+  if(style==='Hole front panel'||style==='Hole side panel'){
+   const r=Math.min(Math.max(1.1,h*.12),Math.min(w,l)*.15);
+   const hole=new THREE.Mesh(new THREE.CircleGeometry(r,48),mat);
+   if(style==='Hole side panel'){hole.rotation.y=Math.PI/2;hole.position.set(w/2+.012,-h*.2,l*.2);}
+   else hole.position.set(w*.28,-h*.2,l/2+.012);
+   box3DGroup.add(hole);
+  }else{
+   const pw=Math.min(w*.13,3.2),ph=h*.72;
+   const slot=new THREE.Mesh(new THREE.PlaneGeometry(pw,ph),mat);
+   if(style==='Slot side panel'){slot.rotation.y=Math.PI/2;slot.position.set(w/2+.012,0,l*.28);}
+   else slot.position.set(w*.36,0,l/2+.012);
+   box3DGroup.add(slot);
   }
  }
- // CAD dimension leaders and labels: width, height and depth are shown in inches.
+ // Minimal CAD dimension leaders and labels.
+ const span=Math.max(w,h,l),gap=span*.14;
  const dimMat=new THREE.LineBasicMaterial({color:0x2563a6});
- const addLine=(pts)=>{const geo=new THREE.BufferGeometry().setFromPoints(pts);box3DGroup.add(new THREE.Line(geo,dimMat));};
+ const addLine=pts=>box3DGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),dimMat));
  const addLabel=(label,pos)=>{
-  const canvas=document.createElement('canvas');canvas.width=320;canvas.height=80;
-  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,320,80);ctx.fillStyle='#174b7a';ctx.font='bold 34px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,160,40);
-  const tex=new THREE.CanvasTexture(canvas);const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));
-  sprite.position.copy(pos);sprite.scale.set(Math.max(5,span*.23),Math.max(1.25,span*.058),1);box3DGroup.add(sprite);
+  const canvas=document.createElement('canvas');canvas.width=256;canvas.height=64;
+  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,256,64);ctx.fillStyle='#174b7a';
+  ctx.font='bold 30px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,128,32);
+  const tex=new THREE.CanvasTexture(canvas);
+  const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));
+  sprite.position.copy(pos);sprite.scale.set(Math.max(4.5,span*.2),Math.max(1.1,span*.05),1);box3DGroup.add(sprite);
  };
- const span=Math.max(w,d,l),gap=span*.13;
- addLine([new THREE.Vector3(-w/2,-d/2-gap,l/2),new THREE.Vector3(w/2,-d/2-gap,l/2)]);
- addLine([new THREE.Vector3(-w/2,-d/2-gap-.45,l/2),new THREE.Vector3(-w/2,-d/2-gap+.45,l/2)]);
- addLine([new THREE.Vector3(w/2,-d/2-gap-.45,l/2),new THREE.Vector3(w/2,-d/2-gap+.45,l/2)]);
- addLabel('W '+w+' in',new THREE.Vector3(0,-d/2-gap-.9,l/2));
- addLine([new THREE.Vector3(w/2+gap,-d/2,-l/2),new THREE.Vector3(w/2+gap,d/2,-l/2)]);
- addLabel('H '+d+' in',new THREE.Vector3(w/2+gap+.8,0,-l/2));
- addLine([new THREE.Vector3(w/2+gap,-d/2,l/2),new THREE.Vector3(w/2+gap,-d/2,-l/2)]);
- addLabel('D '+l+' in',new THREE.Vector3(w/2+gap+.8,-d/2-gap*.25,0));
- // Keep the complete cabinet and its dimension callouts in view.
- const target=new THREE.Vector3(0,0,0);box3DControls.target.copy(target);
- const cameraDist=span*2.65;box3DCamera.position.set(cameraDist*.95,cameraDist*.72,cameraDist*1.15);box3DCamera.near=.1;box3DCamera.far=span*30;box3DCamera.updateProjectionMatrix();box3DControls.minDistance=span*.45;box3DControls.maxDistance=span*6;
+ addLine([new THREE.Vector3(-w/2,-h/2-gap,l/2),new THREE.Vector3(w/2,-h/2-gap,l/2)]);
+ addLabel('W '+w+' in',new THREE.Vector3(0,-h/2-gap-.7,l/2));
+ addLine([new THREE.Vector3(w/2+gap,-h/2,-l/2),new THREE.Vector3(w/2+gap,h/2,-l/2)]);
+ addLabel('H '+h+' in',new THREE.Vector3(w/2+gap+.7,0,-l/2));
+ addLine([new THREE.Vector3(w/2+gap,-h/2,l/2),new THREE.Vector3(w/2+gap,-h/2,-l/2)]);
+ addLabel('D '+l+' in',new THREE.Vector3(w/2+gap+.7,-h/2-gap*.2,0));
+ box3DControls.target.set(0,0,0);
+ const cameraDist=span*2.8;
+ box3DCamera.position.set(cameraDist*.95,cameraDist*.72,cameraDist*1.15);
+ box3DCamera.near=.1;box3DCamera.far=span*30;box3DCamera.updateProjectionMatrix();
+ box3DControls.minDistance=span*.45;box3DControls.maxDistance=span*6;
  box3DRenderer.render(box3DScene,box3DCamera);
 }
 function update3DPreview(){
