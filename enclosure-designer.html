@@ -27,8 +27,8 @@
 <div class="fields">
 <div class="field full"><label for="material">Material</label><select id="material" name="material" required><option value="Birch">Birch</option><option value="MDF (Suggested)" selected>MDF (Suggested)</option><option value="Plywood">Plywood</option></select></div>
 <div class="field"><label for="width">Max width <span class="unit">(inches)</span></label><select id="width" name="width" required></select></div>
-<div class="field"><label for="length">Max length <span class="unit">(inches)</span></label><select id="length" name="length" required></select></div>
-<div class="field full"><label for="depth">Max depth <span class="unit">(inches)</span></label><select id="depth" name="depth" required></select><div class="help">Choose the maximum space available for the enclosure. Select a measurement; typing is disabled.</div></div>
+<div class="field"><label for="length">Height <span class="unit">(inches)</span></label><select id="length" name="length" required></select></div>
+<div class="field full"><label for="depth">Depth <span class="unit">(inches)</span></label><select id="depth" name="depth" required></select><div class="help">Choose the maximum space available for the enclosure. Select a measurement; typing is disabled.</div></div>
 </div>
 <div class="section-title">2. Box type</div>
 <select id="type" name="type" required class="hidden"><option value="Ported">Ported</option><option value="Sealed">Sealed</option></select>
@@ -183,7 +183,7 @@ function updateFree3DModel(){
   const obj=box3DGroup.children.pop();
   obj.traverse?.(n=>{if(n.geometry)n.geometry.dispose();if(n.material){(Array.isArray(n.material)?n.material:[n.material]).forEach(m=>{if(m.map)m.map.dispose();m.dispose();});}});
  }
- const w=Math.max(8,Number($('width').value)||25),l=Math.max(8,Number($('length').value)||30),h=Math.max(8,Number($('depth').value)||16),t=.75;
+ const w=Math.max(8,Number($('width').value)||25),h=Math.max(8,Number($('length').value)||30),l=Math.max(8,Number($('depth').value)||16),t=.75;
  const surface=previewSurface(),raw=selectedFinish==='Raw';
  const frontMat=new THREE.MeshBasicMaterial({color:raw?'#b99b70':surface.front,side:THREE.DoubleSide});
  const sideMat=new THREE.MeshBasicMaterial({color:raw?'#a98559':surface.side,side:THREE.DoubleSide});
@@ -220,7 +220,7 @@ function updateFree3DModel(){
  const nominal=Number($('size').value)||12;
  const count=Math.max(1,Math.min(4,Number($('quantity').value)||1));
  const cols=count===1?1:2,rows=count>2?2:1;
- const driverDiameter=Math.min(nominal*.92,w/(cols+1)*.84,h/(rows+1)*.84);
+ const driverDiameter=Math.max(1,nominal-.9);
  const driverR=driverDiameter/2;
  const driverXs=Array.from({length:count},(_,i)=>(i%cols-(cols-1)/2)*w/(cols+1));
  const driverYs=Array.from({length:count},(_,i)=>((rows-1)/2-Math.floor(i/cols))*h/(rows+1));
@@ -303,13 +303,13 @@ function updateFree3DModel(){
 function update3DPreview(){
  updateFree3DModel();
  const svg=$('boxPreviewSvg');if(!svg)return;
- const w=Number($('width').value)||25,l=Number($('length').value)||30,d=Number($('depth').value)||16;
+ const w=Number($('width').value)||25,h=Number($('length').value)||30,d=Number($('depth').value)||16;
  const surface=previewSurface(),ported=$('type').value==='Ported',style=$('portStyle').value;
  // Keep the enclosure's three axes in one consistent scale, but fit the complete box
  // into the preview canvas. The previous formula squeezed length into a tiny fixed cap.
- const rawScale=Math.min(278/Math.max(w,1),164/Math.max(d,1),180/Math.max(l,1));
+ const rawScale=Math.min(278/Math.max(w,1),164/Math.max(h,1),180/Math.max(d,1));
  const scale=rawScale;
- const fw=w*scale,fh=d*scale,dx=l*scale*.42,dy=-dx*.66;
+ const fw=w*scale,fh=h*scale,dx=d*scale*.42,dy=-dx*.66;
  const boxMinX=58,boxMinY=78,boxMaxW=278,boxMaxH=164;
  const x=boxMinX+(boxMaxW-fw)*.12,y=boxMinY+(boxMaxH-fh)*.12,right=x+fw,bottom=y+fh;
  const front='M '+x+' '+y+' L '+right+' '+y+' L '+right+' '+bottom+' L '+x+' '+bottom+' Z';
@@ -369,7 +369,7 @@ function update3DPreview(){
  if(selectedFinish==='Wrap'&&$('wrapType').value==='Forged carbon fiber')pattern='<path d="'+top+'" fill="url(#forgedPattern)"/><path d="'+side+'" fill="url(#forgedPattern)"/><path d="'+front+'" fill="url(#forgedPattern)"/><path d="'+front+'" fill="url(#wrapGloss)" opacity=".30"/><path d="'+top+'" fill="url(#wrapGloss)" opacity=".17"/><path d="'+side+'" fill="url(#wrapGloss)" opacity=".12"/>';
  if(selectedFinish==='Wrap'&&wd==='Two-tone wrap')pattern+='<path d="M '+x+' '+(y+fh*.63)+' H '+right+' V '+bottom+' H '+x+' Z" fill="'+shadeColor(surface.front,.42)+'"/>';
  svg.innerHTML='<defs><linearGradient id="cone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#69717b"/><stop offset=".42" stop-color="#1a1d22"/><stop offset="1" stop-color="#07080a"/></linearGradient><radialGradient id="dust"><stop offset="0" stop-color="#626b76"/><stop offset="1" stop-color="#111317"/></radialGradient><linearGradient id="surround" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#737b84"/><stop offset=".4" stop-color="#17191d"/><stop offset=".75" stop-color="#3b4149"/><stop offset="1" stop-color="#08090b"/></linearGradient><linearGradient id="fadeFinish" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+surface.top+'"/><stop offset="1" stop-color="'+shadeColor(surface.front,.35)+'"/></linearGradient><pattern id="carbonPattern" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#17191c"/><path d="M-8 0L0 8L-8 16M0 0L8 8L0 16M8 0L16 8L8 16M16 0L24 8L16 16" fill="none" stroke="#5b626b" stroke-width="4"/><path d="M-8 0L0 8L-8 16M0 0L8 8L0 16M8 0L16 8L8 16M16 0L24 8L16 16" fill="none" stroke="#252a30" stroke-width="2"/><path d="M0 0L8 8L16 0M0 16L8 8L16 16" fill="none" stroke="#090a0c" stroke-width="1.2"/></pattern><pattern id="forgedPattern" width="42" height="34" patternUnits="userSpaceOnUse"><rect width="42" height="34" fill="#202328"/><path d="M2 5Q7 0 14 5L18 10L12 15L3 12Z M22 2L31 0L38 7L34 13L25 11Z M16 20L24 14L31 20L28 28L18 30L12 25Z M1 25L8 18L13 23L9 32L2 33Z M34 23L40 17L44 24L39 33L33 31Z" fill="#68717b" stroke="#9ba3ac" stroke-width=".7"/><path d="M4 7L11 8M25 4L32 7M17 24L25 22M3 28L8 25M35 27L40 23" stroke="#d3d8de" stroke-width="1.1" opacity=".5"/><path d="M0 16L12 12M20 33L29 27M30 14L42 10" stroke="#090b0e" stroke-width="2.2"/></pattern><linearGradient id="wrapGloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".48"/><stop offset=".22" stop-color="#ffffff" stop-opacity=".10"/><stop offset=".58" stop-color="#000000" stop-opacity=".02"/><stop offset="1" stop-color="#000000" stop-opacity=".28"/></linearGradient></defs><ellipse cx="225" cy="'+(bottom+22)+'" rx="165" ry="10" fill="#18202b" opacity=".13"/><path d="'+top+'" fill="'+surface.top+'" stroke="#303741" stroke-width="2" stroke-linejoin="round"/><path d="'+side+'" fill="'+surface.side+'" stroke="#303741" stroke-width="2" stroke-linejoin="round"/><path d="'+front+'" fill="'+surface.front+'" stroke="#303741" stroke-width="2" stroke-linejoin="round"/>'+pattern+drivers+port+'<g fill="currentColor" font-size="11" font-weight="700"><text x="'+(x+fw/2)+'" y="'+(bottom+23)+'" text-anchor="middle">Width '+w+' in</text><text x="'+(right+dx+6)+'" y="'+(y+fh*.52+dy*.4)+'" transform="rotate(90 '+(right+dx+6)+' '+(y+fh*.52+dy*.4)+')" text-anchor="middle">Length '+l+' in</text><text x="'+(x-8)+'" y="'+(y+fh/2)+'" transform="rotate(-90 '+(x-8)+' '+(y+fh/2)+')" text-anchor="middle">Depth '+d+' in</text></g>';
- svg.style.transform='rotateY('+previewRotation+'deg)';$('previewDimensions').textContent=w+' × '+l+' × '+d+' in';$('previewFinish').textContent=surface.label+(selectedFinish==='Paint'&&pd!=='None'?' · '+pd:selectedFinish==='Wrap'&&wd!=='None'?' · '+wd:'');$('previewBoxType').textContent=ported?'PORTED · '+style:'SEALED · no port';
+ svg.style.transform='rotateY('+previewRotation+'deg)';$('previewDimensions').textContent=w+' W × '+h+' H × '+d+' D in';$('previewFinish').textContent=surface.label+(selectedFinish==='Paint'&&pd!=='None'?' · '+pd:selectedFinish==='Wrap'&&wd!=='None'?' · '+wd:'');$('previewBoxType').textContent=ported?'PORTED · '+style:'SEALED · no port';
 }['width','length','depth','material','type','portStyle','wrapType','rawMaterial','customPaintName','customWrapName'].forEach(id=>{const el=$(id);if(el)el.addEventListener('input',update3DPreview);if(el)el.addEventListener('change',update3DPreview);});
 document.querySelectorAll('#paintColors .color-choice').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
 document.querySelectorAll('#wrapColors .color-choice').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
@@ -377,10 +377,10 @@ document.querySelectorAll('.finish-toggle').forEach(b=>b.addEventListener('click
 const stage=$('previewStage');stage.addEventListener('pointerdown',e=>{previewDragStart={x:e.clientX,rotation:previewRotation};stage.setPointerCapture(e.pointerId);});stage.addEventListener('pointermove',e=>{if(!previewDragStart)return;previewRotation=Math.max(-35,Math.min(35,previewDragStart.rotation+(e.clientX-previewDragStart.x)*.65));update3DPreview();});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>stage.addEventListener(ev,()=>{previewDragStart=null;}));
 update3DPreview();
 function estimateBoxWeight(){
- const w=Number($('width').value),l=Number($('length').value),d=Number($('depth').value),t=.75;
+ const w=Number($('width').value),h=Number($('length').value),d=Number($('depth').value),t=.75;
  const density={'MDF (Suggested)':46.8,'Birch':42.4,'Plywood':32}[$('material').value]||46.8;
- const innerW=Math.max(0,w-2*t),innerL=Math.max(0,l-2*t),innerD=Math.max(0,d-2*t);
- const woodVolume=Math.max(0,(w*l*d-innerW*innerL*innerD)/1728);
+ const innerW=Math.max(0,w-2*t),innerH=Math.max(0,h-2*t),innerD=Math.max(0,d-2*t);
+ const woodVolume=Math.max(0,(w*h*d-innerW*innerH*innerD)/1728);
  const factor=$('type').value==='Ported'?1.18:1.08;
  return Math.max(1,woodVolume*density*factor+1.5);
 }
@@ -394,12 +394,12 @@ updateTuning();
 $('customBoxForm').addEventListener('submit',e=>{
  e.preventDefault();
  const weight=updateWeight();
- const config={material:$('material').value,width:Number($('width').value),length:Number($('length').value),depth:Number($('depth').value),type:$('type').value,portStyle:$('type').value==='Ported'?$('portStyle').value:'',finish:selectedFinish,paintColor:selectedFinish==='Paint'?selectedPaintColor:'Not applicable',customPaintColor:selectedFinish==='Paint'&&selectedPaintColor==='Custom Color'?$('customPaintName').value.trim():'',paintType:'',paintDesign:selectedFinish==='Paint'?$('paintDesign').value:'',paintNotes:selectedFinish==='Paint'?$('paintNotes').value.trim():'',wrapType:selectedFinish==='Wrap'?$('wrapType').value:'',wrapColor:selectedFinish==='Wrap'?selectedWrapColor:'',customWrapColor:selectedFinish==='Wrap'&&selectedWrapColor==='Custom Color'?$('customWrapName').value.trim():'',wrapDesign:selectedFinish==='Wrap'?$('wrapDesign').value:'',wrapNotes:selectedFinish==='Wrap'?$('wrapNotes').value.trim():'',rawMaterial:selectedFinish==='Raw'?$('rawMaterial').value:'',model:$('model').value.trim(),size:$('size').value,quantity:Number($('quantity').value),tuning:$('type').value==='Ported'?Number($('tuning').value):null,weightLb:Number(weight.toFixed(1))};
+ const config={material:$('material').value,width:Number($('width').value),height:Number($('length').value),depth:Number($('depth').value),type:$('type').value,portStyle:$('type').value==='Ported'?$('portStyle').value:'',finish:selectedFinish,paintColor:selectedFinish==='Paint'?selectedPaintColor:'Not applicable',customPaintColor:selectedFinish==='Paint'&&selectedPaintColor==='Custom Color'?$('customPaintName').value.trim():'',paintType:'',paintDesign:selectedFinish==='Paint'?$('paintDesign').value:'',paintNotes:selectedFinish==='Paint'?$('paintNotes').value.trim():'',wrapType:selectedFinish==='Wrap'?$('wrapType').value:'',wrapColor:selectedFinish==='Wrap'?selectedWrapColor:'',customWrapColor:selectedFinish==='Wrap'&&selectedWrapColor==='Custom Color'?$('customWrapName').value.trim():'',wrapDesign:selectedFinish==='Wrap'?$('wrapDesign').value:'',wrapNotes:selectedFinish==='Wrap'?$('wrapNotes').value.trim():'',rawMaterial:selectedFinish==='Raw'?$('rawMaterial').value:'',model:$('model').value.trim(),size:$('size').value,quantity:Number($('quantity').value),tuning:$('type').value==='Ported'?Number($('tuning').value):null,weightLb:Number(weight.toFixed(1))};
  const details='Custom subwoofer enclosure — '+config.type+' — '+config.quantity+' × '+config.size+' in ('+config.material+')';
  const item={name:details,category:'enclosure',price:null,qty:1,weightLb:config.weightLb,configuration:config};
  try{const cart=JSON.parse(localStorage.getItem(CART_KEY)||'[]');const index=cart.findIndex(i=>i.category==='enclosure'&&i.configuration);if(index>=0)cart[index]=item;else cart.push(item);localStorage.setItem(CART_KEY,JSON.stringify(cart));localStorage.setItem('enclosureLabCustomBoxConfig',JSON.stringify(config));}
  catch(err){$('summary').textContent='Could not save this configuration in this browser. Please enable site storage and try again.';return}
- const d=[['Material',config.material],['Maximum dimensions',config.width+' W × '+config.length+' L × '+config.depth+' D inches'],['Box type',config.type],['Port style',config.type==='Ported'?config.portStyle:'Not applicable'],['Finish',config.finish],['Paint color',config.finish==='Paint'?config.paintColor+(config.customPaintColor?' — '+config.customPaintColor:''):'Not applicable'],['Paint design',config.paintDesign||'Not applicable'],['Paint design notes',config.paintNotes||'None provided'],['Wrap type',config.wrapType||'Not applicable'],['Wrap color',config.finish==='Wrap'?config.wrapColor+(config.customWrapColor?' — '+config.customWrapColor:''):'Not applicable'],['Wrap design',config.wrapDesign||'Not applicable'],['Wrap design notes',config.wrapNotes||'None provided'],['Raw material',config.rawMaterial||'Not applicable'],['Subwoofer model',config.model],['Subwoofer size',config.size+' inches'],['Quantity',config.quantity],['Target tuning',config.tuning===null?'Not applicable (sealed)':config.tuning+' Hz'],['Estimated material weight',config.weightLb+' lb']];
+ const d=[['Material',config.material],['Maximum dimensions',config.width+' W × '+config.height+' H × '+config.depth+' D inches'],['Box type',config.type],['Port style',config.type==='Ported'?config.portStyle:'Not applicable'],['Finish',config.finish],['Paint color',config.finish==='Paint'?config.paintColor+(config.customPaintColor?' — '+config.customPaintColor:''):'Not applicable'],['Paint design',config.paintDesign||'Not applicable'],['Paint design notes',config.paintNotes||'None provided'],['Wrap type',config.wrapType||'Not applicable'],['Wrap color',config.finish==='Wrap'?config.wrapColor+(config.customWrapColor?' — '+config.customWrapColor:''):'Not applicable'],['Wrap design',config.wrapDesign||'Not applicable'],['Wrap design notes',config.wrapNotes||'None provided'],['Raw material',config.rawMaterial||'Not applicable'],['Subwoofer model',config.model],['Subwoofer size',config.size+' inches'],['Quantity',config.quantity],['Target tuning',config.tuning===null?'Not applicable (sealed)':config.tuning+' Hz'],['Estimated material weight',config.weightLb+' lb']];
  $('summary').textContent='CUSTOM BOX ADDED TO CART\n'+d.map(x=>x[0]+': '+x[1]).join('\n')+'\n\nAdded to cart. The custom enclosure price will be confirmed after review; estimated weight is used for preliminary shipping.';
  $('summary').scrollIntoView({behavior:'smooth',block:'nearest'});
  setTimeout(()=>{if(new URLSearchParams(location.search).get('embed')==='1')window.top.location.href='checkout.html';else window.location.href='checkout.html';},500);
