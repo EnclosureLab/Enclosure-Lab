@@ -164,14 +164,20 @@ function previewSurface(){
 let box3DScene=null,box3DCamera=null,box3DRenderer=null,box3DControls=null,box3DGroup=null,box3DResizeObserver=null;
 function initFree3DPreview(){
  const host=$('box3DCanvas');if(!host||!window.THREE||box3DRenderer)return;
- box3DScene=new THREE.Scene();box3DScene.background=new THREE.Color('#f8fafc');
- box3DCamera=new THREE.PerspectiveCamera(38,1,.1,2000);box3DCamera.position.set(42,34,48);
- box3DRenderer=new THREE.WebGLRenderer({antialias:true,alpha:false});box3DRenderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));box3DRenderer.outputEncoding=THREE.sRGBEncoding;box3DRenderer.shadowMap.enabled=true;box3DRenderer.shadowMap.type=THREE.PCFSoftShadowMap;host.appendChild(box3DRenderer.domElement);
- box3DControls=new THREE.OrbitControls(box3DCamera,box3DRenderer.domElement);box3DControls.enableDamping=true;box3DControls.dampingFactor=.075;box3DControls.enableZoom=true;box3DControls.enablePan=true;box3DControls.minDistance=8;box3DControls.maxDistance=240;
- box3DScene.add(new THREE.HemisphereLight(0xffffff,0x747b86,2.0));
- const key=new THREE.DirectionalLight(0xffffff,2.2);key.position.set(35,55,45);key.castShadow=true;box3DScene.add(key);
- const fill=new THREE.DirectionalLight(0xffffff,.9);fill.position.set(-35,20,-30);box3DScene.add(fill);
- const floor=new THREE.Mesh(new THREE.PlaneGeometry(500,500),new THREE.ShadowMaterial({opacity:.12}));floor.rotation.x=-Math.PI/2;floor.position.y=-.15;floor.receiveShadow=true;box3DScene.add(floor);
+ box3DScene=new THREE.Scene();box3DScene.background=new THREE.Color('#e9edf2');
+ box3DCamera=new THREE.PerspectiveCamera(34,1,.1,2400);
+ box3DRenderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
+ box3DRenderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+ if('outputColorSpace' in box3DRenderer)box3DRenderer.outputColorSpace=THREE.SRGBColorSpace;else box3DRenderer.outputEncoding=THREE.sRGBEncoding;
+ box3DRenderer.toneMapping=THREE.ACESFilmicToneMapping;box3DRenderer.toneMappingExposure=1.12;
+ box3DRenderer.shadowMap.enabled=true;box3DRenderer.shadowMap.type=THREE.PCFSoftShadowMap;host.appendChild(box3DRenderer.domElement);
+ box3DControls=new THREE.OrbitControls(box3DCamera,box3DRenderer.domElement);box3DControls.enableDamping=true;box3DControls.dampingFactor=.065;box3DControls.enableZoom=true;box3DControls.enablePan=true;box3DControls.minDistance=8;box3DControls.maxDistance=240;
+ box3DScene.add(new THREE.HemisphereLight(0xffffff,0x9299a3,1.65));
+ const key=new THREE.DirectionalLight(0xffffff,3.1);key.position.set(38,62,48);key.castShadow=true;key.shadow.mapSize.set(2048,2048);key.shadow.camera.left=-100;key.shadow.camera.right=100;key.shadow.camera.top=100;key.shadow.camera.bottom=-100;key.shadow.bias=-.00025;box3DScene.add(key);
+ const fill=new THREE.DirectionalLight(0xdce8ff,1.25);fill.position.set(-45,28,-35);box3DScene.add(fill);
+ const rimLight=new THREE.DirectionalLight(0xffffff,1.8);rimLight.position.set(-25,35,55);box3DScene.add(rimLight);
+ const floorMat=new THREE.MeshStandardMaterial({color:0xe9edf2,roughness:.92,metalness:0});
+ const floor=new THREE.Mesh(new THREE.PlaneGeometry(600,600),floorMat);floor.rotation.x=-Math.PI/2;floor.position.y=-.18;floor.receiveShadow=true;box3DScene.add(floor);
  box3DGroup=new THREE.Group();box3DScene.add(box3DGroup);
  const resize=()=>{const w=Math.max(1,host.clientWidth),h=Math.max(1,host.clientHeight);box3DRenderer.setSize(w,h,false);box3DCamera.aspect=w/h;box3DCamera.updateProjectionMatrix();};
  box3DResizeObserver=window.ResizeObserver?new ResizeObserver(resize):null;if(box3DResizeObserver)box3DResizeObserver.observe(host);else window.addEventListener('resize',resize);resize();
@@ -183,12 +189,18 @@ function updateFree3DModel(){
  const w=Math.max(8,Number($('width').value)||25),l=Math.max(8,Number($('length').value)||30),d=Math.max(8,Number($('depth').value)||16);
  const surface=previewSurface(),ported=$('type').value==='Ported',style=$('portStyle').value;
  // Three.js uses real world units in inches: X=width, Y=depth/height, Z=length.
- const frontMat=new THREE.MeshBasicMaterial({color:surface.front});
- const sideMat=new THREE.MeshBasicMaterial({color:surface.side});
- const topMat=new THREE.MeshBasicMaterial({color:surface.top});
+ const finishIsCarpet=selectedFinish==='Wrap'&&selectedWrapType==='Carpet wrap';
+ const finishIsCarbon=selectedFinish==='Wrap'&&(selectedWrapType==='Carbon fiber'||selectedWrapType==='Forged carbon fiber');
+ const finishRoughness=finishIsCarpet?.96:finishIsCarbon?.3:.48;
+ const frontMat=new THREE.MeshPhysicalMaterial({color:surface.front,roughness:finishRoughness,metalness:finishIsCarbon?.22:.02,clearcoat:finishIsCarpet?0:.32,clearcoatRoughness:.38});
+ const sideMat=new THREE.MeshPhysicalMaterial({color:surface.side,roughness:finishRoughness,metalness:finishIsCarbon?.22:.02,clearcoat:finishIsCarpet?0:.32,clearcoatRoughness:.38});
+ const topMat=new THREE.MeshPhysicalMaterial({color:surface.top,roughness:finishRoughness,metalness:finishIsCarbon?.22:.02,clearcoat:finishIsCarpet?0:.32,clearcoatRoughness:.38});
  const shell=new THREE.Mesh(new THREE.BoxGeometry(w,d,l),[sideMat,sideMat,topMat,topMat,frontMat,frontMat]);shell.castShadow=true;shell.receiveShadow=true;box3DGroup.add(shell);
- // Thin panel seams give the enclosure a constructed, board-like edge.
- const edges=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w,d,l)),new THREE.LineBasicMaterial({color:0x303741}));box3DGroup.add(edges);
+ // A subtle front baffle overlay and crisp seams make the cabinet read as a built enclosure.
+ const baffleMat=new THREE.MeshStandardMaterial({color:surface.front,roughness:finishRoughness,metalness:finishIsCarbon?.18:.02});
+ const baffle=new THREE.Mesh(new THREE.BoxGeometry(w*.992,d*.992,.16),baffleMat);baffle.position.set(0,0,l/2+.035);baffle.castShadow=true;box3DGroup.add(baffle);
+ const edgeMat=new THREE.LineBasicMaterial({color:0x252a31,transparent:true,opacity:.42});
+ const edges=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w,d,l)),edgeMat);box3DGroup.add(edges);
  const frontZ=l/2+.035,frontY=0,frontX=0;
  // Match the second paint color in the 3D model when two-tone paint is selected.
  if(selectedFinish==='Paint'&&$('paintDesign').value==='Two-tone paint'){
@@ -202,7 +214,7 @@ function updateFree3DModel(){
  const addFrontDisk=(x,y,r,z,mat,depth=.22)=>{const mesh=new THREE.Mesh(new THREE.CylinderGeometry(r,r,depth,64),mat);mesh.rotation.x=Math.PI/2;mesh.position.set(x,y,z);mesh.castShadow=true;box3DGroup.add(mesh);return mesh;};
  const count=Math.max(1,Math.min(4,Number($('quantity').value)||1)),size=Number($('size').value)||12,outer=(size+1.25)/2;
  const cols=count===1?1:2,rows=count>2?2:1,spacingX=w/(cols+1),spacingY=d/(rows+1);
- const rubber=new THREE.MeshStandardMaterial({color:0x111318,roughness:.52,metalness:.12}),rim=new THREE.MeshStandardMaterial({color:0x565d67,roughness:.28,metalness:.72}),coneMat=new THREE.MeshStandardMaterial({color:0x242930,roughness:.42,metalness:.2}),dustMat=new THREE.MeshStandardMaterial({color:0x08090b,roughness:.3,metalness:.25}),boltMat=new THREE.MeshStandardMaterial({color:0xc8cdd3,metalness:.8,roughness:.24});
+ const rubber=new THREE.MeshPhysicalMaterial({color:0x101216,roughness:.72,metalness:.04}),rim=new THREE.MeshPhysicalMaterial({color:0x68717c,roughness:.24,metalness:.78,clearcoat:.5}),coneMat=new THREE.MeshPhysicalMaterial({color:0x20252c,roughness:.48,metalness:.12,clearcoat:.28}),dustMat=new THREE.MeshPhysicalMaterial({color:0x08090b,roughness:.22,metalness:.18,clearcoat:.7}),boltMat=new THREE.MeshStandardMaterial({color:0xc8cdd3,metalness:.82,roughness:.2});
  for(let i=0;i<count;i++){const cx=(i%cols-(cols-1)/2)*spacingX,cy=((rows-1)/2-Math.floor(i/cols))*spacingY,r=outer;
   addFrontDisk(cx,cy,r,frontZ+.1,rubber,.34);
   const torus=(radius,tube,mat,z)=>{const m=new THREE.Mesh(new THREE.TorusGeometry(radius,tube,12,64),mat);m.position.set(cx,cy,z);m.castShadow=true;box3DGroup.add(m);};
