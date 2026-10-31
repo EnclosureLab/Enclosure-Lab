@@ -136,8 +136,7 @@ function setupFinishDesigner(){
  $('wrapDesign').addEventListener('change',()=> $('wrapNotesField').classList.toggle('hidden',$('wrapDesign').value==='None'));
 }
 setupFinishDesigner();
-document.querySelectorAll('[data-port-style]').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
-document.querySelectorAll('[data-box-type]').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
+
 ['size','quantity','tuning','paintDesign','wrapDesign','paintNotes','wrapNotes','customPaintName','customWrapName','customPaintHex','customWrapHex','wrapType','rawMaterial'].forEach(id=>{const el=$(id);if(el){el.addEventListener('input',update3DPreview);el.addEventListener('change',update3DPreview);}});
 document.querySelectorAll('.finish-toggle').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
 
@@ -386,8 +385,23 @@ function estimateBoxWeight(){
 }
 function updateWeight(){const weight=estimateBoxWeight();$('weightEstimate').innerHTML='<strong>Estimated material weight: '+weight.toFixed(1)+' lb</strong><br>Estimate assumes ¾-inch panels and the selected maximum dimensions. Includes an allowance for internal panels and assembly; actual weight can vary.';return weight}
 function updateTuning(){const ported=$('type').value==='Ported';$('tuningField').classList.toggle('hidden',!ported);$('tuning').required=ported;updateWeight()}
-document.querySelectorAll('.port-style-choice').forEach(btn=>btn.addEventListener('click',()=>{ $('portStyle').value=btn.dataset.portStyle;document.querySelectorAll('.port-style-choice').forEach(b=>{const active=b===btn;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active));});}));
-document.querySelectorAll('.box-type-toggle').forEach(btn=>btn.addEventListener('click',()=>{const value=btn.dataset.boxType;$('type').value=value;document.querySelectorAll('.box-type-card').forEach(card=>card.classList.toggle('selected',card.id===(value==='Ported'?'portedTypeCard':'sealedTypeCard')));document.querySelectorAll('.box-type-toggle').forEach(b=>b.setAttribute('aria-expanded',String(b.dataset.boxType===value)));$('portedTypeDetails').classList.toggle('hidden',value!=='Ported');$('sealedTypeDetails').classList.toggle('hidden',value!=='Sealed');updateTuning();}));
+document.querySelectorAll('.port-style-choice').forEach(btn=>btn.addEventListener('click',e=>{
+ e.preventDefault();e.stopPropagation();
+ $('portStyle').value=btn.dataset.portStyle;
+ document.querySelectorAll('.port-style-choice').forEach(b=>{const active=b===btn;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active));});
+ update3DPreview();
+}));
+document.querySelectorAll('.box-type-toggle').forEach(btn=>btn.addEventListener('click',e=>{
+ e.preventDefault();e.stopPropagation();
+ const value=btn.dataset.boxType;
+ $('type').value=value;
+ document.querySelectorAll('.box-type-card').forEach(card=>card.classList.toggle('selected',card.id===(value==='Ported'?'portedTypeCard':'sealedTypeCard')));
+ document.querySelectorAll('.box-type-toggle').forEach(b=>b.setAttribute('aria-expanded',String(b.dataset.boxType===value)));
+ $('portedTypeDetails').classList.toggle('hidden',value!=='Ported');
+ $('sealedTypeDetails').classList.toggle('hidden',value!=='Sealed');
+ updateTuning();
+ update3DPreview();
+}));
 $('type').addEventListener('change',updateTuning);
 ['material','width','length','depth'].forEach(id=>$(id).addEventListener('change',updateWeight));
 updateTuning();
