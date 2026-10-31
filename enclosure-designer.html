@@ -375,11 +375,6 @@ document.querySelectorAll('#paintColors .color-choice').forEach(b=>b.addEventLis
 document.querySelectorAll('#wrapColors .color-choice').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
 document.querySelectorAll('.finish-toggle').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
 const stage=$('previewStage');stage.addEventListener('pointerdown',e=>{previewDragStart={x:e.clientX,rotation:previewRotation};stage.setPointerCapture(e.pointerId);});stage.addEventListener('pointermove',e=>{if(!previewDragStart)return;previewRotation=Math.max(-35,Math.min(35,previewDragStart.rotation+(e.clientX-previewDragStart.x)*.65));update3DPreview();});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>stage.addEventListener(ev,()=>{previewDragStart=null;}));
-});
-function setPreviewMode(mode){box3DViewMode=mode;[['exterior','previewExteriorBtn'],['interior','previewInteriorBtn'],['exploded','previewExplodedBtn']].forEach(([m,id])=>{const b=$(id);if(!b)return;b.className=m===mode?'primary':'secondary';b.setAttribute('aria-pressed',String(m===mode));});update3DPreview();}
-$('previewExteriorBtn')?.addEventListener('click',()=>setPreviewMode('exterior'));
-$('previewInteriorBtn')?.addEventListener('click',()=>setPreviewMode('interior'));
-$('previewExplodedBtn')?.addEventListener('click',()=>setPreviewMode('exploded'));
 update3DPreview();
 function estimateBoxWeight(){
  const w=Number($('width').value),l=Number($('length').value),d=Number($('depth').value),t=.75;
