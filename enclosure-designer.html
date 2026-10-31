@@ -198,6 +198,25 @@ function updateFree3DModel(){
   new THREE.LineBasicMaterial({color:0x303844})
  );
  box3DGroup.add(edges);
+ // Simple CAD-style subwoofer: a flat mounting ring, cone and dust cap.
+ const count=Math.max(1,Math.min(4,Number($('quantity').value)||1));
+ const speakerSize=Number($('size').value)||12;
+ const radius=Math.min((speakerSize+1.1)/2,Math.min(w/(count>1?2.5:1.35),h/(count>2?2.5:1.35))*.48);
+ const cols=count===1?1:2,rows=count>2?2:1;
+ const spacingX=w/(cols+1),spacingY=h/(rows+1);
+ const ringMat=new THREE.MeshBasicMaterial({color:0x555d67});
+ const coneMat=new THREE.MeshBasicMaterial({color:0x242a32});
+ const capMat=new THREE.MeshBasicMaterial({color:0x11151a});
+ for(let i=0;i<count;i++){
+  const x=(i%cols-(cols-1)/2)*spacingX;
+  const y=((rows-1)/2-Math.floor(i/cols))*spacingY;
+  const ring=new THREE.Mesh(new THREE.RingGeometry(radius*.78,radius,48),ringMat);
+  ring.position.set(x,y,l/2+.035);box3DGroup.add(ring);
+  const cone=new THREE.Mesh(new THREE.CircleGeometry(radius*.77,48),coneMat);
+  cone.position.set(x,y,l/2+.045);box3DGroup.add(cone);
+  const cap=new THREE.Mesh(new THREE.CircleGeometry(radius*.25,32),capMat);
+  cap.position.set(x,y,l/2+.055);box3DGroup.add(cap);
+ }
  // Show a simple flat port marker only when the selected enclosure is ported.
  if($('type').value==='Ported'){
   const style=$('portStyle').value;
