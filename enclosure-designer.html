@@ -182,96 +182,117 @@ function updateFree3DModel(){
  if(!window.THREE)return;initFree3DPreview();if(!box3DGroup)return;
  while(box3DGroup.children.length){
   const obj=box3DGroup.children.pop();
-  obj.traverse?.(n=>{if(n.geometry)n.geometry.dispose();if(n.material){(Array.isArray(n.material)?n.material:[n.material]).forEach(m=>m.dispose());}});
+  obj.traverse?.(n=>{if(n.geometry)n.geometry.dispose();if(n.material){(Array.isArray(n.material)?n.material:[n.material]).forEach(m=>{if(m.map)m.map.dispose();m.dispose();});}});
  }
  const w=Math.max(8,Number($('width').value)||25),l=Math.max(8,Number($('length').value)||30),h=Math.max(8,Number($('depth').value)||16),t=.75;
- const surface=previewSurface();
- // Use unlit materials so the CAD preview matches the selected color exactly.
- const frontMat=new THREE.MeshBasicMaterial({color:surface.front});
- const sideMat=new THREE.MeshBasicMaterial({color:surface.side});
- const topMat=new THREE.MeshBasicMaterial({color:surface.top});
- const edgeMat=new THREE.LineBasicMaterial({color:0x303844});
- const woodColor=selectedFinish==='Raw'?'#b99b70':surface.side;
- const woodMat=new THREE.MeshBasicMaterial({color:woodColor,side:THREE.DoubleSide});
- const frontPanelMat=new THREE.MeshBasicMaterial({color:surface.front,side:THREE.DoubleSide});
+ const surface=previewSurface(),raw=selectedFinish==='Raw';
+ const frontMat=new THREE.MeshBasicMaterial({color:raw?'#b99b70':surface.front,side:THREE.DoubleSide});
+ const sideMat=new THREE.MeshBasicMaterial({color:raw?'#a98559':surface.side,side:THREE.DoubleSide});
+ const topMat=new THREE.MeshBasicMaterial({color:raw?'#c9aa7b':surface.top,side:THREE.DoubleSide});
+ const insideMat=new THREE.MeshBasicMaterial({color:raw?'#d0b58c':'#c9b99f',side:THREE.DoubleSide});
+ const edgeMat=new THREE.LineBasicMaterial({color:0x303030});
  const exploded=box3DViewMode==='exploded',interior=box3DViewMode==='interior';
- const spread=exploded?Math.max(1.5,t*2):0;
- const panel=(name,ww,hh,dd,x,y,z,mat=woodMat,offset=[0,0,0])=>{
-  const mesh=new THREE.Mesh(new THREE.BoxGeometry(ww,hh,dd),mat);
-  mesh.position.set(x+offset[0],y+offset[1],z+offset[2]);mesh.userData.panelName=name;box3DGroup.add(mesh);
-  const outline=new THREE.LineSegments(new THREE.EdgesGeometry(mesh.geometry),edgeMat);outline.position.copy(mesh.position);box3DGroup.add(outline);
+ const gap=exploded?Math.max(1.4,t*2):0;
+ const addPanel=(name,ww,hh,dd,x,y,z,mat,offset=[0,0,0])=>{
+  const geo=new THREE.BoxGeometry(ww,hh,dd);
+  const mesh=new THREE.Mesh(geo,mat);mesh.position.set(x+offset[0],y+offset[1],z+offset[2]);mesh.userData.panelName=name;box3DGroup.add(mesh);
+  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(geo),edgeMat);edges.position.copy(mesh.position);box3DGroup.add(edges);
  };
- const hideTop=interior;
- const lift=exploded?spread:0;
- // Individually modeled shell panels; front face is +Z.
- panel('Bottom',w-2*t,t,l-2*t,0,-h/2+t/2,0,woodMat,[0,-spread,0]);
- if(!hideTop)panel('Top',w-2*t,t,l-2*t,0,h/2-t/2,0,woodMat,[0,spread,0]);
- panel('Left side',t,h-2*t,l-2*t,-w/2+t/2,0,0,woodMat,[-spread,0,0]);
- panel('Right side',t,h-2*t,l-2*t,w/2-t/2,0,0,woodMat,[spread,0,0]);
- panel('Rear',w-2*t,h-2*t,t,0,0,-l/2+t/2,woodMat,[0,0,-spread]);
- panel('Front baffle',w-2*t,h-2*t,t,0,0,l/2-t/2,interior?woodMat:frontPanelMat,[0,0,spread]);
- // Interior port construction is not yet generated because the current
- // designer does not calculate verified port width and total path length.
- // Subwoofer is shown in the exterior view.
- if(box3DViewMode==='exterior'){
+ // A true cut-through front baffle: the circular driver aperture and port aperture
+ // are holes in the panel geometry, not dark decals placed over a solid face.
+ const shapePanel=(name,ww,hh,dd,x,y,z,holes,mat,offset=[0,0,0])=>{
+  const shape=new THREE.Shape();shape.moveTo(-ww/2,-hh/2);shape.lineTo(ww/2,-hh/2);shape.lineTo(ww/2,hh/2);shape.lineTo(-ww/2,hh/2);shape.closePath();
+  holes.forEach(hole=>{
+   const path=new THREE.Path();
+   if(hole.kind==='circle'){
+    path.absarc(hole.x,hole.y,hole.r,0,Math.PI*2,true);
+   }else{
+    const x1=hole.x-hole.w/2,x2=hole.x+hole.w/2,y1=hole.y-hole.h/2,y2=hole.y+hole.h/2;
+    path.moveTo(x1,y1);path.lineTo(x1,y2);path.lineTo(x2,y2);path.lineTo(x2,y1);path.closePath();
+   }
+   shape.holes.push(path);
+  });
+  const geo=new THREE.ExtrudeGeometry(shape,{depth:dd,bevelEnabled:false,curveSegments:64});
+  geo.translate(0,0,-dd/2);
+  const mesh=new THREE.Mesh(geo,mat);mesh.position.set(x+offset[0],y+offset[1],z+offset[2]);mesh.userData.panelName=name;box3DGroup.add(mesh);
+  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(geo),edgeMat);edges.position.copy(mesh.position);box3DGroup.add(edges);
+ };
+ const isPorted=$('type').value==='Ported',style=$('portStyle').value;
+ const nominal=Number($('size').value)||12;
  const count=Math.max(1,Math.min(4,Number($('quantity').value)||1));
- const speakerSize=Number($('size').value)||12;
- const radius=Math.min((speakerSize+1.1)/2,Math.min(w/(count>1?2.5:1.35),h/(count>2?2.5:1.35))*.48);
  const cols=count===1?1:2,rows=count>2?2:1;
- const spacingX=w/(cols+1),spacingY=h/(rows+1);
- const ringMat=new THREE.MeshBasicMaterial({color:0x555d67});
- const coneMat=new THREE.MeshBasicMaterial({color:0x242a32});
- const capMat=new THREE.MeshBasicMaterial({color:0x11151a});
- for(let i=0;i<count;i++){
-  const x=(i%cols-(cols-1)/2)*spacingX;
-  const y=((rows-1)/2-Math.floor(i/cols))*spacingY;
-  const ring=new THREE.Mesh(new THREE.RingGeometry(radius*.78,radius,48),ringMat);
-  ring.position.set(x,y,l/2+.035);box3DGroup.add(ring);
-  const cone=new THREE.Mesh(new THREE.CircleGeometry(radius*.77,48),coneMat);
-  cone.position.set(x,y,l/2+.045);box3DGroup.add(cone);
-  const cap=new THREE.Mesh(new THREE.CircleGeometry(radius*.25,32),capMat);
-  cap.position.set(x,y,l/2+.055);box3DGroup.add(cap);
+ const driverR=Math.min(nominal*.46,w/(cols+1)*.42,h/(rows+1)*.42);
+ const driverXs=Array.from({length:count},(_,i)=>(i%cols-(cols-1)/2)*w/(cols+1));
+ const driverYs=Array.from({length:count},(_,i)=>((rows-1)/2-Math.floor(i/cols))*h/(rows+1));
+ const holes=[];
+ driverXs.forEach((x,i)=>holes.push({kind:'circle',x,y:driverYs[i],r:driverR}));
+ let portHole=null;
+ if(isPorted){
+  if(style==='Slot front panel')portHole={kind:'rect',x:-w*.39,y:0,w:Math.min(2.2,w*.09),h:h*.78};
+  if(style==='Hole front panel')portHole={kind:'circle',x:-w*.34,y:-h*.22,r:Math.min(1.7,h*.12)};
+  if(portHole)holes.push(portHole);
  }
- }
- // Show the port opening on the exterior view only.
- if(box3DViewMode==='exterior'&&$('type').value==='Ported'){
-  const style=$('portStyle').value;
-  const mat=new THREE.MeshBasicMaterial({color:0x111318});
+ const topOffset=exploded?[0,gap,0]:[0,0,0],bottomOffset=exploded?[0,-gap,0]:[0,0,0];
+ const leftOffset=exploded?[-gap,0,0]:[0,0,0],rightOffset=exploded?[gap,0,0]:[0,0,0];
+ const frontOffset=exploded?[0,0,gap]:[0,0,0],rearOffset=exploded?[0,0,-gap]:[0,0,0];
+ // Shell boards retain their real thickness and recognizable edge seams.
+ addPanel('Bottom',w-2*t,t,l-2*t,0,-h/2+t/2,0,insideMat,bottomOffset);
+ if(!interior)addPanel('Top',w-2*t,t,l-2*t,0,h/2-t/2,0,topMat,topOffset);
+ addPanel('Left side',t,h-2*t,l-2*t,-w/2+t/2,0,0,sideMat,leftOffset);
+ addPanel('Right side',t,h-2*t,l-2*t,w/2-t/2,0,0,sideMat,rightOffset);
+ addPanel('Rear panel',w-2*t,h-2*t,t,0,0,-l/2+t/2,insideMat,rearOffset);
+ shapePanel('Front baffle',w,h,t,0,0,l/2-t/2,holes,frontMat,frontOffset);
+ // Raised laminated rings around every driver cutout, with an open center.
+ driverXs.forEach((x,i)=>{
+  const ringGeo=new THREE.RingGeometry(driverR*1.01,driverR*1.17,64);
+  const ring=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:raw?'#c9aa7b':shadeColor(surface.front,.72),side:THREE.DoubleSide}));
+  ring.position.set(x,driverYs[i],l/2+t/2+.012);box3DGroup.add(ring);
+  const lipGeo=new THREE.RingGeometry(driverR*.96,driverR*1.01,64);
+  const lip=new THREE.Mesh(lipGeo,new THREE.MeshBasicMaterial({color:0x4b4b4b,side:THREE.DoubleSide}));
+  lip.position.set(x,driverYs[i],l/2+t/2+.018);box3DGroup.add(lip);
+ });
+ // Interior backing and port tunnel surfaces are visible through the real openings.
+ const back=new THREE.Mesh(new THREE.PlaneGeometry(w-2*t,h-2*t),insideMat);
+ back.position.set(0,0,-l/2+t+.015);box3DGroup.add(back);
+ if(isPorted){
+  const portX=style.includes('side panel')?w/2-t/2: -w*.39;
+  if(style==='Slot front panel'||style==='Slot side panel'){
+   const pw=Math.min(2.2,w*.09),ph=h*.78,pl=Math.max(t*2,l*.42);
+   if(style==='Slot front panel'){
+    addPanel('Port inner wall',t,ph,pl,portX+pw/2,0,l/2-t-pl/2,insideMat);
+    addPanel('Port return',pw,ph,t,portX+pw/2,0,l/2-t-pl,insideMat);
+   }else{
+    addPanel('Side port inner wall',pl,ph,t,w/2-t-pl/2,0,l*.2,insideMat);
+   }
+  }
   if(style==='Hole front panel'||style==='Hole side panel'){
-   const r=Math.min(Math.max(1.1,h*.12),Math.min(w,l)*.15);
-   const hole=new THREE.Mesh(new THREE.CircleGeometry(r,48),mat);
-   if(style==='Hole side panel'){hole.rotation.y=Math.PI/2;hole.position.set(w/2+.012,-h*.2,l*.2);}
-   else hole.position.set(w*.28,-h*.2,l/2+.012);
-   box3DGroup.add(hole);
-  }else{
-   const pw=Math.min(w*.13,3.2),ph=h*.72;
-   const slot=new THREE.Mesh(new THREE.PlaneGeometry(pw,ph),mat);
-   if(style==='Slot side panel'){slot.rotation.y=Math.PI/2;slot.position.set(w/2+.012,0,l*.28);}
-   else slot.position.set(w*.36,0,l/2+.012);
-   box3DGroup.add(slot);
+   const r=Math.min(1.7,h*.12);
+   const tube=new THREE.Mesh(new THREE.CylinderGeometry(r,r,Math.max(t*2,l*.28),48,1,true),insideMat);
+   if(style==='Hole front panel'){tube.rotation.x=Math.PI/2;tube.position.set(-w*.34,-h*.22,l/2-t-Math.max(t*2,l*.28)/2);}
+   else {tube.rotation.z=Math.PI/2;tube.position.set(w/2-t-Math.max(t*2,l*.28)/2,-h*.22,l*.2);}
+   box3DGroup.add(tube);
   }
  }
- // Minimal CAD dimension leaders and labels.
- const span=Math.max(w,h,l),gap=span*.14;
- const dimMat=new THREE.LineBasicMaterial({color:0x2563a6});
- const addLine=pts=>box3DGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),dimMat));
- const addLabel=(label,pos)=>{
-  const canvas=document.createElement('canvas');canvas.width=256;canvas.height=64;
-  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,256,64);ctx.fillStyle='#174b7a';
-  ctx.font='bold 30px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,128,32);
-  const tex=new THREE.CanvasTexture(canvas);
-  const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));
-  sprite.position.copy(pos);sprite.scale.set(Math.max(4.5,span*.2),Math.max(1.1,span*.05),1);box3DGroup.add(sprite);
- };
- addLine([new THREE.Vector3(-w/2,-h/2-gap,l/2),new THREE.Vector3(w/2,-h/2-gap,l/2)]);
- addLabel('W '+w+' in',new THREE.Vector3(0,-h/2-gap-.7,l/2));
- addLine([new THREE.Vector3(w/2+gap,-h/2,-l/2),new THREE.Vector3(w/2+gap,h/2,-l/2)]);
- addLabel('H '+h+' in',new THREE.Vector3(w/2+gap+.7,0,-l/2));
- addLine([new THREE.Vector3(w/2+gap,-h/2,l/2),new THREE.Vector3(w/2+gap,-h/2,-l/2)]);
- addLabel('D '+l+' in',new THREE.Vector3(w/2+gap+.7,-h/2-gap*.2,0));
+ // Side-panel port openings are actual apertures in the corresponding side board.
+ if(isPorted&&(style==='Slot side panel'||style==='Hole side panel')){
+  // Show the opening as a recessed dark throat at the side face.
+  const dark=new THREE.MeshBasicMaterial({color:0x242321,side:THREE.DoubleSide});
+  if(style==='Slot side panel'){
+   const opening=new THREE.Mesh(new THREE.PlaneGeometry(Math.min(2.2,w*.09),h*.78),dark);
+   opening.rotation.y=Math.PI/2;opening.position.set(w/2+.006,0,l*.2);box3DGroup.add(opening);
+  }else{
+   const opening=new THREE.Mesh(new THREE.CircleGeometry(Math.min(1.7,h*.12),48),dark);
+   opening.rotation.y=Math.PI/2;opening.position.set(w/2+.006,-h*.22,l*.2);box3DGroup.add(opening);
+  }
+ }
+ // Dimension leaders are kept outside the enclosure silhouette.
+ const span=Math.max(w,h,l),dg=span*.16,dimMat=new THREE.LineBasicMaterial({color:0x4b91c7});
+ const line=pts=>box3DGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),dimMat));
+ line([new THREE.Vector3(-w/2,-h/2-dg,l/2),new THREE.Vector3(w/2,-h/2-dg,l/2)]);
+ line([new THREE.Vector3(w/2+dg,-h/2,-l/2),new THREE.Vector3(w/2+dg,h/2,-l/2)]);
+ line([new THREE.Vector3(w/2+dg,-h/2,l/2),new THREE.Vector3(w/2+dg,-h/2,-l/2)]);
  box3DControls.target.set(0,0,0);
- const cameraDist=span*2.8;
- box3DCamera.position.set(cameraDist*.95,cameraDist*.72,cameraDist*1.15);
+ const dist=span*2.65;box3DCamera.position.set(dist*.95,dist*.72,dist*1.15);
  box3DCamera.near=.1;box3DCamera.far=span*30;box3DCamera.updateProjectionMatrix();
  box3DControls.minDistance=span*.45;box3DControls.maxDistance=span*6;
  box3DRenderer.render(box3DScene,box3DCamera);
