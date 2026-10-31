@@ -164,20 +164,15 @@ function previewSurface(){
 let box3DScene=null,box3DCamera=null,box3DRenderer=null,box3DControls=null,box3DGroup=null,box3DResizeObserver=null;
 function initFree3DPreview(){
  const host=$('box3DCanvas');if(!host||!window.THREE||box3DRenderer)return;
- box3DScene=new THREE.Scene();box3DScene.background=new THREE.Color('#e9edf2');
- box3DCamera=new THREE.PerspectiveCamera(34,1,.1,2400);
- box3DRenderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:'high-performance'});
+ box3DScene=new THREE.Scene();box3DScene.background=new THREE.Color('#f7f8fa');
+ box3DCamera=new THREE.PerspectiveCamera(38,1,.1,2000);
+ box3DRenderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
  box3DRenderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
- if('outputColorSpace' in box3DRenderer)box3DRenderer.outputColorSpace=THREE.SRGBColorSpace;else box3DRenderer.outputEncoding=THREE.sRGBEncoding;
- box3DRenderer.toneMapping=THREE.ACESFilmicToneMapping;box3DRenderer.toneMappingExposure=1.12;
- box3DRenderer.shadowMap.enabled=true;box3DRenderer.shadowMap.type=THREE.PCFSoftShadowMap;host.appendChild(box3DRenderer.domElement);
- box3DControls=new THREE.OrbitControls(box3DCamera,box3DRenderer.domElement);box3DControls.enableDamping=true;box3DControls.dampingFactor=.065;box3DControls.enableZoom=true;box3DControls.enablePan=true;box3DControls.minDistance=8;box3DControls.maxDistance=240;
- box3DScene.add(new THREE.HemisphereLight(0xffffff,0x9299a3,1.65));
- const key=new THREE.DirectionalLight(0xffffff,3.1);key.position.set(38,62,48);key.castShadow=true;key.shadow.mapSize.set(2048,2048);key.shadow.camera.left=-100;key.shadow.camera.right=100;key.shadow.camera.top=100;key.shadow.camera.bottom=-100;key.shadow.bias=-.00025;box3DScene.add(key);
- const fill=new THREE.DirectionalLight(0xdce8ff,1.25);fill.position.set(-45,28,-35);box3DScene.add(fill);
- const rimLight=new THREE.DirectionalLight(0xffffff,1.8);rimLight.position.set(-25,35,55);box3DScene.add(rimLight);
- const floorMat=new THREE.MeshStandardMaterial({color:0xe9edf2,roughness:.92,metalness:0});
- const floor=new THREE.Mesh(new THREE.PlaneGeometry(600,600),floorMat);floor.rotation.x=-Math.PI/2;floor.position.y=-.18;floor.receiveShadow=true;box3DScene.add(floor);
+ box3DRenderer.outputEncoding=THREE.sRGBEncoding;host.appendChild(box3DRenderer.domElement);
+ box3DControls=new THREE.OrbitControls(box3DCamera,box3DRenderer.domElement);
+ box3DControls.enableDamping=true;box3DControls.dampingFactor=.08;box3DControls.enableZoom=true;box3DControls.enablePan=true;
+ box3DScene.add(new THREE.AmbientLight(0xffffff,.9));
+ const light=new THREE.DirectionalLight(0xffffff,.75);light.position.set(35,55,45);box3DScene.add(light);
  box3DGroup=new THREE.Group();box3DScene.add(box3DGroup);
  const resize=()=>{const w=Math.max(1,host.clientWidth),h=Math.max(1,host.clientHeight);box3DRenderer.setSize(w,h,false);box3DCamera.aspect=w/h;box3DCamera.updateProjectionMatrix();};
  box3DResizeObserver=window.ResizeObserver?new ResizeObserver(resize):null;if(box3DResizeObserver)box3DResizeObserver.observe(host);else window.addEventListener('resize',resize);resize();
@@ -189,17 +184,12 @@ function updateFree3DModel(){
  const w=Math.max(8,Number($('width').value)||25),l=Math.max(8,Number($('length').value)||30),d=Math.max(8,Number($('depth').value)||16);
  const surface=previewSurface(),ported=$('type').value==='Ported',style=$('portStyle').value;
  // Three.js uses real world units in inches: X=width, Y=depth/height, Z=length.
- const finishIsCarpet=selectedFinish==='Wrap'&&selectedWrapType==='Carpet wrap';
- const finishIsCarbon=selectedFinish==='Wrap'&&(selectedWrapType==='Carbon fiber'||selectedWrapType==='Forged carbon fiber');
- const finishRoughness=finishIsCarpet?.96:finishIsCarbon?.3:.48;
- const frontMat=new THREE.MeshPhysicalMaterial({color:surface.front,roughness:finishRoughness,metalness:finishIsCarbon?.22:.02,clearcoat:finishIsCarpet?0:.32,clearcoatRoughness:.38});
- const sideMat=new THREE.MeshPhysicalMaterial({color:surface.side,roughness:finishRoughness,metalness:finishIsCarbon?.22:.02,clearcoat:finishIsCarpet?0:.32,clearcoatRoughness:.38});
- const topMat=new THREE.MeshPhysicalMaterial({color:surface.top,roughness:finishRoughness,metalness:finishIsCarbon?.22:.02,clearcoat:finishIsCarpet?0:.32,clearcoatRoughness:.38});
- const shell=new THREE.Mesh(new THREE.BoxGeometry(w,d,l),[sideMat,sideMat,topMat,topMat,frontMat,frontMat]);shell.castShadow=true;shell.receiveShadow=true;box3DGroup.add(shell);
- // A subtle front baffle overlay and crisp seams make the cabinet read as a built enclosure.
- const baffleMat=new THREE.MeshStandardMaterial({color:surface.front,roughness:finishRoughness,metalness:finishIsCarbon?.18:.02});
- const baffle=new THREE.Mesh(new THREE.BoxGeometry(w*.992,d*.992,.16),baffleMat);baffle.position.set(0,0,l/2+.035);baffle.castShadow=true;box3DGroup.add(baffle);
- const edgeMat=new THREE.LineBasicMaterial({color:0x252a31,transparent:true,opacity:.42});
+ const rawFinish=selectedFinish==='Raw'||selectedFinish==='Unfinished'||selectedWrapType==='Raw / unfinished';
+ const frontMat=new THREE.MeshStandardMaterial({color:rawFinish?0xb99a70:surface.front,roughness:.88,metalness:0});
+ const sideMat=new THREE.MeshStandardMaterial({color:rawFinish?0xa98960:surface.side,roughness:.88,metalness:0});
+ const topMat=new THREE.MeshStandardMaterial({color:rawFinish?0xc4a77e:surface.top,roughness:.88,metalness:0});
+ const shell=new THREE.Mesh(new THREE.BoxGeometry(w,d,l),[sideMat,sideMat,topMat,topMat,frontMat,frontMat]);box3DGroup.add(shell);
+ const edgeMat=new THREE.LineBasicMaterial({color:0x303844});
  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(w,d,l)),edgeMat);box3DGroup.add(edges);
  const frontZ=l/2+.035,frontY=0,frontX=0;
  // Match the second paint color in the 3D model when two-tone paint is selected.
@@ -265,9 +255,27 @@ function updateFree3DModel(){
    }
   }
  }
- // Add a subtle floor shadow and keep the model centered regardless of dimensions.
- const span=Math.max(w,d,l),target=new THREE.Vector3(0,0,0);box3DControls.target.copy(target);
- const cameraDist=span*1.75;box3DCamera.position.set(cameraDist*.95,cameraDist*.72,cameraDist*1.15);box3DCamera.near=.1;box3DCamera.far=span*30;box3DCamera.updateProjectionMatrix();box3DControls.minDistance=span*.45;box3DControls.maxDistance=span*6;
+ // CAD dimension leaders and labels: width, height and depth are shown in inches.
+ const dimMat=new THREE.LineBasicMaterial({color:0x2563a6});
+ const addLine=(pts)=>{const geo=new THREE.BufferGeometry().setFromPoints(pts);box3DGroup.add(new THREE.Line(geo,dimMat));};
+ const addLabel=(label,pos)=>{
+  const canvas=document.createElement('canvas');canvas.width=320;canvas.height=80;
+  const ctx=canvas.getContext('2d');ctx.clearRect(0,0,320,80);ctx.fillStyle='#174b7a';ctx.font='bold 34px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,160,40);
+  const tex=new THREE.CanvasTexture(canvas);const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));
+  sprite.position.copy(pos);sprite.scale.set(Math.max(5,span*.23),Math.max(1.25,span*.058),1);box3DGroup.add(sprite);
+ };
+ const span=Math.max(w,d,l),gap=span*.13;
+ addLine([new THREE.Vector3(-w/2,-d/2-gap,l/2),new THREE.Vector3(w/2,-d/2-gap,l/2)]);
+ addLine([new THREE.Vector3(-w/2,-d/2-gap-.45,l/2),new THREE.Vector3(-w/2,-d/2-gap+.45,l/2)]);
+ addLine([new THREE.Vector3(w/2,-d/2-gap-.45,l/2),new THREE.Vector3(w/2,-d/2-gap+.45,l/2)]);
+ addLabel('W '+w+' in',new THREE.Vector3(0,-d/2-gap-.9,l/2));
+ addLine([new THREE.Vector3(w/2+gap,-d/2,-l/2),new THREE.Vector3(w/2+gap,d/2,-l/2)]);
+ addLabel('H '+d+' in',new THREE.Vector3(w/2+gap+.8,0,-l/2));
+ addLine([new THREE.Vector3(w/2+gap,-d/2,l/2),new THREE.Vector3(w/2+gap,-d/2,-l/2)]);
+ addLabel('D '+l+' in',new THREE.Vector3(w/2+gap+.8,-d/2-gap*.25,0));
+ // Keep the complete cabinet and its dimension callouts in view.
+ const target=new THREE.Vector3(0,0,0);box3DControls.target.copy(target);
+ const cameraDist=span*2.65;box3DCamera.position.set(cameraDist*.95,cameraDist*.72,cameraDist*1.15);box3DCamera.near=.1;box3DCamera.far=span*30;box3DCamera.updateProjectionMatrix();box3DControls.minDistance=span*.45;box3DControls.maxDistance=span*6;
  box3DRenderer.render(box3DScene,box3DCamera);
 }
 function update3DPreview(){
