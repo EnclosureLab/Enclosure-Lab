@@ -142,7 +142,6 @@ document.querySelectorAll('[data-box-type]').forEach(b=>b.addEventListener('clic
 document.querySelectorAll('.finish-toggle').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
 
 ['paintDesign','wrapDesign','paintNotes','wrapNotes','customPaintName','customWrapName'].forEach(id=>{const el=$(id);if(el){el.addEventListener('input',update3DPreview);el.addEventListener('change',update3DPreview);}});
-document.querySelectorAll('.finish-toggle').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
 
 let previewRotation=0,previewDragStart=null;
 function hexToRgb(hex){const m=/^#?([0-9a-f]{6})$/i.exec(hex||'');return m?{r:parseInt(m[1].slice(0,2),16),g:parseInt(m[1].slice(2,4),16),b:parseInt(m[1].slice(4,6),16)}:{r:90,g:96,b:105};}
@@ -221,7 +220,8 @@ function updateFree3DModel(){
  const nominal=Number($('size').value)||12;
  const count=Math.max(1,Math.min(4,Number($('quantity').value)||1));
  const cols=count===1?1:2,rows=count>2?2:1;
- const driverDiameter=Math.min(nominal*.92,w/(cols+1)*.84,h/(rows+1)*.84);\n const driverR=driverDiameter/2;
+ const driverDiameter=Math.min(nominal*.92,w/(cols+1)*.84,h/(rows+1)*.84);
+ const driverR=driverDiameter/2;
  const driverXs=Array.from({length:count},(_,i)=>(i%cols-(cols-1)/2)*w/(cols+1));
  const driverYs=Array.from({length:count},(_,i)=>((rows-1)/2-Math.floor(i/cols))*h/(rows+1));
  const holes=[];
@@ -292,7 +292,8 @@ function updateFree3DModel(){
  line([new THREE.Vector3(w/2+dg,-h/2,-l/2),new THREE.Vector3(w/2+dg,h/2,-l/2)]);
  line([new THREE.Vector3(w/2+dg,-h/2,l/2),new THREE.Vector3(w/2+dg,-h/2,-l/2)]);
  box3DControls.target.set(0,0,0);
- const aspect=Math.max(.65,box3DRenderer.domElement.clientWidth/Math.max(1,box3DRenderer.domElement.clientHeight));\n const fitSpan=Math.max(w,h,l);\n const dist=(fitSpan/2)/Math.tan(THREE.MathUtils.degToRad(box3DCamera.fov/2))*1.65/Math.min(1,aspect);\n box3DCamera.position.set(dist*.95,dist*.72,dist*1.15);
+ const aspect=Math.max(.65,box3DRenderer.domElement.clientWidth/Math.max(1,box3DRenderer.domElement.clientHeight));\n const fitSpan=Math.max(w,h,l);\n const dist=(fitSpan/2)/Math.tan(THREE.MathUtils.degToRad(box3DCamera.fov/2))*1.65/Math.min(1,aspect);
+ box3DCamera.position.set(dist*.95,dist*.72,dist*1.15);
  box3DCamera.near=.1;box3DCamera.far=span*30;box3DCamera.updateProjectionMatrix();
  box3DControls.minDistance=span*.45;box3DControls.maxDistance=span*6;
  box3DRenderer.render(box3DScene,box3DCamera);
@@ -372,7 +373,7 @@ document.querySelectorAll('#paintColors .color-choice').forEach(b=>b.addEventLis
 document.querySelectorAll('#wrapColors .color-choice').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
 document.querySelectorAll('.finish-toggle').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
 const stage=$('previewStage');stage.addEventListener('pointerdown',e=>{previewDragStart={x:e.clientX,rotation:previewRotation};stage.setPointerCapture(e.pointerId);});stage.addEventListener('pointermove',e=>{if(!previewDragStart)return;previewRotation=Math.max(-35,Math.min(35,previewDragStart.rotation+(e.clientX-previewDragStart.x)*.65));update3DPreview();});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>stage.addEventListener(ev,()=>{previewDragStart=null;}));
-$('previewExteriorBtn')?.addEventListener('click',()=>{box3DViewMode='exterior';$('previewExteriorBtn').className='primary';$('previewInteriorBtn').className='secondary';$('previewExteriorBtn').setAttribute('aria-pressed','true');$('previewInteriorBtn').setAttribute('aria-pressed','false');update3DPreview();});
+});
 function setPreviewMode(mode){box3DViewMode=mode;[['exterior','previewExteriorBtn'],['interior','previewInteriorBtn'],['exploded','previewExplodedBtn']].forEach(([m,id])=>{const b=$(id);if(!b)return;b.className=m===mode?'primary':'secondary';b.setAttribute('aria-pressed',String(m===mode));});update3DPreview();}
 $('previewExteriorBtn')?.addEventListener('click',()=>setPreviewMode('exterior'));
 $('previewInteriorBtn')?.addEventListener('click',()=>setPreviewMode('interior'));
