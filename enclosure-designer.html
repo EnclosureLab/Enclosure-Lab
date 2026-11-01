@@ -33,7 +33,7 @@
 <div class="section-title">2. Box type</div>
 <select id="type" name="type" required class="hidden"><option value="Ported">Ported</option><option value="Sealed">Sealed</option></select>
 <div class="box-type-options">
-  <div class="box-type-card selected" id="portedTypeCard"><button type="button" class="box-type-toggle" data-box-type="Ported" onclick="selectEnclosureType('Ported',event)" aria-expanded="true"><span><strong>Ported</strong><small>More output and stronger low-bass performance</small></span><span class="box-type-check">✓</span></button><div class="box-type-details" id="portedTypeDetails">
+  <div class="box-type-card selected" id="portedTypeCard"><button type="button" class="box-type-toggle" data-box-type="Ported" aria-expanded="true"><span><strong>Ported</strong><small>More output and stronger low-bass performance</small></span><span class="box-type-check">✓</span></button><div class="box-type-details" id="portedTypeDetails">
   <p class="port-style-heading">Choose port style</p>
   <div class="port-style-slider" id="portStyleOptions">
     <button type="button" class="port-style-choice selected" data-port-style="Slot front panel" aria-pressed="true"><strong>Slot front panel</strong><small>Slot opening on the front panel</small></button>
@@ -43,7 +43,7 @@
   </div>
   <input type="hidden" id="portStyle" name="portStyle" value="Slot front panel">
 </div></div>
-  <div class="box-type-card" id="sealedTypeCard"><button type="button" class="box-type-toggle" data-box-type="Sealed" onclick="selectEnclosureType('Sealed',event)" aria-expanded="false"><span><strong>Sealed</strong><small>Compact design with controlled bass response</small></span><span class="box-type-check">✓</span></button><div class="box-type-details hidden" id="sealedTypeDetails">A closed enclosure with no port. The tuning frequency field is not needed for this style.</div></div>
+  <div class="box-type-card" id="sealedTypeCard"><button type="button" class="box-type-toggle" data-box-type="Sealed" aria-expanded="false"><span><strong>Sealed</strong><small>Compact design with controlled bass response</small></span><span class="box-type-check">✓</span></button><div class="box-type-details hidden" id="sealedTypeDetails">A closed enclosure with no port. The tuning frequency field is not needed for this style.</div></div>
 </div>
 <div class="section-title">3. Box finish &amp; paint color</div>
 <div class="finish-options">
@@ -384,38 +384,6 @@ function estimateBoxWeight(){
  return Math.max(1,woodVolume*density*factor+1.5);
 }
 function updateWeight(){const weight=estimateBoxWeight();$('weightEstimate').innerHTML='<strong>Estimated material weight: '+weight.toFixed(1)+' lb</strong><br>Estimate assumes ¾-inch panels and the selected maximum dimensions. Includes an allowance for internal panels and assembly; actual weight can vary.';return weight}
-window.selectEnclosureType=function(value,event){
- if(event){event.preventDefault();event.stopPropagation();}
- const type=document.getElementById('type');
- if(!type||!['Ported','Sealed'].includes(value))return;
- type.value=value;
- document.getElementById('portedTypeCard').classList.toggle('selected',value==='Ported');
- document.getElementById('sealedTypeCard').classList.toggle('selected',value==='Sealed');
- document.getElementById('portedTypeDetails').classList.toggle('hidden',value!=='Ported');
- document.getElementById('sealedTypeDetails').classList.toggle('hidden',value!=='Sealed');
- document.querySelectorAll('.box-type-toggle').forEach(b=>b.setAttribute('aria-expanded',String(b.dataset.boxType===value)));
- updateTuning();
- update3DPreview();
-};
-// Bind Box Type controls directly after the global selection function exists.
-document.querySelectorAll('button[data-box-type]').forEach(button=>{
- button.addEventListener('click',function(event){
-  event.preventDefault();
-  const value=this.getAttribute('data-box-type');
-  const typeField=document.getElementById('type');
-  if(!typeField)return;
-  typeField.value=value;
-  document.getElementById('portedTypeCard').classList.toggle('selected',value==='Ported');
-  document.getElementById('sealedTypeCard').classList.toggle('selected',value==='Sealed');
-  document.getElementById('portedTypeDetails').classList.toggle('hidden',value!=='Ported');
-  document.getElementById('sealedTypeDetails').classList.toggle('hidden',value!=='Sealed');
-  document.querySelectorAll('button[data-box-type]').forEach(b=>b.setAttribute('aria-expanded',String(b===this)));
-  document.getElementById('tuningField').classList.toggle('hidden',value!=='Ported');
-  document.getElementById('tuning').required=value==='Ported';
-  updateWeight();
-  update3DPreview();
- });
-});
 function updateTuning(){const ported=$('type').value==='Ported';$('tuningField').classList.toggle('hidden',!ported);$('tuning').required=ported;updateWeight()}
 document.querySelectorAll('.port-style-choice').forEach(btn=>btn.addEventListener('click',e=>{
  e.preventDefault();e.stopPropagation();
@@ -439,6 +407,34 @@ $('customBoxForm').addEventListener('submit',e=>{
  $('summary').scrollIntoView({behavior:'smooth',block:'nearest'});
  setTimeout(()=>{if(new URLSearchParams(location.search).get('embed')==='1')window.top.location.href='checkout.html';else window.location.href='checkout.html';},500);
 });
+</script>
+<script>
+(function(){
+ function bindBoxTypeCards(){
+  document.querySelectorAll('.box-type-toggle[data-box-type]').forEach(function(button){
+   if(button.dataset.boxTypeBound==='true')return;
+   button.dataset.boxTypeBound='true';
+   button.addEventListener('click',function(event){
+    event.preventDefault();event.stopPropagation();
+    var value=button.getAttribute('data-box-type');
+    if(value!=='Ported'&&value!=='Sealed')return;
+    var field=document.getElementById('type');
+    if(field){field.value=value;field.dispatchEvent(new Event('change',{bubbles:true}));}
+    document.querySelectorAll('.box-type-card').forEach(function(card){card.classList.toggle('selected',card.id===(value==='Ported'?'portedTypeCard':'sealedTypeCard'));});
+    document.querySelectorAll('.box-type-toggle').forEach(function(b){b.setAttribute('aria-expanded',String(b===button));});
+    var p=document.getElementById('portedTypeDetails'),s=document.getElementById('sealedTypeDetails');
+    if(p)p.classList.toggle('hidden',value!=='Ported');
+    if(s)s.classList.toggle('hidden',value!=='Sealed');
+    var tf=document.getElementById('tuningField'),t=document.getElementById('tuning');
+    if(tf)tf.classList.toggle('hidden',value!=='Ported');
+    if(t)t.required=value==='Ported';
+    if(typeof window.updateTuning==='function')window.updateTuning();
+    if(typeof window.update3DPreview==='function')window.update3DPreview();
+   });
+  });
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindBoxTypeCards);else bindBoxTypeCards();
+})();
 </script>
 </body>
 </html>
