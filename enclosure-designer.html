@@ -385,12 +385,7 @@ function estimateBoxWeight(){
 }
 function updateWeight(){const weight=estimateBoxWeight();$('weightEstimate').innerHTML='<strong>Estimated material weight: '+weight.toFixed(1)+' lb</strong><br>Estimate assumes ¾-inch panels and the selected maximum dimensions. Includes an allowance for internal panels and assembly; actual weight can vary.';return weight}
 function updateTuning(){const ported=$('type').value==='Ported';$('tuningField').classList.toggle('hidden',!ported);$('tuning').required=ported;updateWeight()}
-document.querySelectorAll('.port-style-choice').forEach(btn=>btn.addEventListener('click',e=>{
- e.preventDefault();e.stopPropagation();
- $('portStyle').value=btn.dataset.portStyle;
- document.querySelectorAll('.port-style-choice').forEach(b=>{const active=b===btn;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active));});
- update3DPreview();
-}));
+
 $('type').addEventListener('change',updateTuning);
 ['material','width','length','depth'].forEach(id=>$(id).addEventListener('change',updateWeight));
 updateTuning();
@@ -410,6 +405,26 @@ $('customBoxForm').addEventListener('submit',e=>{
 </script>
 <script>
 (function(){
+ function bindPortStyleCards(){
+  document.querySelectorAll('.port-style-choice[data-port-style]').forEach(function(button){
+   if(button.dataset.portStyleBound==='true')return;
+   button.dataset.portStyleBound='true';
+   button.addEventListener('click',function(event){
+    event.preventDefault();event.stopPropagation();
+    var value=button.getAttribute('data-port-style');
+    var field=document.getElementById('portStyle');
+    if(!field||!value)return;
+    field.value=value;
+    document.querySelectorAll('.port-style-choice').forEach(function(choice){
+     var active=choice===button;
+     choice.classList.toggle('selected',active);
+     choice.setAttribute('aria-pressed',String(active));
+    });
+    field.dispatchEvent(new Event('change',{bubbles:true}));
+    if(typeof window.update3DPreview==='function')window.update3DPreview();
+   });
+  });
+ }
  function bindBoxTypeCards(){
   document.querySelectorAll('.box-type-toggle[data-box-type]').forEach(function(button){
    if(button.dataset.boxTypeBound==='true')return;
@@ -433,7 +448,7 @@ $('customBoxForm').addEventListener('submit',e=>{
    });
   });
  }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindBoxTypeCards);else bindBoxTypeCards();
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){bindBoxTypeCards();bindPortStyleCards();});else{bindBoxTypeCards();bindPortStyleCards();}
 })();
 </script>
 </body>
