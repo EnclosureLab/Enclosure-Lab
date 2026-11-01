@@ -397,6 +397,25 @@ window.selectEnclosureType=function(value,event){
  updateTuning();
  update3DPreview();
 };
+// Bind Box Type controls directly after the global selection function exists.
+document.querySelectorAll('button[data-box-type]').forEach(button=>{
+ button.addEventListener('click',function(event){
+  event.preventDefault();
+  const value=this.getAttribute('data-box-type');
+  const typeField=document.getElementById('type');
+  if(!typeField)return;
+  typeField.value=value;
+  document.getElementById('portedTypeCard').classList.toggle('selected',value==='Ported');
+  document.getElementById('sealedTypeCard').classList.toggle('selected',value==='Sealed');
+  document.getElementById('portedTypeDetails').classList.toggle('hidden',value!=='Ported');
+  document.getElementById('sealedTypeDetails').classList.toggle('hidden',value!=='Sealed');
+  document.querySelectorAll('button[data-box-type]').forEach(b=>b.setAttribute('aria-expanded',String(b===this)));
+  document.getElementById('tuningField').classList.toggle('hidden',value!=='Ported');
+  document.getElementById('tuning').required=value==='Ported';
+  updateWeight();
+  update3DPreview();
+ });
+});
 function updateTuning(){const ported=$('type').value==='Ported';$('tuningField').classList.toggle('hidden',!ported);$('tuning').required=ported;updateWeight()}
 document.querySelectorAll('.port-style-choice').forEach(btn=>btn.addEventListener('click',e=>{
  e.preventDefault();e.stopPropagation();
