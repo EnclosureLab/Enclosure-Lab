@@ -410,7 +410,6 @@ document.querySelectorAll('#paintColors .color-choice').forEach(b=>b.addEventLis
 document.querySelectorAll('#wrapColors .color-choice').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
 document.querySelectorAll('.finish-toggle').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
 
-update3DPreview();
 function estimateBoxWeight(){
  const w=Number($('width').value),h=Number($('length').value),d=Number($('depth').value),t=.75;
  const density={'MDF (Suggested)':46.8,'Birch':42.4,'Plywood':32}[$('material').value]||46.8;
@@ -425,6 +424,7 @@ function updateTuning(){const ported=$('type').value==='Ported';$('tuningField')
 $('type').addEventListener('change',updateTuning);
 ['material','width','length','depth'].forEach(id=>$(id).addEventListener('change',updateWeight));
 updateTuning();
+update3DPreview();
 $('customBoxForm').addEventListener('submit',e=>{
  e.preventDefault();
  const weight=updateWeight();
