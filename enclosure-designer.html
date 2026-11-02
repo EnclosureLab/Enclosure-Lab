@@ -216,7 +216,7 @@ function updateFree3DModel(){
   }
   const tex=new THREE.CanvasTexture(canvas);tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
   tex.repeat.set(kind==='Carbon fiber'?3.2:kind==='Forged carbon fiber'?1.7:2,kind==='Carbon fiber'?3.2:kind==='Forged carbon fiber'?1.7:2);
-  tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=renderer.capabilities.getMaxAnisotropy();return tex;
+  tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=box3DRenderer.capabilities.getMaxAnisotropy();return tex;
  };
  const wrapType=selectedFinish==='Wrap'?$('wrapType').value:'';
  const exteriorTexture=selectedFinish==='Wrap'?makeFinishTexture(wrapType,surface.front):null;
