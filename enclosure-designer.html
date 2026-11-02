@@ -184,9 +184,34 @@ function updateFree3DModel(){
  }
  const w=Math.max(8,Number($('width').value)||25),h=Math.max(8,Number($('length').value)||30),l=Math.max(8,Number($('depth').value)||16),t=.75;
  const surface=previewSurface(),raw=selectedFinish==='Raw';
- const frontMat=new THREE.MeshBasicMaterial({color:raw?'#b99b70':surface.front,side:THREE.DoubleSide});
- const sideMat=new THREE.MeshBasicMaterial({color:raw?'#a98559':surface.side,side:THREE.DoubleSide});
- const topMat=new THREE.MeshBasicMaterial({color:raw?'#c9aa7b':surface.top,side:THREE.DoubleSide});
+ const makeFinishTexture=(kind,base)=>{
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=256;
+  const ctx=canvas.getContext('2d');ctx.fillStyle=base;ctx.fillRect(0,0,256,256);
+  if(kind==='Carbon fiber'){
+   const cell=16;
+   for(let y=0;y<256;y+=cell)for(let x=0;x<256;x+=cell){
+    const even=((x/cell+y/cell)%2)===0;
+    ctx.fillStyle=even?'rgba(255,255,255,.24)':'rgba(0,0,0,.30)';ctx.fillRect(x,y,cell,cell);
+    ctx.fillStyle=even?'rgba(0,0,0,.20)':'rgba(255,255,255,.14)';ctx.fillRect(x+2,y+2,cell-4,cell-4);
+    ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=1;
+    for(let k=-cell;k<cell;k+=4){ctx.beginPath();ctx.moveTo(x+k,y);ctx.lineTo(x+k+cell,y+cell);ctx.stroke();}
+   }
+   ctx.strokeStyle='rgba(0,0,0,.42)';ctx.lineWidth=2;
+   for(let p=0;p<=256;p+=cell){ctx.beginPath();ctx.moveTo(p,0);ctx.lineTo(p,256);ctx.stroke();ctx.beginPath();ctx.moveTo(0,p);ctx.lineTo(256,p);ctx.stroke();}
+  }else if(kind==='Forged carbon fiber'){
+   for(let i=0;i<150;i++){const x=Math.random()*256,y=Math.random()*256,rx=3+Math.random()*13,ry=2+Math.random()*7;ctx.fillStyle=i%2?'rgba(255,255,255,.22)':'rgba(0,0,0,.28)';ctx.beginPath();ctx.ellipse(x,y,rx,ry,Math.random()*.8,0,Math.PI*2);ctx.fill();}
+  }else if(kind==='Carpet wrap'){
+   for(let i=0;i<6500;i++){ctx.fillStyle=i%2?'rgba(255,255,255,.10)':'rgba(0,0,0,.13)';ctx.fillRect(Math.random()*256,Math.random()*256,1.5,1.5);}
+  }else{
+   for(let i=0;i<2200;i++){ctx.fillStyle=i%2?'rgba(255,255,255,.035)':'rgba(0,0,0,.035)';ctx.fillRect(Math.random()*256,Math.random()*256,1,1);}
+  }
+  const tex=new THREE.CanvasTexture(canvas);tex.wrapS=tex.wrapT=THREE.RepeatWrapping;tex.repeat.set(2,2);return tex;
+ };
+ const wrapType=selectedFinish==='Wrap'?$('wrapType').value:'';
+ const exteriorTexture=selectedFinish==='Wrap'?makeFinishTexture(wrapType,surface.front):null;
+ const exteriorMat=color=>new THREE.MeshBasicMaterial({color:exteriorTexture?0xffffff:color,map:exteriorTexture,side:THREE.DoubleSide});
+ const frontMat=exteriorMat(raw?'#b99b70':surface.front),sideMat=exteriorMat(raw?'#a98559':surface.side),topMat=exteriorMat(raw?'#c9aa7b':surface.top);
+ const bottomMat=exteriorMat(raw?'#b99b70':surface.front),rearMat=exteriorMat(raw?'#a98559':surface.side);
  const insideMat=new THREE.MeshBasicMaterial({color:raw?'#d0b58c':'#c9b99f',side:THREE.DoubleSide});
  const edgeMat=new THREE.LineBasicMaterial({color:0x303030});
  const exploded=false,interior=false;
@@ -235,11 +260,11 @@ function updateFree3DModel(){
  const leftOffset=exploded?[-gap,0,0]:[0,0,0],rightOffset=exploded?[gap,0,0]:[0,0,0];
  const frontOffset=exploded?[0,0,gap]:[0,0,0],rearOffset=exploded?[0,0,-gap]:[0,0,0];
  // Shell boards retain their real thickness and recognizable edge seams.
- addPanel('Bottom',w-2*t,t,l-2*t,0,-h/2+t/2,0,insideMat,bottomOffset);
+ addPanel('Bottom',w-2*t,t,l-2*t,0,-h/2+t/2,0,bottomMat,bottomOffset);
  addPanel('Top',w-2*t,t,l-2*t,0,h/2-t/2,0,topMat,topOffset);
  addPanel('Left side',t,h-2*t,l-2*t,-w/2+t/2,0,0,sideMat,leftOffset);
  addPanel('Right side',t,h-2*t,l-2*t,w/2-t/2,0,0,sideMat,rightOffset);
- addPanel('Rear panel',w,h,t,0,0,-l/2+t/2,insideMat,rearOffset);
+ addPanel('Rear panel',w,h,t,0,0,-l/2+t/2,rearMat,rearOffset);
  shapePanel('Front baffle',w,h,t,0,0,l/2-t/2,holes,frontMat,frontOffset);
  // Raised laminated rings around every driver cutout, with an open center.
  driverXs.forEach((x,i)=>{
