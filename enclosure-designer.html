@@ -424,6 +424,8 @@ function updateTuning(){const ported=$('type').value==='Ported';$('tuningField')
 $('type').addEventListener('change',updateTuning);
 ['material','width','length','depth'].forEach(id=>$(id).addEventListener('change',updateWeight));
 updateTuning();
+setTimeout(updateWeight,0);
+window.addEventListener('load',updateWeight,{once:true});
 update3DPreview();
 $('customBoxForm').addEventListener('submit',e=>{
  e.preventDefault();
