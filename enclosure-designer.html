@@ -185,27 +185,38 @@ function updateFree3DModel(){
  const w=Math.max(8,Number($('width').value)||25),h=Math.max(8,Number($('length').value)||30),l=Math.max(8,Number($('depth').value)||16),t=.75;
  const surface=previewSurface(),raw=selectedFinish==='Raw';
  const makeFinishTexture=(kind,base)=>{
-  const canvas=document.createElement('canvas');canvas.width=canvas.height=256;
-  const ctx=canvas.getContext('2d');ctx.fillStyle=base;ctx.fillRect(0,0,256,256);
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=512;
+  const ctx=canvas.getContext('2d');ctx.fillStyle=base;ctx.fillRect(0,0,512,512);
   if(kind==='Carbon fiber'){
-   const cell=16;
-   for(let y=0;y<256;y+=cell)for(let x=0;x<256;x+=cell){
-    const even=((x/cell+y/cell)%2)===0;
-    ctx.fillStyle=even?'rgba(255,255,255,.24)':'rgba(0,0,0,.30)';ctx.fillRect(x,y,cell,cell);
-    ctx.fillStyle=even?'rgba(0,0,0,.20)':'rgba(255,255,255,.14)';ctx.fillRect(x+2,y+2,cell-4,cell-4);
-    ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=1;
-    for(let k=-cell;k<cell;k+=4){ctx.beginPath();ctx.moveTo(x+k,y);ctx.lineTo(x+k+cell,y+cell);ctx.stroke();}
+   const cell=32,strand=15;
+   for(let y=-cell;y<544;y+=cell)for(let x=-cell;x<544;x+=cell){
+    const row=Math.round(y/cell),col=Math.round(x/cell),light=((row+col)%4)<2;
+    ctx.save();ctx.translate(x+((row%2)*cell/2)+cell/2,y+cell/2);ctx.rotate(-Math.PI/4);
+    const g=ctx.createLinearGradient(0,-strand/2,0,strand/2);
+    g.addColorStop(0,light?'#c4c8cb':'#34383c');g.addColorStop(.2,light?'#777e83':'#171a1e');g.addColorStop(.5,light?'#e0e2e3':'#555b60');g.addColorStop(.8,light?'#656c71':'#111417');g.addColorStop(1,light?'#25292d':'#080a0c');
+    ctx.fillStyle=g;ctx.fillRect(-cell*.8,-strand/2,cell*1.6,strand);
+    ctx.strokeStyle=light?'rgba(255,255,255,.78)':'rgba(0,0,0,.88)';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-cell*.8,-strand/2+1);ctx.lineTo(cell*.8,-strand/2+1);ctx.stroke();
+    ctx.strokeStyle=light?'rgba(0,0,0,.55)':'rgba(220,225,230,.4)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-cell*.8,strand/2-1);ctx.lineTo(cell*.8,strand/2-1);ctx.stroke();ctx.restore();
    }
-   ctx.strokeStyle='rgba(0,0,0,.42)';ctx.lineWidth=2;
-   for(let p=0;p<=256;p+=cell){ctx.beginPath();ctx.moveTo(p,0);ctx.lineTo(p,256);ctx.stroke();ctx.beginPath();ctx.moveTo(0,p);ctx.lineTo(256,p);ctx.stroke();}
   }else if(kind==='Forged carbon fiber'){
-   for(let i=0;i<150;i++){const x=Math.random()*256,y=Math.random()*256,rx=3+Math.random()*13,ry=2+Math.random()*7;ctx.fillStyle=i%2?'rgba(255,255,255,.22)':'rgba(0,0,0,.28)';ctx.beginPath();ctx.ellipse(x,y,rx,ry,Math.random()*.8,0,Math.PI*2);ctx.fill();}
+   let seed=84721;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+   for(let i=0;i<300;i++){
+    const x=rand()*512,y=rand()*512,len=9+rand()*38,thick=2+rand()*9,angle=(rand()-.5)*1.5;
+    ctx.save();ctx.translate(x,y);ctx.rotate(angle);
+    const g=ctx.createLinearGradient(0,-thick,0,thick);g.addColorStop(0,'#e0e3e5');g.addColorStop(.22,'#858d94');g.addColorStop(.58,'#252a2f');g.addColorStop(1,'#050709');
+    ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(-len/2,-thick*.35);ctx.lineTo(-len*.28,-thick);ctx.lineTo(len/2,-thick*.55);ctx.lineTo(len*.42,thick*.55);ctx.lineTo(-len*.38,thick);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='rgba(245,247,248,.88)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-len*.3,-thick*.25);ctx.lineTo(len*.34,-thick*.18);ctx.stroke();ctx.restore();
+   }
   }else if(kind==='Carpet wrap'){
-   for(let i=0;i<6500;i++){ctx.fillStyle=i%2?'rgba(255,255,255,.10)':'rgba(0,0,0,.13)';ctx.fillRect(Math.random()*256,Math.random()*256,1.5,1.5);}
+   let seed=319;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+   for(let i=0;i<11000;i++){ctx.fillStyle=i%2?'rgba(255,255,255,.10)':'rgba(0,0,0,.15)';ctx.fillRect(rand()*512,rand()*512,1.5,1.5);}
   }else{
-   for(let i=0;i<2200;i++){ctx.fillStyle=i%2?'rgba(255,255,255,.035)':'rgba(0,0,0,.035)';ctx.fillRect(Math.random()*256,Math.random()*256,1,1);}
+   let seed=712;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
+   for(let i=0;i<3000;i++){ctx.fillStyle=i%2?'rgba(255,255,255,.04)':'rgba(0,0,0,.04)';ctx.fillRect(rand()*512,rand()*512,1,1);}
   }
-  const tex=new THREE.CanvasTexture(canvas);tex.wrapS=tex.wrapT=THREE.RepeatWrapping;tex.repeat.set(2,2);return tex;
+  const tex=new THREE.CanvasTexture(canvas);tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
+  tex.repeat.set(kind==='Carbon fiber'?3.2:kind==='Forged carbon fiber'?1.7:2,kind==='Carbon fiber'?3.2:kind==='Forged carbon fiber'?1.7:2);
+  tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=renderer.capabilities.getMaxAnisotropy();return tex;
  };
  const wrapType=selectedFinish==='Wrap'?$('wrapType').value:'';
  const exteriorTexture=selectedFinish==='Wrap'?makeFinishTexture(wrapType,surface.front):null;
