@@ -23,7 +23,7 @@
 <section class="container checkout-layout">
 <div class="checkout-card">
 <h2>Your items</h2><div id="cartList" class="cart-list"></div>
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 30px"><button class="button ghost" type="button" id="addEnclosure">+ Add a custom enclosure request</button><a class="button ghost" href="products.html">Browse products</a></div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 30px"><a class="button ghost" href="index.html#quote">+ Design a custom enclosure</a><a class="button ghost" href="products.html">Browse products</a></div>
 <h2>Contact and delivery</h2>
 <form id="checkoutForm"><div class="form-grid">
 <div class="field"><label for="name">Full name *</label><input id="name" name="name" autocomplete="name" required></div>
@@ -111,7 +111,7 @@ function renderCart(){
  document.getElementById("submitOrder").disabled=!cart.length;
 }
 function changeQty(index,delta){const c=getCart();if(!c[index])return;c[index].qty+=delta;if(c[index].qty<1)c.splice(index,1);saveCart(c);renderCart()}
-document.getElementById("addEnclosure").addEventListener("click",()=>{const c=getCart();const found=c.find(i=>i.name==="Custom subwoofer enclosure (quote request)");if(found)found.qty++;else c.push({name:"Custom subwoofer enclosure (quote request)",category:"enclosure",price:null,qty:1});saveCart(c);renderCart()});
+
 const delivery=document.getElementById("delivery"),addressFields=document.getElementById("addressFields");
 function updateDelivery(){const shipping=delivery.value==="shipping";addressFields.classList.toggle("hidden",!shipping);["address","city","state","zip"].forEach(id=>document.getElementById(id).required=shipping);renderCart()}
 delivery.addEventListener("change",updateDelivery);
