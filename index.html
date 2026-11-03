@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=mobile-nav-3">
+  <link rel="stylesheet" href="style.css?v=cart-nav-4">
 <style>
 /* Enclosure Lab customer reviews, matched to the Lawson's Landscaping review experience */
 .enclosure-reviews{background:#f6f8fb;padding:72px 0}
@@ -62,12 +62,17 @@
   <div class="container nav">
     <a class="brand" href="#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span data-brand>Enclosure Lab</span></a>
     <nav id="mobileNavigation" aria-label="Main navigation">
-      <a class="mobile-primary" href="products.html">Products</a><a class="mobile-primary" href="checkout.html">Checkout / Cart</a><a class="mobile-primary" href="#reviews">Reviews</a>
-      <span class="mobile-more-links"><a href="#about">About</a><a href="customer-assistant.html">Customer Assistant</a><a href="manager-quotes.html">Manager Portal</a></span>
-    </nav>
-    <a class="nav-cta" href="#quote">Start a Quote</a>
-    
-    <button class="mobile-menu-toggle" type="button" aria-label="More navigation links" aria-expanded="false" aria-controls="mobileNavigation">☰ More</button>
+<a href="#how">How It Works</a>
+<a href="#top">Home</a>
+<a href="products.html">Products</a>
+<a href="#quote">Request a Quote</a>
+<a href="checkout.html">Checkout / Cart</a>
+<a href="#reviews">Reviews</a>
+<a href="#about">About</a>
+<a href="customer-assistant.html">Customer Assistant</a>
+<a href="manager-quotes.html">Manager Portal</a>
+</nav>
+    <button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileNavigation">☰</button>
   </div>
 </header>
 
@@ -131,7 +136,40 @@
   <div class="container">
     <iframe id="enclosureDesignerFrame" src="enclosure-designer.html?embed=1&v=20261102-cartfix1" title="Enclosure Lab custom box order form" loading="lazy" scrolling="no" style="display:block;width:100%;height:900px;border:0;background:transparent;overflow:hidden"></iframe>
 <script>
-(()=>{const frame=document.getElementById("enclosureDesignerFrame");if(!frame)return;window.addEventListener("message",event=>{if(event.origin!==location.origin||event.source!==frame.contentWindow||!event.data||event.data.type!=="enclosure-designer-height")return;const h=Number(event.data.height);if(Number.isFinite(h)&&h>0)frame.style.height=Math.ceil(h)+"px";});})();
+(()=> {
+ const frame=document.getElementById("enclosureDesignerFrame");
+ if(!frame)return;
+ const CART_KEY="enclosureLabCart";
+ function receiveCustomBox(data){
+  const q=data.configuration;
+  if(!q||!Number.isFinite(Number(q.width))||!Number.isFinite(Number(q.height))||!Number.isFinite(Number(q.depth))||!q.material||!q.type)return false;
+  let cart;
+  try{cart=JSON.parse(localStorage.getItem(CART_KEY)||"[]");if(!Array.isArray(cart))cart=[];}catch(error){return false;}
+  const name="Custom subwoofer enclosure — "+q.type+" — "+(q.quantity||1)+" × "+(q.size||"")+" in ("+q.material+")";
+  const signature=JSON.stringify(q);
+  const existing=cart.find(item=>item&&item.category==="enclosure"&&item.configuration&&JSON.stringify(item.configuration)===signature);
+  if(existing){existing.qty=Math.max(1,Number(existing.qty)||1)+1;}
+  else{cart.push({name,category:"enclosure",price:null,qty:1,weightLb:Number(q.weightLb)||0,configuration:q});}
+  try{
+   const serialized=JSON.stringify(cart);
+   localStorage.setItem(CART_KEY,serialized);
+   localStorage.setItem("enclosureLabCustomBoxConfig",JSON.stringify(q));
+   if(localStorage.getItem(CART_KEY)!==serialized)return false;
+   return true;
+  }catch(error){console.error("Could not save custom enclosure cart item:",error);return false;}
+ }
+ window.addEventListener("message",event=>{
+  if(event.origin!==location.origin||event.source!==frame.contentWindow||!event.data)return;
+  if(event.data.type==="enclosure-designer-height"){
+   const h=Number(event.data.height);
+   if(Number.isFinite(h)&&h>0)frame.style.height=Math.ceil(h)+"px";
+  }
+  if(event.data.type==="el-add-custom-box"){
+   if(receiveCustomBox(event.data)){window.location.href="checkout.html";}
+   else{console.error("The custom enclosure could not be added to the main cart.");}
+  }
+ });
+})();
 </script>
     <p style="margin:12px 0 0;color:#687480;font-size:12px;line-height:1.5">Note: This is a design prototype. Verify port tuning, net airspace, driver clearances, and all panel measurements before cutting material.</p>
   </div>
@@ -221,6 +259,9 @@
  toggle.addEventListener("click",()=>{const open=nav.classList.toggle("mobile-open");toggle.setAttribute("aria-expanded",String(open));toggle.setAttribute("aria-label",open?"Hide additional navigation links":"More navigation links");toggle.textContent=open?"× Close":"☰ More";});
  nav.querySelectorAll(".mobile-more-links a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("mobile-open");toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-label","More navigation links");toggle.textContent="☰ More";}));
 })();
+</script>
+<script>
+(()=>{const toggle=document.querySelector(".mobile-menu-toggle"),nav=document.getElementById("mobileNavigation");if(!toggle||!nav)return;toggle.addEventListener("click",()=>{const open=nav.classList.toggle("mobile-open");toggle.setAttribute("aria-expanded",String(open));toggle.setAttribute("aria-label",open?"Close navigation menu":"Open navigation menu");toggle.textContent=open?"×":"☰"});nav.querySelectorAll("a").forEach(link=>link.addEventListener("click",()=>{nav.classList.remove("mobile-open");toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-label","Open navigation menu");toggle.textContent="☰"}));})();
 </script>
 </body>
 </html>
