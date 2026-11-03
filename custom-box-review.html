@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Review Custom Box | Enclosure Lab</title>
+<style>
+:root{--ink:#17202b;--muted:#687480;--line:#dce2e8;--blue:#1769aa;--pale:#f3f6f8}
+*{box-sizing:border-box}body{margin:0;background:#f3f6f8;color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+header{background:#fff;border-bottom:1px solid var(--line);padding:18px max(20px,calc((100% - 1180px)/2));display:flex;align-items:center;gap:14px}
+.logo{background:#171717;color:#fff;border-radius:9px;padding:13px 15px;font-weight:900;font-size:19px}.brand{font-weight:850;letter-spacing:-.02em}.brand small{display:block;color:var(--muted);font-size:11px;letter-spacing:.13em;margin-top:4px}header a{margin-left:auto;color:var(--blue);font-weight:750;text-decoration:none}
+main{max-width:1180px;margin:38px auto;padding:0 18px 50px}.eyebrow{color:var(--blue);font-size:11px;font-weight:850;letter-spacing:.14em}h1{font-size:clamp(28px,4vw,40px);letter-spacing:-.04em;margin:8px 0} .lead{color:var(--muted);line-height:1.6;margin:0 0 25px}
+.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(290px,.8fr);gap:20px;align-items:start}.card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 8px 28px #17202b0a;overflow:hidden}.card-head{padding:19px 22px;border-bottom:1px solid var(--line);font-size:16px;font-weight:850}.content{padding:22px}
+.visual{background:linear-gradient(145deg,#f9fbfd,#edf2f6);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:20px;display:grid;place-items:center;min-height:190px}.visual svg{width:min(100%,430px);height:auto}.visual-caption{font-size:11px;color:var(--muted);text-align:center;margin-top:8px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 22px}.detail{padding:12px 0;border-bottom:1px solid #edf0f3;min-width:0}.detail span{display:block;color:var(--muted);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}.detail strong{font-size:14px;overflow-wrap:anywhere}
+.summary-line{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #edf0f3;font-size:13px}.summary-line strong{text-align:right}.price-note{background:#f6f8fa;border-radius:9px;padding:13px;font-size:12px;color:var(--muted);line-height:1.5;margin:16px 0}
+button,.button{display:inline-flex;justify-content:center;align-items:center;text-align:center;border:0;border-radius:9px;padding:13px 16px;font:inherit;font-size:13px;font-weight:800;cursor:pointer;text-decoration:none}.primary{background:var(--blue);color:#fff;width:100%}.primary:hover{background:#0d558e}.secondary{background:#fff;border:1px solid var(--line);color:var(--ink);width:100%;margin-top:10px}.primary:disabled{opacity:.65;cursor:wait}.status{font-size:12px;line-height:1.5;color:#a12b2b;margin-top:12px;min-height:18px}.empty{padding:28px;background:#fff;border:1px solid var(--line);border-radius:12px}.actions{margin-top:18px}
+@media(max-width:760px){main{margin:24px auto}.layout{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}header{padding:13px 16px}}
+@media(max-width:420px){.grid{grid-template-columns:1fr}.content{padding:16px}}
+</style>
+</head>
+<body>
+<header><div class="logo">E+L</div><div class="brand">ENCLOSURE LAB<small>CUSTOM SUBWOOFER ENCLOSURES</small></div><a href="index.html#quote">← Back to Builder</a></header>
+<main>
+<div class="eyebrow">CUSTOM ENCLOSURE ORDER</div><h1>Review your box</h1><p class="lead">Confirm your enclosure details below. You can return to the builder to make changes before adding it to your cart.</p>
+<div id="reviewRoot"><div class="empty">Loading your custom enclosure…</div></div>
+</main>
+<script>
+(function(){
+ const CART_KEY="enclosureLabCart",PENDING_KEY="enclosureLabPendingCustomBox";
+ const root=document.getElementById("reviewRoot");
+ const money=n=>"$"+Number(n).toFixed(2);
+ function esc(v){return String(v==null||v===""?"—":v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+ function getPending(){
+  try{
+   const p=JSON.parse(localStorage.getItem(PENDING_KEY)||"null");
+   if(p&&p.configuration)return p;
+   const legacy=JSON.parse(localStorage.getItem("enclosureLabCustomBoxConfig")||"null");
+   if(legacy&&legacy.width&&legacy.height&&legacy.depth)return {configuration:legacy};
+  }catch(e){}
+  return null;
+ }
+ function displayValue(q){
+  const finish=q.finish||"—";
+  const color=finish==="Paint"?(q.paintColor||"—")+(q.customPaintColor?" — "+q.customPaintColor:""):finish==="Wrap"?(q.wrapColor||"—")+(q.customWrapColor?" — "+q.customWrapColor:""):"—";
+  return [
+   ["Material",q.material],["Maximum width",q.width+" in"],["Height",q.height+" in"],["Depth",q.depth+" in"],["Box type",q.type],
+   ["Port style",q.type==="Ported"?(q.portStyle||"—"):"Not applicable"],["Subwoofer model",q.model],["Subwoofer size",q.size+" in"],["Subwoofer quantity",q.quantity],
+   ["Target tuning",q.type==="Ported"?(q.tuning+" Hz"):"Not applicable"],["Finish",finish],["Finish color",color],
+   ["Paint design",finish==="Paint"?(q.paintDesign||"None"):"Not applicable"],["Paint details",q.paintNotes||"None provided"],
+   ["Wrap type",finish==="Wrap"?(q.wrapType||"—"):"Not applicable"],["Wrap design",finish==="Wrap"?(q.wrapDesign||"None"):"Not applicable"],
+   ["Raw material",finish==="Raw"?(q.rawMaterial||"—"):"Not applicable"],["Estimated weight",q.weightLb?q.weightLb+" lb":"To be confirmed"]
+  ];
+ }
+ function render(){
+  const pending=getPending();
+  if(!pending){root.innerHTML='<div class="empty"><strong>No custom box is waiting for review.</strong><p>Return to the builder and finish configuring your enclosure first.</p><a class="button primary" href="index.html#quote">Open Box Builder</a></div>';return;}
+  const q=pending.configuration;
+  if(!q||!q.width||!q.height||!q.depth||!q.material||!q.type){root.innerHTML='<div class="empty"><strong>Your saved configuration is incomplete.</strong><p>Please return to the builder and complete the required fields.</p><a class="button primary" href="index.html#quote">Return to Builder</a></div>';return;}
+  const details=displayValue(q);
+  const isPorted=q.type==="Ported";
+  root.innerHTML='<div class="layout"><section class="card"><div class="card-head">Your enclosure specifications</div><div class="content"><div class="visual"><div><svg viewBox="0 0 440 190" role="img" aria-label="Illustration of your enclosure"><polygon points="92,55 285,55 350,22 157,22" fill="#d5dce3" stroke="#687480" stroke-width="2"/><polygon points="285,55 350,22 350,145 285,178" fill="#8794a1" stroke="#52606d" stroke-width="2"/><rect x="92" y="55" width="193" height="123" rx="2" fill="#263442" stroke="#17202b" stroke-width="2"/>'+(isPorted?'<rect x="245" y="76" width="22" height="82" fill="#0e1720" stroke="#aab4bf" stroke-width="2"/>':'<circle cx="187" cy="116" r="39" fill="#121b24" stroke="#aab4bf" stroke-width="3"/><circle cx="187" cy="116" r="24" fill="#263442" stroke="#657382" stroke-width="2"/>')+'<text x="187" y="185" text-anchor="middle" font-size="10" fill="#52606d">Illustrative enclosure preview</text></svg><div class="visual-caption">Illustration only — final enclosure design is confirmed after review.</div></div></div><div class="grid">'+details.map(([k,v])=>'<div class="detail"><span>'+esc(k)+'</span><strong>'+esc(v)+'</strong></div>').join("")+'</div></div></section><aside class="card"><div class="card-head">Cart summary</div><div class="content"><div class="summary-line"><span>Item</span><strong>Custom enclosure</strong></div><div class="summary-line"><span>Quantity</span><strong>1 custom order</strong></div><div class="summary-line"><span>Subwoofers</span><strong>'+esc(q.quantity||1)+' × '+esc(q.size)+' in</strong></div><div class="summary-line"><span>Estimated weight</span><strong>'+esc(q.weightLb?q.weightLb+" lb":"TBD")+'</strong></div><div class="price-note">Custom enclosure pricing will be confirmed after reviewing your specifications. No payment is collected on this page.</div><div class="actions"><button class="primary" id="addToCart" type="button">Add Custom Box to Cart</button><a class="button secondary" href="index.html#quote">Edit Box Details</a><a class="button secondary" href="checkout.html">View Existing Cart</a><div class="status" id="status" role="status" aria-live="polite"></div></div></div></aside></div>';
+  document.getElementById("addToCart").addEventListener("click",addToCart);
+ }
+ function addToCart(){
+  const button=document.getElementById("addToCart"),status=document.getElementById("status"),pending=getPending(),q=pending&&pending.configuration;
+  if(!q){status.textContent="Your custom box could not be found. Return to the builder.";return;}
+  button.disabled=true;button.textContent="Adding to cart…";status.textContent="";
+  try{
+   let cart=JSON.parse(localStorage.getItem(CART_KEY)||"[]");if(!Array.isArray(cart))cart=[];
+   const signature=JSON.stringify(q);
+   const found=cart.find(item=>item&&item.category==="enclosure"&&item.configuration&&JSON.stringify(item.configuration)===signature);
+   if(found){found.qty=Math.max(1,Number(found.qty)||1);}
+   else{cart.push({name:"Custom subwoofer enclosure — "+q.type+" — "+(q.quantity||1)+" × "+q.size+" in ("+q.material+")",category:"enclosure",price:null,qty:1,weightLb:Number(q.weightLb)||0,configuration:q});}
+   const saved=JSON.stringify(cart);localStorage.setItem(CART_KEY,saved);
+   if(localStorage.getItem(CART_KEY)!==saved)throw new Error("Cart storage verification failed");
+   localStorage.removeItem(PENDING_KEY);
+   status.style.color="#26764c";status.textContent="Your custom enclosure has been added to your cart.";
+   button.textContent="Added to Cart";
+   setTimeout(()=>{window.location.href="checkout.html?cartUpdated=1";},650);
+  }catch(err){console.error(err);button.disabled=false;button.textContent="Add Custom Box to Cart";status.textContent="We couldn't save your box. Please check that site storage is enabled and try again.";}
+ }
+ render();
+})();
+</script>
+</body></html>
