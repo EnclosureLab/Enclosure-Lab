@@ -453,7 +453,7 @@ function addCustomBoxToCart(e){ if(e)e.preventDefault();
  $('summary').textContent='CUSTOM BOX ADDED TO CART\n'+d.map(x=>x[0]+': '+x[1]).join('\n')+'\n\nAdded to cart. The custom enclosure price will be confirmed after review; estimated weight is used for preliminary shipping.';
  try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'el-add-custom-box',configuration:config,item:item},location.origin);}}catch(ignore){}
  // Keep the confirmation in place without jumping the embedded page to it.
- setTimeout(()=>{const target=new URL('checkout.html',window.location.href).href;try{if(window.top&&window.top!==window.self){window.top.location.href=target;}else{window.location.href=target;}}catch(err){window.location.href=target;}},250);
+ if(window.parent&&window.parent!==window){window.parent.postMessage({type:'el-open-checkout'},location.origin);}else{window.location.href=new URL('checkout.html',window.location.href).href;}
 }
 const customBoxForm=document.getElementById('customBoxForm');
 const addCustomBoxButton=customBoxForm?.querySelector('button[type="submit"]');
