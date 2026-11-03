@@ -435,44 +435,28 @@ function addCustomBoxToCart(e){
  const width=Number($('width').value),height=Number($('length').value),depth=Number($('depth').value);
  const quantity=Number($('quantity').value),tuning=$('type').value==='Ported'?Number($('tuning').value):null;
  if(!width||!height||!depth||!$('material').value||!$('type').value||!String($('model').value||'').trim()||!Number($('size').value)||!quantity||(tuning!==null&&(!Number.isFinite(tuning)||tuning<=0))){
-  $('summary').textContent='Please complete the material, all three dimensions, box type, subwoofer model, subwoofer size, quantity, and port tuning (for ported boxes) before adding your box.';
-  $('summary').scrollIntoView({behavior:'smooth',block:'nearest'});
-  return;
+  $('summary').textContent='Please complete the material, all three dimensions, box type, subwoofer model, subwoofer size, quantity, and port tuning (for ported boxes) before continuing.';
+  $('summary').scrollIntoView({behavior:'smooth',block:'nearest'});return;
  }
  addingCustomBox=true;
- if(button){button.disabled=true;button.textContent='Adding to cart…';}
+ if(button){button.disabled=true;button.textContent='Preparing review…';}
  const weight=updateWeight();
  const config={material:$('material').value,width,height,depth,type:$('type').value,portStyle:$('type').value==='Ported'?$('portStyle').value:'',finish:selectedFinish,paintColor:selectedFinish==='Paint'?selectedPaintColor:'Not applicable',customPaintColor:selectedFinish==='Paint'&&selectedPaintColor==='Custom Color'?$('customPaintName').value.trim():'',paintType:'',paintDesign:selectedFinish==='Paint'?$('paintDesign').value:'',paintNotes:selectedFinish==='Paint'?$('paintNotes').value.trim():'',wrapType:selectedFinish==='Wrap'?$('wrapType').value:'',wrapColor:selectedFinish==='Wrap'?selectedWrapColor:'',customWrapColor:selectedFinish==='Wrap'&&selectedWrapColor==='Custom Color'?$('customWrapName').value.trim():'',wrapDesign:selectedFinish==='Wrap'?$('wrapDesign').value:'',wrapNotes:selectedFinish==='Wrap'?$('wrapNotes').value.trim():'',rawMaterial:selectedFinish==='Raw'?$('rawMaterial').value:'',model:$('model').value.trim(),size:$('size').value,quantity,tuning,weightLb:Number(weight.toFixed(1))};
- const details='Custom subwoofer enclosure — '+config.type+' — '+config.quantity+' × '+config.size+' in ('+config.material+')';
- const item={name:details,category:'enclosure',price:null,qty:1,weightLb:config.weightLb,configuration:config};
- const embedded=new URLSearchParams(location.search).get('embed')==='1';
  try{
-  let cart=JSON.parse(localStorage.getItem(CART_KEY)||'[]');
-  if(!Array.isArray(cart))cart=[];
-  const signature=JSON.stringify(config);
-  const existing=cart.find(i=>i&&i.category==='enclosure'&&i.configuration&&JSON.stringify(i.configuration)===signature);
-  if(existing)existing.qty=Math.max(1,Number(existing.qty)||1)+1;
-  else cart.push(item);
-  const serialized=JSON.stringify(cart);
-  localStorage.setItem(CART_KEY,serialized);
+  const pending={configuration:config,createdAt:Date.now()};
+  localStorage.setItem('enclosureLabPendingCustomBox',JSON.stringify(pending));
   localStorage.setItem('enclosureLabCustomBoxConfig',JSON.stringify(config));
-  localStorage.setItem('enclosureLabPendingCustomBox',JSON.stringify({configuration:config,item:item,createdAt:Date.now()}));
-  if(localStorage.getItem(CART_KEY)!==serialized)throw new Error('Cart could not be verified');
+  if(localStorage.getItem('enclosureLabPendingCustomBox')!==JSON.stringify(pending))throw new Error('Could not verify saved configuration');
  }catch(err){
-  addingCustomBox=false;
-  if(button){button.disabled=false;button.textContent='Add to Cart';}
-  $('summary').textContent='Could not save this configuration to the cart. Please enable site storage and try again.';
-  return;
+  addingCustomBox=false;if(button){button.disabled=false;button.textContent='Continue to Review';}
+  $('summary').textContent='Could not save your box details. Please enable site storage and try again.';return;
  }
- const d=[['Material',config.material],['Maximum dimensions',config.width+' W × '+config.height+' H × '+config.depth+' D inches'],['Box type',config.type],['Port style',config.type==='Ported'?config.portStyle:'Not applicable'],['Finish',config.finish],['Paint color',config.finish==='Paint'?config.paintColor+(config.customPaintColor?' — '+config.customPaintColor:''):'Not applicable'],['Paint design',config.paintDesign||'Not applicable'],['Paint design notes',config.paintNotes||'None provided'],['Wrap type',config.wrapType||'Not applicable'],['Wrap color',config.finish==='Wrap'?config.wrapColor+(config.customWrapColor?' — '+config.customWrapColor:''):'Not applicable'],['Wrap design',config.wrapDesign||'Not applicable'],['Wrap design notes',config.wrapNotes||'None provided'],['Raw material',config.rawMaterial||'Not applicable'],['Subwoofer model',config.model],['Subwoofer size',config.size+' inches'],['Quantity',config.quantity],['Target tuning',config.tuning===null?'Not applicable (sealed)':config.tuning+' Hz'],['Estimated material weight',config.weightLb+' lb']];
- $('summary').textContent='CUSTOM BOX ADDED TO CART\n'+d.map(x=>x[0]+': '+x[1]).join('\n')+'\n\nYour custom enclosure has been saved. Opening your cart…';
- $('summary').scrollIntoView({behavior:'smooth',block:'nearest'});
- if(embedded&&window.parent&&window.parent!==window){
-  window.parent.postMessage({type:'el-add-custom-box',configuration:config,item:item,alreadySaved:true},location.origin);
-  setTimeout(()=>{try{window.top.location.href=new URL('checkout.html',location.href).href;}catch(err){}},1200);
- }else{
-  setTimeout(()=>{window.location.href=new URL('checkout.html',location.href).href;},350);
- }
+ $('summary').textContent='Your box details are saved. Opening your review page…';
+ const reviewUrl=new URL('custom-box-review.html',location.href).href;
+ if(new URLSearchParams(location.search).get('embed')==='1'&&window.top&&window.top!==window){
+  window.parent.postMessage({type:'el-review-custom-box',configuration:config},location.origin);
+  window.top.location.href=reviewUrl;
+ }else window.location.href=reviewUrl;
 }
 const customBoxForm=document.getElementById('customBoxForm');
 if(customBoxForm)customBoxForm.addEventListener('submit',addCustomBoxToCart);
