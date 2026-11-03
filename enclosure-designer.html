@@ -108,6 +108,7 @@
 <script>
 const $=id=>document.getElementById(id);
 if(new URLSearchParams(location.search).get('embed')==='1'){document.getElementById('formHeader').remove();document.body.style.background='transparent';const wrap=document.querySelector('.wrap');wrap.style.margin='0';wrap.style.maxWidth='none';wrap.style.width='100%';wrap.style.boxSizing='border-box';wrap.style.padding='0 16px 24px 0';}
+window.addEventListener('message',event=>{if(event.origin===location.origin&&event.source===window.parent&&event.data&&event.data.type==='el-checkout-navigation-ack')window.__elCheckoutOpened=true;});
 function reportEmbedHeight(){if(new URLSearchParams(location.search).get('embed')!=='1')return;const root=document.documentElement;const body=document.body;const height=Math.max(root.scrollHeight,root.offsetHeight,body.scrollHeight,body.offsetHeight);window.parent.postMessage({type:'enclosure-designer-height',height},location.origin);}
 if(new URLSearchParams(location.search).get('embed')==='1'){if('ResizeObserver'in window){new ResizeObserver(reportEmbedHeight).observe(document.body);}window.addEventListener('load',reportEmbedHeight);window.addEventListener('resize',reportEmbedHeight);setTimeout(reportEmbedHeight,100);setTimeout(reportEmbedHeight,500);}
 function fillMeasurements(id,min,max,selected){const el=$(id);for(let n=min;n<=max;n++){const o=document.createElement('option');o.value=String(n);o.textContent=n+' in';if(n===selected)o.selected=true;el.appendChild(o)}}
@@ -433,13 +434,13 @@ function capture3DPreviewImage(){
   box3DControls&&box3DControls.update();
   box3DRenderer.render(box3DScene,box3DCamera);
   const source=box3DRenderer.domElement;
-  const target=document.createElement('canvas');target.width=720;target.height=460;
+  const target=document.createElement('canvas');target.width=420;target.height=270;
   const ctx=target.getContext('2d');if(!ctx)return '';
   ctx.fillStyle='#f7f8fa';ctx.fillRect(0,0,target.width,target.height);
   const scale=Math.min(target.width/source.width,target.height/source.height);
   const w=Math.round(source.width*scale),h=Math.round(source.height*scale);
   ctx.drawImage(source,Math.round((target.width-w)/2),Math.round((target.height-h)/2),w,h);
-  return target.toDataURL('image/jpeg',.78);
+  return target.toDataURL('image/jpeg',.55);
  }catch(err){return ''}
 }
 function addCustomBoxToCart(e){ if(e)e.preventDefault();
@@ -448,12 +449,12 @@ function addCustomBoxToCart(e){ if(e)e.preventDefault();
  const details='Custom subwoofer enclosure — '+config.type+' — '+config.quantity+' × '+config.size+' in ('+config.material+')';
  const previewImage=capture3DPreviewImage();const item={name:details,category:'enclosure',price:null,qty:1,weightLb:config.weightLb,configuration:config,previewImage:previewImage};
  try{const cart=JSON.parse(localStorage.getItem(CART_KEY)||'[]');const signature=JSON.stringify(config);const index=cart.findIndex(i=>i.category==='enclosure'&&i.configuration&&JSON.stringify(i.configuration)===signature);if(index>=0){cart[index].qty=(Number(cart[index].qty)||1)+1;if(previewImage)cart[index].previewImage=previewImage;}else cart.push(item);const serialized=JSON.stringify(cart);localStorage.setItem(CART_KEY,serialized);localStorage.setItem('enclosureLabCustomBoxConfig',JSON.stringify(config));if(localStorage.getItem(CART_KEY)!==serialized)throw new Error('Cart could not be verified in browser storage');}
- catch(err){$('summary').textContent='Could not save this configuration in this browser. Please enable site storage and try again.';return}
+ catch(err){try{const safeItem={name:details,category:'enclosure',price:null,qty:1,weightLb:config.weightLb,configuration:config};const fallbackCart=JSON.parse(localStorage.getItem(CART_KEY)||'[]');fallbackCart.push(safeItem);localStorage.setItem(CART_KEY,JSON.stringify(fallbackCart));}catch(storageError){$('summary').textContent='Your browser could not save this box to the cart. Please allow website storage and try again.';return}}
  const d=[['Material',config.material],['Maximum dimensions',config.width+' W × '+config.height+' H × '+config.depth+' D inches'],['Box type',config.type],['Port style',config.type==='Ported'?config.portStyle:'Not applicable'],['Finish',config.finish],['Paint color',config.finish==='Paint'?config.paintColor+(config.customPaintColor?' — '+config.customPaintColor:''):'Not applicable'],['Paint design',config.paintDesign||'Not applicable'],['Paint design notes',config.paintNotes||'None provided'],['Wrap type',config.wrapType||'Not applicable'],['Wrap color',config.finish==='Wrap'?config.wrapColor+(config.customWrapColor?' — '+config.customWrapColor:''):'Not applicable'],['Wrap design',config.wrapDesign||'Not applicable'],['Wrap design notes',config.wrapNotes||'None provided'],['Raw material',config.rawMaterial||'Not applicable'],['Subwoofer model',config.model],['Subwoofer size',config.size+' inches'],['Quantity',config.quantity],['Target tuning',config.tuning===null?'Not applicable (sealed)':config.tuning+' Hz'],['Estimated material weight',config.weightLb+' lb']];
  $('summary').textContent='CUSTOM BOX ADDED TO CART\n'+d.map(x=>x[0]+': '+x[1]).join('\n')+'\n\nAdded to cart. The custom enclosure price will be confirmed after review; estimated weight is used for preliminary shipping.';
  try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'el-add-custom-box',configuration:config,item:item},location.origin);}}catch(ignore){}
  // Keep the confirmation in place without jumping the embedded page to it.
- if(window.parent&&window.parent!==window){window.parent.postMessage({type:'el-open-checkout'},location.origin);}else{window.location.href=new URL('checkout.html',window.location.href).href;}
+ if(window.parent&&window.parent!==window){window.parent.postMessage({type:'el-open-checkout'},location.origin);setTimeout(()=>{if(!window.__elCheckoutOpened){try{window.top.location.href=new URL('checkout.html',window.location.href).href;}catch(err){window.location.href=new URL('checkout.html',window.location.href).href;}}},500);}else{window.location.href=new URL('checkout.html',window.location.href).href;}
 }
 const customBoxForm=document.getElementById('customBoxForm');
 const addCustomBoxButton=customBoxForm?.querySelector('button[type="submit"]');
