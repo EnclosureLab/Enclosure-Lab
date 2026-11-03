@@ -134,35 +134,26 @@
 
 <section id="quote" class="quote-section" style="padding:56px 0;background:#f4f6f8">
   <div class="container">
-    <iframe id="enclosureDesignerFrame" src="enclosure-designer.html?embed=1&v=20261103-cartfix2" title="Enclosure Lab custom box order form" loading="lazy" scrolling="no" style="display:block;width:100%;height:900px;border:0;background:transparent;overflow:hidden"></iframe>
+    <iframe id="enclosureDesignerFrame" src="enclosure-designer.html?embed=1&v=20261103-review1" title="Enclosure Lab custom box order form" loading="lazy" scrolling="no" style="display:block;width:100%;height:900px;border:0;background:transparent;overflow:hidden"></iframe>
 <script>
-(()=> {
+(()=>{
  const frame=document.getElementById("enclosureDesignerFrame");
  if(!frame)return;
- const CART_KEY="enclosureLabCart";
- function receiveCustomBox(data){
-  const q=data.configuration;
-  if(!q||!Number.isFinite(Number(q.width))||!Number.isFinite(Number(q.height))||!Number.isFinite(Number(q.depth))||!q.material||!q.type)return false;
-  try{
-   let cart=JSON.parse(localStorage.getItem(CART_KEY)||"[]");
-   if(!Array.isArray(cart))cart=[];
-   const signature=JSON.stringify(q);
-   const exists=cart.some(item=>item&&item.category==="enclosure"&&item.configuration&&JSON.stringify(item.configuration)===signature);
-   if(!exists)cart.push({name:"Custom subwoofer enclosure — "+q.type+" — "+(q.quantity||1)+" × "+(q.size||"")+" in ("+q.material+")",category:"enclosure",price:null,qty:1,weightLb:Number(q.weightLb)||0,configuration:q});
-   const serialized=JSON.stringify(cart);
-   localStorage.setItem(CART_KEY,serialized);
-   localStorage.setItem("enclosureLabCustomBoxConfig",JSON.stringify(q));
-   return localStorage.getItem(CART_KEY)===serialized;
-  }catch(error){console.error("Could not save custom enclosure cart item:",error);return false;}
- }
  window.addEventListener("message",event=>{
   if(event.origin!==location.origin||event.source!==frame.contentWindow||!event.data)return;
   if(event.data.type==="enclosure-designer-height"){
    const h=Number(event.data.height);
    if(Number.isFinite(h)&&h>0)frame.style.height=Math.ceil(h)+"px";
   }
-  if(event.data.type==="el-add-custom-box"&&receiveCustomBox(event.data)){
-   window.location.href="checkout.html";
+  if(event.data.type==="el-review-custom-box"){
+   const q=event.data.configuration;
+   if(!q||!Number.isFinite(Number(q.width))||!Number.isFinite(Number(q.height))||!Number.isFinite(Number(q.depth))||!q.material||!q.type)return;
+   try{
+    const pending={configuration:q,createdAt:Date.now()};
+    localStorage.setItem("enclosureLabPendingCustomBox",JSON.stringify(pending));
+    localStorage.setItem("enclosureLabCustomBoxConfig",JSON.stringify(q));
+    if(localStorage.getItem("enclosureLabPendingCustomBox")===JSON.stringify(pending))window.location.href="custom-box-review.html";
+   }catch(error){console.error("Could not save custom enclosure for review:",error);}
   }
  });
 })();
