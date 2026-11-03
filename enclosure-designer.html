@@ -3,510 +3,123 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Custom Box Order | Enclosure Lab</title>
-<meta name="description" content="Configure a custom subwoofer enclosure order with Enclosure Lab.">
+<title>Build Your Box | Enclosure Lab</title>
+<meta name="description" content="Design a custom subwoofer enclosure and add the complete design to your Enclosure Lab checkout cart.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--ink:#17202b;--muted:#687480;--line:#dce2e8;--blue:#1769aa;--pale:#f3f6f8}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink);background:#f4f6f8}
-.top{background:#fff;border-bottom:1px solid var(--line);padding:15px 22px;display:flex;align-items:center;gap:12px}.logo{background:#171717;color:#fff;font-weight:900;padding:9px 11px;border-radius:7px;letter-spacing:-1px}.brand{font-weight:800}.brand small{display:block;color:var(--muted);font-size:11px;letter-spacing:.12em;margin-top:3px}.top a{margin-left:auto;color:var(--blue);text-decoration:none;font-weight:700}
-.wrap{max-width:1500px;margin:30px auto;padding:0 16px 32px}.designer-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);align-items:start;gap:20px}.designer-layout .form-card{min-width:0}.preview-card{position:sticky;top:18px;min-width:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 8px 28px #17202b0a}.preview-card .live-preview{border:0}.preview-card .preview-stage{position:relative;min-height:360px}
-#box3DCanvas canvas{display:block;width:100%;height:100%;outline:none;touch-action:none;cursor:grab}#box3DCanvas canvas:active{cursor:grabbing}
-.preview-stage{max-width:100%}@media(max-width:900px){.designer-layout{grid-template-columns:1fr}.preview-card{position:static;grid-row:1}.designer-layout .form-card{grid-row:2}}.intro{margin-bottom:20px}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--blue)}h1{font-size:clamp(27px,4vw,38px);margin:7px 0 8px;letter-spacing:-.035em}.intro p{color:var(--muted);line-height:1.6;margin:0;max-width:650px}
-.form-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 8px 28px #17202b0a}.live-preview{padding:20px 22px 16px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#fff,#f7f9fb)}.preview-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}.preview-heading h2{font-size:20px;margin:5px 0}.preview-heading p{font-size:12px;color:var(--muted);margin:0;line-height:1.5}.preview-live{display:flex;align-items:center;gap:6px;white-space:nowrap;font-size:11px;font-weight:800;color:#26764c;background:#eaf7ef;border-radius:999px;padding:6px 9px}.preview-live i{width:7px;height:7px;border-radius:50%;background:#2ca35c}.preview-stage{max-width:520px;margin:0 auto;perspective:900px;touch-action:none;cursor:grab;outline:none}.preview-stage:active{cursor:grabbing}.preview-stage svg{display:block;width:100%;height:auto;overflow:visible;transform-style:preserve-3d;filter:drop-shadow(0 12px 12px #15202b18);transition:transform .08s linear}.preview-stage:focus-visible{outline:2px solid var(--blue);outline-offset:3px;border-radius:12px}.preview-meta{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.preview-meta span{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 10px;font-size:11px;font-weight:700}.preview-hint{text-align:center;font-size:11px;color:var(--muted);margin-top:8px}@media(max-width:560px){.live-preview{padding:16px}.preview-heading h2{font-size:18px}.preview-meta{gap:5px}.preview-meta span{font-size:10px;padding:5px 8px}}.section-title{padding:18px 22px;background:#fafbfc;border-bottom:1px solid var(--line);font-size:14px;font-weight:800}.fields{padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:18px}.field{display:grid;gap:7px;min-width:0}.field.full{grid-column:1/-1}.field label{font-size:13px;font-weight:750}.field select,.field input{width:100%;min-width:0;padding:12px;border:1px solid #cbd3dc;border-radius:8px;background:#fff;color:var(--ink);font:inherit}.field select:focus,.field input:focus{outline:2px solid #1769aa38;border-color:var(--blue)}.help{font-size:11px;color:var(--muted);line-height:1.45}.unit{font-size:11px;font-weight:600;color:var(--muted);margin-left:4px}.port-style-heading{font-size:13px;font-weight:700;margin:0 0 10px}.port-style-slider{display:flex;gap:9px;overflow-x:auto;padding:3px 2px 10px;scroll-snap-type:x proximity}.port-style-choice{flex:0 0 180px;min-height:72px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:5px;padding:12px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--text);text-align:left;cursor:pointer;scroll-snap-align:start}.port-style-choice.selected{border:2px solid var(--blue);background:#f1f7fc;padding:11px}.port-style-choice strong{font-size:13px}.port-style-choice small{font-size:11px;color:var(--muted);line-height:1.4}.box-type-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:10px;padding:0 22px 20px}.box-type-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}.box-type-card.selected{border-color:var(--blue)}.box-type-toggle{width:100%;min-height:78px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border:0;background:#fff;color:var(--text);text-align:left;cursor:pointer}.box-type-toggle strong{display:block;font-size:15px}.box-type-toggle small{display:block;color:var(--muted);font-size:12px;margin-top:5px;line-height:1.4}.box-type-check{display:none;flex:0 0 23px;width:23px;height:23px;border-radius:50%;align-items:center;justify-content:center;background:var(--blue);color:#fff;font-size:14px}.box-type-card.selected .box-type-check{display:flex}.box-type-details{border-top:1px solid var(--line);padding:12px 14px;font-size:12px;line-height:1.5;color:var(--muted)}@media(max-width:640px){.box-type-options{grid-template-columns:1fr;padding:0 14px 18px}}.finish-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:start;gap:10px;padding:0 22px 20px}@media(max-width:640px){.finish-options{grid-template-columns:1fr;padding:0 14px 18px}}.finish-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}.finish-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 16px;border:0;background:#fff;color:var(--text);text-align:left;cursor:pointer}.finish-toggle strong{display:block;font-size:15px}.finish-toggle small{display:block;color:var(--muted);font-size:12px;margin-top:4px}.finish-chevron{font-size:22px;line-height:1}.finish-panel{border-top:1px solid var(--line);padding:16px;display:grid;gap:14px}.finish-panel>label{font-size:13px;font-weight:700}.color-slider{display:flex;gap:9px;overflow-x:auto;padding:3px 2px 10px;scroll-snap-type:x proximity}.color-choice{flex:0 0 145px;min-height:54px;display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--text);text-align:left;cursor:pointer;scroll-snap-align:start}.color-choice.selected{border:2px solid var(--blue);background:#f1f7fc;padding:9px 11px}.color-dot{display:block;flex:0 0 25px;width:25px;height:25px;border-radius:50%;border:1px solid #c8cbd0}.color-choice span:last-child{font-size:13px;font-weight:600}.finish-panel .field{display:grid;gap:6px}.finish-panel .field label{font-size:13px;font-weight:600}.finish-panel input,.finish-panel select,.finish-panel textarea{width:100%;box-sizing:border-box}.finish-panel textarea{min-height:80px;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit}.finish-panel .help{margin:0;font-size:12px;color:var(--muted)} .hidden{display:none!important}.actions{padding:0 22px 22px}.primary{width:100%;border:0;border-radius:8px;background:var(--blue);color:#fff;font-weight:800;font-size:14px;padding:14px;cursor:pointer}.primary:hover{background:#0d558e}.summary{margin:0 22px 22px;padding:16px;border:1px solid var(--line);border-radius:9px;background:#f8fafc;line-height:1.65;font-size:13px;white-space:pre-line}.summary:empty{display:none}.weight-estimate{margin:0 22px 18px;padding:13px 15px;border:1px solid var(--line);border-radius:9px;background:#f8fafc;font-size:13px;line-height:1.55}.weight-estimate strong{font-size:17px}.notice{font-size:11px;color:var(--muted);padding:0 22px 20px;line-height:1.5}
-@media(max-width:600px){.weight-estimate{margin:0 17px 17px}.top{padding:12px}.wrap{margin:22px auto;padding:0 10px 24px}.fields{grid-template-columns:1fr;padding:17px}.field.full{grid-column:auto}.section-title{padding:16px 17px}.actions{padding:0 17px 17px}.notice{padding:0 17px 17px}.summary{margin:0 17px 17px}}
+*{box-sizing:border-box}body{margin:0;background:#f3f5f7;color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+.page{max-width:1500px;margin:0 auto;padding:28px 22px 60px}.intro{margin:0 0 25px}.eyebrow{color:var(--blue);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.intro h1{font-size:clamp(34px,4vw,48px);letter-spacing:-.055em;margin:8px 0}.intro p{max-width:760px;color:var(--muted);line-height:1.65;margin:0}
+.layout{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(360px,.92fr);gap:22px;align-items:start}.panel{background:#fff;border:1px solid var(--line);border-radius:17px;overflow:hidden;box-shadow:0 12px 34px #17202b0a}.section{padding:22px 24px;border-bottom:1px solid #e8edf1}.section:last-child{border-bottom:0}.section h2{font-size:17px;margin:0 0 17px;letter-spacing:-.02em}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.field{display:grid;gap:7px;min-width:0}.field.full{grid-column:1/-1}label,.label{font-size:13px;font-weight:750;color:#27313b}.unit{font-weight:500;color:var(--muted);margin-left:4px}.field input,.field select,.field textarea{width:100%;min-height:43px;border:1px solid #cfd7de;border-radius:8px;padding:10px 12px;background:#fff;color:var(--ink);font:inherit;font-size:14px}.field textarea{min-height:74px;resize:vertical}.help{font-size:12px;line-height:1.5;color:var(--muted)}.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}.choice{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:13px;cursor:pointer}.choice:has(input:checked){border-color:var(--blue);background:#f3f8fc;box-shadow:inset 0 0 0 1px var(--blue)}.choice input{accent-color:var(--blue);margin-top:3px}.choice strong{display:block;font-size:14px}.choice small{display:block;color:var(--muted);font-size:12px;line-height:1.4;margin-top:4px}.subchoices{margin-top:14px}.hidden{display:none!important}
+.preview-panel{position:sticky;top:18px}.preview-head{padding:20px 22px 12px;display:flex;justify-content:space-between;gap:12px;align-items:center}.preview-head h2{font-size:21px;letter-spacing:-.035em;margin:3px 0}.live{font-size:12px;font-weight:800;color:#16804a;background:#eaf7ef;padding:7px 11px;border-radius:30px}.canvas-wrap{height:420px;margin:0 16px 14px;background:#f5f7f9;border-radius:12px;overflow:hidden;position:relative}.canvas-wrap canvas{display:block;width:100%;height:100%;touch-action:none}.preview-foot{padding:0 22px 20px;color:var(--muted);font-size:12px;line-height:1.5}.preview-specs{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:0 22px 20px}.spec{background:#f6f8fa;border-radius:9px;padding:10px}.spec span{display:block;color:var(--muted);font-size:11px}.spec strong{display:block;margin-top:4px;font-size:14px}.weight{padding:16px 18px;background:#f5f8fa;border:1px solid #e4eaf0;border-radius:10px;font-size:13px;line-height:1.55}.weight strong{font-size:16px}.submit-row{padding:20px 24px 24px}.add-button{width:100%;border:0;border-radius:10px;padding:16px 20px;background:#17202b;color:#fff;font:inherit;font-weight:800;font-size:15px;cursor:pointer}.add-button:hover{background:#263544}.status{font-size:13px;color:var(--muted);margin:12px 0 0;line-height:1.5}.status.error{color:#b42318}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.preview-panel{position:relative;top:auto}.canvas-wrap{height:360px}}
+@media(max-width:540px){.page{padding:22px 12px 42px}.section{padding:18px 15px}.field-grid,.choices{grid-template-columns:1fr}.canvas-wrap{height:290px}.preview-specs{padding-left:15px;padding-right:15px}}
 </style>
 </head>
 <body>
-<header class="top" id="formHeader"><div class="logo">E+L</div><div class="brand">ENCLOSURE LAB<small>CUSTOM SUBWOOFER ENCLOSURES</small></div><a href="index.html">← Back to Home</a></header>
-<main class="wrap">
-<div class="intro"><div class="eyebrow">CUSTOM ENCLOSURE ORDER</div><h1>Build your box</h1><p>Tell us what you need for your custom subwoofer enclosure. Select your material, maximum available dimensions, box style, and subwoofer details below.</p></div>
-<div class="designer-layout">
-<form class="form-card" id="customBoxForm" novalidate>
-
-<div class="section-title">1. Material & maximum dimensions</div>
-<div class="fields">
-<div class="field full"><label for="material">Material</label><select id="material" name="material" required><option value="Birch">Birch</option><option value="MDF (Suggested)" selected>MDF (Suggested)</option><option value="Plywood">Plywood</option></select></div>
-<div class="field"><label for="width">Max width <span class="unit">(inches)</span></label><select id="width" name="width" required></select></div>
-<div class="field"><label for="length">Height <span class="unit">(inches)</span></label><select id="length" name="length" required></select></div>
-<div class="field full"><label for="depth">Depth <span class="unit">(inches)</span></label><select id="depth" name="depth" required></select><div class="help">Choose the maximum space available for the enclosure. Select a measurement; typing is disabled.</div></div>
-</div>
-<div class="section-title">2. Box type</div>
-<select id="type" name="type" required class="hidden"><option value="Ported">Ported</option><option value="Sealed">Sealed</option></select>
-<div class="box-type-options">
-  <div class="box-type-card selected" id="portedTypeCard"><button type="button" class="box-type-toggle" data-box-type="Ported" aria-expanded="true"><span><strong>Ported</strong><small>More output and stronger low-bass performance</small></span><span class="box-type-check">✓</span></button><div class="box-type-details" id="portedTypeDetails">
-  <p class="port-style-heading">Choose port style</p>
-  <div class="port-style-slider" id="portStyleOptions">
-    <button type="button" class="port-style-choice selected" data-port-style="Slot front panel" aria-pressed="true"><strong>Slot front panel</strong><small>Slot opening on the front panel</small></button>
-    <button type="button" class="port-style-choice" data-port-style="Slot side panel" aria-pressed="false"><strong>Slot side panel</strong><small>Slot opening on a side panel</small></button>
-    <button type="button" class="port-style-choice" data-port-style="Hole front panel" aria-pressed="false"><strong>Hole front panel</strong><small>Round port on the front panel</small></button>
-    <button type="button" class="port-style-choice" data-port-style="Hole side panel" aria-pressed="false"><strong>Hole side panel</strong><small>Round port on a side panel</small></button>
-  </div>
-  <input type="hidden" id="portStyle" name="portStyle" value="Slot front panel">
-</div></div>
-  <div class="box-type-card" id="sealedTypeCard"><button type="button" class="box-type-toggle" data-box-type="Sealed" aria-expanded="false"><span><strong>Sealed</strong><small>Compact design with controlled bass response</small></span><span class="box-type-check">✓</span></button><div class="box-type-details hidden" id="sealedTypeDetails">A closed enclosure with no port. The tuning frequency field is not needed for this style.</div></div>
-</div>
-<div class="section-title">3. Box finish &amp; paint color</div>
-<div class="finish-options">
-  <div class="finish-card">
-    <button type="button" class="finish-toggle" data-finish="Paint" aria-expanded="true"><span><strong>Paint</strong><small>Choose a paint color and optional design</small></span><span class="finish-chevron">−</span></button>
-    <div class="finish-panel" id="paintPanel">
-      <label>Choose paint color</label>
-      <div class="color-slider" id="paintColors">
-        <button type="button" class="color-choice selected" data-color="Black" data-hex="#171717" aria-pressed="true"><span class="color-dot" style="background:#171717"></span><span>Black</span></button><button type="button" class="color-choice" data-color="White" data-hex="#f7f7f7" aria-pressed="false"><span class="color-dot" style="background:#f7f7f7"></span><span>White</span></button><button type="button" class="color-choice" data-color="Red" data-hex="#cf3038" aria-pressed="false"><span class="color-dot" style="background:#cf3038"></span><span>Red</span></button><button type="button" class="color-choice" data-color="Blue" data-hex="#2862bd" aria-pressed="false"><span class="color-dot" style="background:#2862bd"></span><span>Blue</span></button><button type="button" class="color-choice" data-color="Dark Blue" data-hex="#142c5c" aria-pressed="false"><span class="color-dot" style="background:#142c5c"></span><span>Dark Blue</span></button><button type="button" class="color-choice" data-color="Green" data-hex="#27804b" aria-pressed="false"><span class="color-dot" style="background:#27804b"></span><span>Green</span></button><button type="button" class="color-choice" data-color="Yellow" data-hex="#f1cf36" aria-pressed="false"><span class="color-dot" style="background:#f1cf36"></span><span>Yellow</span></button><button type="button" class="color-choice" data-color="Orange" data-hex="#ed792c" aria-pressed="false"><span class="color-dot" style="background:#ed792c"></span><span>Orange</span></button><button type="button" class="color-choice" data-color="Purple" data-hex="#7947a8" aria-pressed="false"><span class="color-dot" style="background:#7947a8"></span><span>Purple</span></button><button type="button" class="color-choice" data-color="Pink" data-hex="#ec90b4" aria-pressed="false"><span class="color-dot" style="background:#ec90b4"></span><span>Pink</span></button><button type="button" class="color-choice" data-color="Gray" data-hex="#858990" aria-pressed="false"><span class="color-dot" style="background:#858990"></span><span>Gray</span></button><button type="button" class="color-choice" data-color="Silver" data-hex="#c3c8ce" aria-pressed="false"><span class="color-dot" style="background:#c3c8ce"></span><span>Silver</span></button><button type="button" class="color-choice" data-color="Gold" data-hex="#c5a04a" aria-pressed="false"><span class="color-dot" style="background:#c5a04a"></span><span>Gold</span></button><button type="button" class="color-choice" data-color="Bronze" data-hex="#936344" aria-pressed="false"><span class="color-dot" style="background:#936344"></span><span>Bronze</span></button><button type="button" class="color-choice" data-color="Custom Color" data-hex="conic-gradient(#ef4444,#facc15,#22c55e,#3b82f6,#a855f7,#ef4444)" aria-pressed="false"><span class="color-dot" style="background:conic-gradient(#ef4444,#facc15,#22c55e,#3b82f6,#a855f7,#ef4444)"></span><span>Custom Color</span></button>
-      </div>
-      <div class="field hidden" id="customPaintField"><label for="customPaintHex">Choose custom paint color</label><input id="customPaintHex" type="color" value="#707780" style="width:72px;height:42px;padding:3px"><label for="customPaintName">Optional color name</label><input id="customPaintName" maxlength="80" placeholder="e.g. midnight teal"></div>
-      <div class="field"><label for="paintDesign">Custom design (optional)</label><select id="paintDesign"><option value="None">No custom design</option><option>Splatter paint</option><option>Two-tone paint</option><option>Metallic / flake</option><option>Color fade / gradient</option><option>Custom graphics / lettering</option><option>Other custom design</option></select></div>
-      <div class="field hidden" id="designPaintColorField"><label for="designPaintColor">Custom design paint color</label><div style="display:flex;align-items:center;gap:12px"><input id="designPaintColor" type="color" value="#ffffff" aria-label="Custom design paint color" style="width:64px;height:42px;padding:3px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer"><span id="designPaintColorValue">#FFFFFF</span></div><small>Choose the color used for the custom design overlay in the 3D preview.</small></div>
-      <div class="field hidden" id="paintNotesField"><label for="paintNotes">Design details</label><textarea id="paintNotes" maxlength="300" placeholder="Describe colors, patterns, graphics, or lettering"></textarea></div>
+<main class="page">
+ <header class="intro">
+  <div class="eyebrow">Custom enclosure order</div>
+  <h1>Build your box</h1>
+  <p>Tell us what you need for your custom subwoofer enclosure. Select your material, maximum available dimensions, box style, and subwoofer details below.</p>
+ </header>
+ <div class="layout">
+  <form class="panel" id="boxForm">
+   <section class="section">
+    <h2>1. Material &amp; maximum dimensions</h2>
+    <div class="field-grid">
+     <div class="field full"><label for="material">Material</label><select id="material"><option>Birch</option><option selected>MDF (Suggested)</option><option>Plywood</option></select></div>
+     <div class="field"><label for="width">Max width <span class="unit">(inches)</span></label><select id="width"></select></div>
+     <div class="field"><label for="height">Height <span class="unit">(inches)</span></label><select id="height"></select></div>
+     <div class="field full"><label for="depth">Depth <span class="unit">(inches)</span></label><select id="depth"></select><div class="help">Choose the maximum space available for the enclosure. Select a measurement; typing is disabled.</div></div>
     </div>
-  </div>
-  <div class="finish-card">
-    <button type="button" class="finish-toggle" data-finish="Wrap" aria-expanded="false"><span><strong>Wrap</strong><small>Vinyl, carpet, carbon fiber, and more</small></span><span class="finish-chevron">+</span></button>
-    <div class="finish-panel hidden" id="wrapPanel">
-      <div class="field"><label for="wrapType">Wrap type</label><select id="wrapType"><option>Vinyl wrap</option><option>Carpet wrap</option><option>Carbon fiber</option><option>Forged carbon fiber</option></select></div>
-      <label>Choose wrap color</label>
-      <div class="color-slider" id="wrapColors">
-        <button type="button" class="color-choice selected" data-color="Black" data-hex="#171717" aria-pressed="true"><span class="color-dot" style="background:#171717"></span><span>Black</span></button><button type="button" class="color-choice" data-color="White" data-hex="#f7f7f7" aria-pressed="false"><span class="color-dot" style="background:#f7f7f7"></span><span>White</span></button><button type="button" class="color-choice" data-color="Red" data-hex="#cf3038" aria-pressed="false"><span class="color-dot" style="background:#cf3038"></span><span>Red</span></button><button type="button" class="color-choice" data-color="Blue" data-hex="#2862bd" aria-pressed="false"><span class="color-dot" style="background:#2862bd"></span><span>Blue</span></button><button type="button" class="color-choice" data-color="Dark Blue" data-hex="#142c5c" aria-pressed="false"><span class="color-dot" style="background:#142c5c"></span><span>Dark Blue</span></button><button type="button" class="color-choice" data-color="Green" data-hex="#27804b" aria-pressed="false"><span class="color-dot" style="background:#27804b"></span><span>Green</span></button><button type="button" class="color-choice" data-color="Purple" data-hex="#7947a8" aria-pressed="false"><span class="color-dot" style="background:#7947a8"></span><span>Purple</span></button><button type="button" class="color-choice" data-color="Silver" data-hex="#c3c8ce" aria-pressed="false"><span class="color-dot" style="background:#c3c8ce"></span><span>Silver</span></button><button type="button" class="color-choice" data-color="Gold" data-hex="#c5a04a" aria-pressed="false"><span class="color-dot" style="background:#c5a04a"></span><span>Gold</span></button><button type="button" class="color-choice" data-color="Bronze" data-hex="#936344" aria-pressed="false"><span class="color-dot" style="background:#936344"></span><span>Bronze</span></button><button type="button" class="color-choice" data-color="Gray" data-hex="#858990" aria-pressed="false"><span class="color-dot" style="background:#858990"></span><span>Gray</span></button><button type="button" class="color-choice" data-color="Custom Color" data-hex="conic-gradient(#ef4444,#facc15,#22c55e,#3b82f6,#a855f7,#ef4444)" aria-pressed="false"><span class="color-dot" style="background:conic-gradient(#ef4444,#facc15,#22c55e,#3b82f6,#a855f7,#ef4444)"></span><span>Custom Color</span></button>
-      </div>
-      <div class="field hidden" id="customWrapField"><label for="customWrapHex">Choose custom wrap color</label><input id="customWrapHex" type="color" value="#707780" style="width:72px;height:42px;padding:3px"><label for="customWrapName">Optional color name</label><input id="customWrapName" maxlength="80" placeholder="e.g. deep blue"></div>
-      <div class="field"><label for="wrapDesign">Custom design (optional)</label><select id="wrapDesign"><option value="None">No custom design</option><option>Two-tone wrap</option><option>Color combination</option><option>Custom graphics / lettering</option><option>Other custom design</option></select></div>
-      <div class="field hidden" id="wrapNotesField"><label for="wrapNotes">Design details</label><textarea id="wrapNotes" maxlength="300" placeholder="Describe your wrap design"></textarea></div>
+   </section>
+   <section class="section">
+    <h2>2. Box type</h2>
+    <div class="choices">
+     <label class="choice"><input type="radio" name="boxType" value="Ported" checked><span><strong>Ported</strong><small>More output and stronger low-bass performance</small></span></label>
+     <label class="choice"><input type="radio" name="boxType" value="Sealed"><span><strong>Sealed</strong><small>Compact design with controlled bass response</small></span></label>
     </div>
-  </div>
-  <div class="finish-card">
-    <button type="button" class="finish-toggle" data-finish="Raw" aria-expanded="false"><span><strong>Raw</strong><small>No paint or wrap applied</small></span><span class="finish-chevron">+</span></button>
-    <div class="finish-panel hidden" id="rawPanel">
-      <div class="field"><label for="rawMaterial">Raw enclosure material</label><select id="rawMaterial"><option>Raw MDF</option><option>Raw birch plywood</option><option>Raw plywood</option></select></div>
-      <p class="help">The enclosure will be supplied unfinished, with no paint or wrap applied.</p>
+    <div class="subchoices" id="portOptions">
+     <div class="field"><label for="portStyle">Choose port style</label><select id="portStyle"><option>Slot front panel</option><option>Slot side panel</option><option>Hole front panel</option><option>Hole side panel</option></select></div>
     </div>
-  </div>
-</div><div class="section-title">4. Subwoofer information</div>
-<div class="fields">
-<div class="field full"><label for="model">Subwoofer model</label><input id="model" name="model" type="text" maxlength="140" placeholder="Enter the brand and exact model" required></div>
-<div class="field"><label for="size">Subwoofer size</label><select id="size" name="size" required><option value="6.5">6.5 inches</option><option value="8">8 inches</option><option value="10">10 inches</option><option value="12" selected>12 inches</option><option value="15">15 inches</option><option value="18">18 inches</option></select></div>
-<div class="field"><label for="quantity">Quantity of subwoofers</label><select id="quantity" name="quantity" required><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
-<div class="field full" id="tuningField"><label for="tuning">Target port tuning <span class="unit">(Hz)</span></label><select id="tuning" name="tuning"></select><div class="help">Required for ported boxes only. This field is hidden for sealed boxes.</div></div>
-</div>
-<div class="weight-estimate" id="weightEstimate" aria-live="polite">Estimated material weight: calculating…</div>
-<div class="actions"><button class="primary" type="submit">Add to Cart</button></div>
-<div class="summary" id="summary" aria-live="polite"></div>
-<div class="notice">This form currently collects and reviews your selections on this page. Online order submission, final pricing, shipping, and payment must be connected before customers can place a completed order.</div>
-</form>
-<aside class="preview-card"><div class="live-preview">
-  <div class="preview-heading"><div><div class="eyebrow">LIVE PROJECT PREVIEW</div><h2>Visualize your enclosure</h2><p>Updates as you change your dimensions, box style, port, and finish.</p></div><span class="preview-live"><i></i> Live</span></div>
-<div class="preview-stage" id="previewStage" tabindex="0" aria-label="Interactive 3D enclosure preview. Drag to rotate, scroll or pinch to zoom, and right-drag to pan.">
-    <svg id="boxPreviewSvg" viewBox="0 0 420 270" role="img" aria-label="Three-dimensional preview of your subwoofer enclosure" style="display:none"></svg>
-    <div id="box3DCanvas" style="position:absolute;inset:0;width:100%;height:100%;touch-action:none"></div>
-  </div>
-  <div class="preview-meta"><span id="previewDimensions">25 × 30 × 16 in</span><span id="previewFinish">Black paint</span><span id="previewBoxType">Ported</span></div>
-  <div class="preview-hint">Drag the model to rotate it 360°. Scroll or pinch to zoom.</div>
-</div></aside>
-</div>
+   </section>
+   <section class="section">
+    <h2>3. Box finish &amp; paint color</h2>
+    <div class="choices">
+     <label class="choice"><input type="radio" name="finish" value="Paint" checked><span><strong>Paint</strong><small>Choose a paint color and optional design</small></span></label>
+     <label class="choice"><input type="radio" name="finish" value="Wrap"><span><strong>Wrap</strong><small>Vinyl, carpet, carbon fiber, and more</small></span></label>
+     <label class="choice"><input type="radio" name="finish" value="Raw"><span><strong>Raw</strong><small>No paint or wrap applied</small></span></label>
+    </div>
+    <div id="paintOptions" class="subchoices field-grid">
+     <div class="field"><label for="paintColor">Choose paint color</label><select id="paintColor"><option>Black</option><option>White</option><option>Red</option><option>Blue</option><option>Dark Blue</option><option>Green</option><option>Yellow</option><option>Orange</option><option>Purple</option><option>Pink</option><option>Gray</option><option>Silver</option><option>Gold</option><option>Bronze</option><option>Custom Color</option></select></div>
+     <div class="field"><label for="paintDesign">Custom design (optional)</label><select id="paintDesign"><option>No custom design</option><option>Splatter paint</option><option>Two-tone paint</option><option>Metallic / flake</option><option>Color fade / gradient</option><option>Custom graphics / lettering</option><option>Other custom design</option></select></div>
+     <div class="field full hidden" id="customPaintWrap"><label for="customPaint">Custom paint color</label><input id="customPaint" maxlength="80" placeholder="Describe your custom color"></div>
+     <div class="field full"><label for="paintNotes">Paint/design notes (optional)</label><textarea id="paintNotes" placeholder="Describe any colors, graphics, lettering, or other details"></textarea></div>
+    </div>
+    <div id="wrapOptions" class="subchoices field-grid hidden">
+     <div class="field"><label for="wrapType">Wrap type</label><select id="wrapType"><option>Vinyl</option><option>Carpet</option><option>Carbon fiber</option><option>Other</option></select></div>
+     <div class="field"><label for="wrapColor">Wrap color</label><select id="wrapColor"><option>Black</option><option>Gray</option><option>White</option><option>Red</option><option>Blue</option><option>Custom Color</option></select></div>
+     <div class="field full hidden" id="customWrapWrap"><label for="customWrap">Custom wrap color</label><input id="customWrap" maxlength="80" placeholder="Describe your custom wrap color"></div>
+     <div class="field full"><label for="wrapNotes">Wrap/design notes (optional)</label><textarea id="wrapNotes" placeholder="Describe the wrap or custom details"></textarea></div>
+    </div>
+    <div id="rawOptions" class="subchoices field hidden"><label for="rawMaterial">Raw finish detail</label><select id="rawMaterial"><option>Unfinished MDF</option><option>Unfinished birch</option><option>Unfinished plywood</option></select></div>
+   </section>
+   <section class="section">
+    <h2>4. Subwoofer information</h2>
+    <div class="field-grid">
+     <div class="field full"><label for="model">Subwoofer model</label><input id="model" maxlength="140" placeholder="Enter the brand and exact model" required></div>
+     <div class="field"><label for="size">Subwoofer size</label><select id="size"><option value="6.5">6.5 inches</option><option value="8">8 inches</option><option value="10">10 inches</option><option value="12" selected>12 inches</option><option value="15">15 inches</option><option value="18">18 inches</option></select></div>
+     <div class="field"><label for="quantity">Quantity of subwoofers</label><select id="quantity"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+     <div class="field full" id="tuningField"><label for="tuning">Target port tuning <span class="unit">(Hz)</span></label><select id="tuning"></select><div class="help">Required for ported boxes only. This field is hidden for sealed boxes.</div></div>
+    </div>
+   </section>
+   <section class="section">
+    <div class="weight"><strong>Estimated material weight: <span id="weight">—</span></strong><br>Estimate assumes ¾-inch panels and the selected maximum dimensions. Includes an allowance for internal panels and assembly; actual weight can vary.</div>
+   </section>
+   <div class="submit-row"><button class="add-button" type="submit">Add to Cart</button><p class="status" id="status" aria-live="polite">Your selections will be added to the same checkout cart as prebuilt products.</p></div>
+  </form>
+  <aside class="panel preview-panel">
+   <div class="preview-head"><div><div class="eyebrow">Live project preview</div><h2>Visualize your enclosure</h2></div><span class="live">● Live</span></div>
+   <div class="canvas-wrap" id="canvasWrap"><canvas id="modelCanvas"></canvas></div>
+   <div class="preview-foot">Drag to rotate the enclosure. The preview updates as you change dimensions, box style, port, and finish.</div>
+   <div class="preview-specs"><div class="spec"><span>Dimensions</span><strong id="specDimensions">—</strong></div><div class="spec"><span>Box style</span><strong id="specType">Ported</strong></div><div class="spec"><span>Material</span><strong id="specMaterial">MDF (Suggested)</strong></div><div class="spec"><span>Finish</span><strong id="specFinish">Paint · Black</strong></div></div>
+  </aside>
+ </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
-const $=id=>document.getElementById(id);
-if(new URLSearchParams(location.search).get('embed')==='1'){document.getElementById('formHeader').remove();document.body.style.background='transparent';const wrap=document.querySelector('.wrap');wrap.style.margin='0';wrap.style.maxWidth='none';wrap.style.width='100%';wrap.style.boxSizing='border-box';wrap.style.padding='0 16px 24px 0';}
-window.addEventListener('message',event=>{if(event.origin===location.origin&&event.source===window.parent&&event.data&&event.data.type==='el-checkout-navigation-ack')window.__elCheckoutOpened=true;});
-function reportEmbedHeight(){if(new URLSearchParams(location.search).get('embed')!=='1')return;const root=document.documentElement;const body=document.body;const height=Math.max(root.scrollHeight,root.offsetHeight,body.scrollHeight,body.offsetHeight);window.parent.postMessage({type:'enclosure-designer-height',height},location.origin);}
-if(new URLSearchParams(location.search).get('embed')==='1'){if('ResizeObserver'in window){new ResizeObserver(reportEmbedHeight).observe(document.body);}window.addEventListener('load',reportEmbedHeight);window.addEventListener('resize',reportEmbedHeight);setTimeout(reportEmbedHeight,100);setTimeout(reportEmbedHeight,500);}
-function fillMeasurements(id,min,max,selected){const el=$(id);for(let n=min;n<=max;n++){const o=document.createElement('option');o.value=String(n);o.textContent=n+' in';if(n===selected)o.selected=true;el.appendChild(o)}}
-fillMeasurements('width',8,60,25);fillMeasurements('length',8,60,30);fillMeasurements('depth',8,48,16);
-for(let hz=25;hz<=45.001;hz+=.5){const o=document.createElement('option');o.value=hz.toFixed(1);o.textContent=hz.toFixed(1)+' Hz';if(Math.abs(hz-32)<.001)o.selected=true;$('tuning').appendChild(o)}
-const CART_KEY='enclosureLabCart';
-let selectedFinish='Paint',selectedPaintColor='Black',selectedWrapColor='Black';
-function setupFinishDesigner(){
- document.querySelectorAll('.finish-toggle').forEach(btn=>btn.addEventListener('click',()=>{
-  selectedFinish=btn.dataset.finish;
-  document.querySelectorAll('.finish-toggle').forEach(b=>{const active=b===btn;b.setAttribute('aria-expanded',String(active));b.querySelector('.finish-chevron').textContent=active?'−':'+';});
-  document.getElementById('paintPanel').classList.toggle('hidden',selectedFinish!=='Paint');
-  document.getElementById('wrapPanel').classList.toggle('hidden',selectedFinish!=='Wrap');
-  document.getElementById('rawPanel').classList.toggle('hidden',selectedFinish!=='Raw');
- }));
- function bindColors(containerId,which){document.querySelectorAll('#'+containerId+' .color-choice').forEach(btn=>btn.addEventListener('click',()=>{
-  const selected=btn.dataset.color;
-  if(which==='paint')selectedPaintColor=selected;else selectedWrapColor=selected;
-  document.querySelectorAll('#'+containerId+' .color-choice').forEach(b=>{const active=b===btn;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active));});
-  document.getElementById(which==='paint'?'customPaintField':'customWrapField').classList.toggle('hidden',selected!=='Custom Color');
-  update3DPreview();
- }));}
- bindColors('paintColors','paint');bindColors('wrapColors','wrap');
- $('paintDesign').addEventListener('change',()=>{const active=$('paintDesign').value!=='None';$('paintNotesField').classList.toggle('hidden',!active);$('designPaintColorField').classList.toggle('hidden',!active);update3DPreview();});
- $('designPaintColor').addEventListener('input',()=>{$('designPaintColorValue').textContent=$('designPaintColor').value.toUpperCase();update3DPreview();});
- $('wrapDesign').addEventListener('change',()=> $('wrapNotesField').classList.toggle('hidden',$('wrapDesign').value==='None'));
-}
-setupFinishDesigner();
-
-['size','quantity','tuning','paintDesign','wrapDesign','paintNotes','wrapNotes','customPaintName','customWrapName','customPaintHex','customWrapHex','wrapType','rawMaterial'].forEach(id=>{const el=$(id);if(el){el.addEventListener('input',update3DPreview);el.addEventListener('change',update3DPreview);}});
-document.querySelectorAll('.finish-toggle').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
-
-['paintDesign','wrapDesign','paintNotes','wrapNotes','customPaintName','customWrapName'].forEach(id=>{const el=$(id);if(el){el.addEventListener('input',update3DPreview);el.addEventListener('change',update3DPreview);}});
-
-
-function hexToRgb(hex){const m=/^#?([0-9a-f]{6})$/i.exec(hex||'');return m?{r:parseInt(m[1].slice(0,2),16),g:parseInt(m[1].slice(2,4),16),b:parseInt(m[1].slice(4,6),16)}:{r:90,g:96,b:105};}
-function shadeColor(hex,amount){const c=hexToRgb(hex);return '#'+[c.r,c.g,c.b].map(v=>Math.max(0,Math.min(255,Math.round(v*amount))).toString(16).padStart(2,'0')).join('');}
-function previewSurface(){
- const paintMap={'Black':'#171717','White':'#f7f7f7','Red':'#cf3038','Blue':'#2862bd','Dark Blue':'#142c5c','Green':'#27804b','Yellow':'#f1cf36','Orange':'#ed792c','Purple':'#7947a8','Pink':'#ec90b4','Gray':'#858990','Silver':'#c3c8ce','Gold':'#c5a04a','Bronze':'#936344'};
- if(selectedFinish==='Raw')return {front:'#b99b70',side:'#8e7656',top:'#d5bd96',label:$('rawMaterial').value};
- if(selectedFinish==='Paint'){
-  const actual=selectedPaintColor==='Custom Color'?($('customPaintHex').value||'#707780'):(paintMap[selectedPaintColor]||'#171717');
-  return {front:actual,side:actual,top:actual,label:selectedPaintColor==='Custom Color'?'Custom paint':selectedPaintColor+' paint'};
- }
- const type=$('wrapType').value;
- let col=selectedWrapColor==='Custom Color'?($('customWrapHex').value||'#707780'):(paintMap[selectedWrapColor]||'#171717');
- if(type==='Carpet wrap')return {front:'#353535',side:'#222222',top:'#4a4a4a',label:'Carpet wrap'};
- if(type==='Carbon fiber')return {front:col,side:shadeColor(col,.62),top:shadeColor(col,1.22),label:'Carbon fiber · '+selectedWrapColor};
- if(type==='Forged carbon fiber')return {front:col,side:shadeColor(col,.62),top:shadeColor(col,1.22),label:'Forged carbon fiber · '+selectedWrapColor};
- return {front:col,side:shadeColor(col,.62),top:shadeColor(col,1.22),label:type+' · '+selectedWrapColor};
-}
-let box3DScene=null,box3DCamera=null,box3DRenderer=null,box3DControls=null,box3DGroup=null,box3DResizeObserver=null,box3DViewMode="exterior";
-function initFree3DPreview(){
- const host=$('box3DCanvas');if(!host||!window.THREE||box3DRenderer)return;
- box3DScene=new THREE.Scene();box3DScene.background=new THREE.Color('#f7f8fa');
- box3DCamera=new THREE.PerspectiveCamera(38,1,.1,2000);
- box3DRenderer=new THREE.WebGLRenderer({antialias:true,alpha:false,preserveDrawingBuffer:true});
- box3DRenderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
- box3DRenderer.outputEncoding=THREE.sRGBEncoding;host.appendChild(box3DRenderer.domElement);
- box3DControls=new THREE.OrbitControls(box3DCamera,box3DRenderer.domElement);
- box3DControls.enableDamping=true;box3DControls.dampingFactor=.08;box3DControls.enableZoom=true;box3DControls.enablePan=false;box3DControls.rotateSpeed=.8;box3DControls.zoomSpeed=1;box3DControls.enableRotate=true;
- box3DScene.add(new THREE.AmbientLight(0xffffff,.9));
- const light=new THREE.DirectionalLight(0xffffff,.75);light.position.set(35,55,45);box3DScene.add(light);
- box3DGroup=new THREE.Group();box3DScene.add(box3DGroup);
- const resize=()=>{const w=Math.max(1,host.clientWidth),h=Math.max(1,host.clientHeight);box3DRenderer.setSize(w,h,false);box3DCamera.aspect=w/h;box3DCamera.updateProjectionMatrix();};
- box3DResizeObserver=window.ResizeObserver?new ResizeObserver(resize):null;if(box3DResizeObserver)box3DResizeObserver.observe(host);else window.addEventListener('resize',resize);resize();
- const animate=()=>{if(!box3DRenderer)return;requestAnimationFrame(animate);box3DControls.update();box3DRenderer.render(box3DScene,box3DCamera);};animate();
-}
-function updateFree3DModel(){
- if(!window.THREE)return;initFree3DPreview();if(!box3DGroup)return;
- while(box3DGroup.children.length){
-  const obj=box3DGroup.children.pop();
-  obj.traverse?.(n=>{if(n.geometry)n.geometry.dispose();if(n.material){(Array.isArray(n.material)?n.material:[n.material]).forEach(m=>{if(m.map)m.map.dispose();m.dispose();});}});
- }
- const w=Math.max(8,Number($('width').value)||25),h=Math.max(8,Number($('length').value)||30),l=Math.max(8,Number($('depth').value)||16),t=.75;
- const surface=previewSurface(),raw=selectedFinish==='Raw';
- const makeFinishTexture=(kind,base)=>{
-  const canvas=document.createElement('canvas');canvas.width=canvas.height=512;
-  const ctx=canvas.getContext('2d');ctx.fillStyle=base;ctx.fillRect(0,0,512,512);
-  if(kind==='Carbon fiber'){
-   const cell=32,strand=15;
-   for(let y=-cell;y<544;y+=cell)for(let x=-cell;x<544;x+=cell){
-    const row=Math.round(y/cell),col=Math.round(x/cell),light=((row+col)%4)<2;
-    ctx.save();ctx.translate(x+((row%2)*cell/2)+cell/2,y+cell/2);ctx.rotate(-Math.PI/4);
-    const g=ctx.createLinearGradient(0,-strand/2,0,strand/2);
-    g.addColorStop(0,light?'#c4c8cb':'#34383c');g.addColorStop(.2,light?'#777e83':'#171a1e');g.addColorStop(.5,light?'#e0e2e3':'#555b60');g.addColorStop(.8,light?'#656c71':'#111417');g.addColorStop(1,light?'#25292d':'#080a0c');
-    ctx.fillStyle=g;ctx.fillRect(-cell*.8,-strand/2,cell*1.6,strand);
-    ctx.strokeStyle=light?'rgba(255,255,255,.78)':'rgba(0,0,0,.88)';ctx.lineWidth=1.4;ctx.beginPath();ctx.moveTo(-cell*.8,-strand/2+1);ctx.lineTo(cell*.8,-strand/2+1);ctx.stroke();
-    ctx.strokeStyle=light?'rgba(0,0,0,.55)':'rgba(220,225,230,.4)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-cell*.8,strand/2-1);ctx.lineTo(cell*.8,strand/2-1);ctx.stroke();ctx.restore();
-   }
-  }else if(kind==='Forged carbon fiber'){
-   let seed=84721;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
-   for(let i=0;i<300;i++){
-    const x=rand()*512,y=rand()*512,len=9+rand()*38,thick=2+rand()*9,angle=(rand()-.5)*1.5;
-    ctx.save();ctx.translate(x,y);ctx.rotate(angle);
-    const g=ctx.createLinearGradient(0,-thick,0,thick);g.addColorStop(0,'#e0e3e5');g.addColorStop(.22,'#858d94');g.addColorStop(.58,'#252a2f');g.addColorStop(1,'#050709');
-    ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(-len/2,-thick*.35);ctx.lineTo(-len*.28,-thick);ctx.lineTo(len/2,-thick*.55);ctx.lineTo(len*.42,thick*.55);ctx.lineTo(-len*.38,thick);ctx.closePath();ctx.fill();
-    ctx.strokeStyle='rgba(245,247,248,.88)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-len*.3,-thick*.25);ctx.lineTo(len*.34,-thick*.18);ctx.stroke();ctx.restore();
-   }
-  }else if(kind==='Carpet wrap'){
-   let seed=319;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
-   for(let i=0;i<11000;i++){ctx.fillStyle=i%2?'rgba(255,255,255,.10)':'rgba(0,0,0,.15)';ctx.fillRect(rand()*512,rand()*512,1.5,1.5);}
-  }else{
-   let seed=712;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
-   for(let i=0;i<3000;i++){ctx.fillStyle=i%2?'rgba(255,255,255,.04)':'rgba(0,0,0,.04)';ctx.fillRect(rand()*512,rand()*512,1,1);}
-  }
-  const tex=new THREE.CanvasTexture(canvas);tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
-  tex.repeat.set(kind==='Carbon fiber'?3.2:kind==='Forged carbon fiber'?1.7:2,kind==='Carbon fiber'?3.2:kind==='Forged carbon fiber'?1.7:2);
-  tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=box3DRenderer.capabilities.getMaxAnisotropy();return tex;
- };
- const wrapType=selectedFinish==='Wrap'?$('wrapType').value:'';
- const exteriorTexture=selectedFinish==='Wrap'?makeFinishTexture(wrapType,surface.front):null;
- const exteriorMat=color=>new THREE.MeshBasicMaterial({color:exteriorTexture?0xffffff:color,map:exteriorTexture,side:THREE.DoubleSide});
- const frontMat=exteriorMat(raw?'#b99b70':surface.front),sideMat=exteriorMat(raw?'#a98559':surface.side),topMat=exteriorMat(raw?'#c9aa7b':surface.top);
- const bottomMat=exteriorMat(raw?'#b99b70':surface.front),rearMat=exteriorMat(raw?'#a98559':surface.side);
- const insideMat=new THREE.MeshBasicMaterial({color:raw?'#d0b58c':'#c9b99f',side:THREE.DoubleSide});
- const edgeMat=new THREE.LineBasicMaterial({color:0x303030});
- const exploded=false,interior=false;
- const gap=exploded?Math.max(1.4,t*2):0;
- const addPanel=(name,ww,hh,dd,x,y,z,mat,offset=[0,0,0])=>{
-  const geo=new THREE.BoxGeometry(ww,hh,dd);
-  const mesh=new THREE.Mesh(geo,mat);mesh.position.set(x+offset[0],y+offset[1],z+offset[2]);mesh.userData.panelName=name;box3DGroup.add(mesh);
-  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(geo),edgeMat);edges.position.copy(mesh.position);box3DGroup.add(edges);
- };
- // A true cut-through front baffle: the circular driver aperture and port aperture
- // are holes in the panel geometry, not dark decals placed over a solid face.
- const shapePanel=(name,ww,hh,dd,x,y,z,holes,mat,offset=[0,0,0])=>{
-  const shape=new THREE.Shape();shape.moveTo(-ww/2,-hh/2);shape.lineTo(ww/2,-hh/2);shape.lineTo(ww/2,hh/2);shape.lineTo(-ww/2,hh/2);shape.closePath();
-  holes.forEach(hole=>{
-   const path=new THREE.Path();
-   if(hole.kind==='circle'){
-    path.absarc(hole.x,hole.y,hole.r,0,Math.PI*2,true);
-   }else{
-    const x1=hole.x-hole.w/2,x2=hole.x+hole.w/2,y1=hole.y-hole.h/2,y2=hole.y+hole.h/2;
-    path.moveTo(x1,y1);path.lineTo(x1,y2);path.lineTo(x2,y2);path.lineTo(x2,y1);path.closePath();
-   }
-   shape.holes.push(path);
-  });
-  const geo=new THREE.ExtrudeGeometry(shape,{depth:dd,bevelEnabled:false,curveSegments:64});
-  geo.translate(0,0,-dd/2);
-  const mesh=new THREE.Mesh(geo,mat);mesh.position.set(x+offset[0],y+offset[1],z+offset[2]);mesh.userData.panelName=name;box3DGroup.add(mesh);
-  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(geo),edgeMat);edges.position.copy(mesh.position);box3DGroup.add(edges);
- };
- const isPorted=$('type').value==='Ported',style=$('portStyle').value;
- const nominal=Number($('size').value)||12;
- const count=Math.max(1,Math.min(4,Number($('quantity').value)||1));
- const cols=count===1?1:2,rows=count>2?2:1;
- const driverDiameter=Math.max(1,nominal-.9);
- const driverR=driverDiameter/2;
- const driverXs=Array.from({length:count},(_,i)=>(i%cols-(cols-1)/2)*w/(cols+1));
- const driverYs=Array.from({length:count},(_,i)=>((rows-1)/2-Math.floor(i/cols))*h/(rows+1));
- const holes=[];
- driverXs.forEach((x,i)=>holes.push({kind:'circle',x,y:driverYs[i],r:driverR}));
- let portHole=null;
- if(isPorted){
-  if(style==='Slot front panel')portHole={kind:'rect',x:-w*.39,y:0,w:Math.min(2.2,w*.09),h:h*.78};
-  if(style==='Hole front panel')portHole={kind:'circle',x:-w*.34,y:-h*.22,r:Math.min(1.7,h*.12)};
-  if(portHole)holes.push(portHole);
- }
- const topOffset=exploded?[0,gap,0]:[0,0,0],bottomOffset=exploded?[0,-gap,0]:[0,0,0];
- const leftOffset=exploded?[-gap,0,0]:[0,0,0],rightOffset=exploded?[gap,0,0]:[0,0,0];
- const frontOffset=exploded?[0,0,gap]:[0,0,0],rearOffset=exploded?[0,0,-gap]:[0,0,0];
- // Shell boards retain their real thickness and recognizable edge seams.
- addPanel('Bottom',w-2*t,t,l-2*t,0,-h/2+t/2,0,bottomMat,bottomOffset);
- addPanel('Top',w-2*t,t,l-2*t,0,h/2-t/2,0,topMat,topOffset);
- addPanel('Left side',t,h-2*t,l-2*t,-w/2+t/2,0,0,sideMat,leftOffset);
- addPanel('Right side',t,h-2*t,l-2*t,w/2-t/2,0,0,sideMat,rightOffset);
- addPanel('Rear panel',w,h,t,0,0,-l/2+t/2,rearMat,rearOffset);
- shapePanel('Front baffle',w,h,t,0,0,l/2-t/2,holes,frontMat,frontOffset);
- // Raised laminated rings around every driver cutout, with an open center.
- driverXs.forEach((x,i)=>{
-  const ringGeo=new THREE.RingGeometry(driverR*1.01,driverR*1.17,64);
-  const ring=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:raw?'#c9aa7b':shadeColor(surface.front,.72),side:THREE.DoubleSide}));
-  ring.position.set(x,driverYs[i],l/2+t/2+.012);box3DGroup.add(ring);
-  const lipGeo=new THREE.RingGeometry(driverR*.96,driverR*1.01,64);
-  const lip=new THREE.Mesh(lipGeo,new THREE.MeshBasicMaterial({color:0x4b4b4b,side:THREE.DoubleSide}));
-  lip.position.set(x,driverYs[i],l/2+t/2+.018);box3DGroup.add(lip);
- });
- // Interior backing and port tunnel surfaces are visible through the real openings.
- const back=new THREE.Mesh(new THREE.PlaneGeometry(w-2*t,h-2*t),insideMat);
- back.position.set(0,0,-l/2+t+.015);box3DGroup.add(back);
- if(isPorted){
-  const portX=style.includes('side panel')?w/2-t/2: -w*.39;
-  if(style==='Slot front panel'||style==='Slot side panel'){
-   const pw=Math.min(2.2,w*.09),ph=h*.78,pl=Math.max(t*2,l*.42);
-   if(style==='Slot front panel'){
-    addPanel('Port inner wall',t,ph,pl,portX+pw/2,0,l/2-t-pl/2,insideMat);
-    addPanel('Port return',pw,ph,t,portX+pw/2,0,l/2-t-pl,insideMat);
-   }else{
-    addPanel('Side port inner wall',pl,ph,t,w/2-t-pl/2,0,l*.2,insideMat);
-   }
-  }
-  if(style==='Hole front panel'||style==='Hole side panel'){
-   const r=Math.min(1.7,h*.12);
-   const tube=new THREE.Mesh(new THREE.CylinderGeometry(r,r,Math.max(t*2,l*.28),48,1,true),insideMat);
-   if(style==='Hole front panel'){tube.rotation.x=Math.PI/2;tube.position.set(-w*.34,-h*.22,l/2-t-Math.max(t*2,l*.28)/2);}
-   else {tube.rotation.z=Math.PI/2;tube.position.set(w/2-t-Math.max(t*2,l*.28)/2,-h*.22,l*.2);}
-   box3DGroup.add(tube);
-  }
- }
- // Side-panel port openings are actual apertures in the corresponding side board.
- if(isPorted&&(style==='Slot side panel'||style==='Hole side panel')){
-  // Show the opening as a recessed dark throat at the side face.
-  const dark=new THREE.MeshBasicMaterial({color:0x242321,side:THREE.DoubleSide});
-  if(style==='Slot side panel'){
-   const opening=new THREE.Mesh(new THREE.PlaneGeometry(Math.min(2.2,w*.09),h*.78),dark);
-   opening.rotation.y=Math.PI/2;opening.position.set(w/2+.006,0,l*.2);box3DGroup.add(opening);
-  }else{
-   const opening=new THREE.Mesh(new THREE.CircleGeometry(Math.min(1.7,h*.12),48),dark);
-   opening.rotation.y=Math.PI/2;opening.position.set(w/2+.006,-h*.22,l*.2);box3DGroup.add(opening);
-  }
- }
- // Dimension leaders are kept outside the enclosure silhouette.
- const span=Math.max(w,h,l),dg=span*.16,dimMat=new THREE.LineBasicMaterial({color:0x4b91c7});
- const line=pts=>box3DGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),dimMat));
- line([new THREE.Vector3(-w/2,-h/2-dg,l/2),new THREE.Vector3(w/2,-h/2-dg,l/2)]);
- line([new THREE.Vector3(w/2+dg,-h/2,-l/2),new THREE.Vector3(w/2+dg,h/2,-l/2)]);
- line([new THREE.Vector3(w/2+dg,-h/2,l/2),new THREE.Vector3(w/2+dg,-h/2,-l/2)]);
- box3DControls.target.set(0,0,0);
- const aspect=Math.max(.65,box3DRenderer.domElement.clientWidth/Math.max(1,box3DRenderer.domElement.clientHeight));
- const fitSpan=Math.max(w,h,l);
- const dist=(fitSpan/2)/Math.tan(THREE.MathUtils.degToRad(box3DCamera.fov/2))*1.65/Math.min(1,aspect);
- box3DCamera.position.set(dist*.95,dist*.72,dist*1.15);
- box3DCamera.near=.1;box3DCamera.far=span*30;box3DCamera.updateProjectionMatrix();
- box3DControls.minDistance=span*.45;box3DControls.maxDistance=span*6;
- box3DRenderer.render(box3DScene,box3DCamera);
-}
-function update3DPreview(){
- updateFree3DModel();
- const svg=$('boxPreviewSvg');if(!svg)return;
- const w=Number($('width').value)||25,h=Number($('length').value)||30,d=Number($('depth').value)||16;
- const surface=previewSurface(),ported=$('type').value==='Ported',style=$('portStyle').value;
- // Keep the enclosure's three axes in one consistent scale, but fit the complete box
- // into the preview canvas. The previous formula squeezed length into a tiny fixed cap.
- const rawScale=Math.min(278/Math.max(w,1),164/Math.max(h,1),180/Math.max(d,1));
- const scale=rawScale;
- const fw=w*scale,fh=h*scale,dx=d*scale*.42,dy=-dx*.66;
- const boxMinX=58,boxMinY=78,boxMaxW=278,boxMaxH=164;
- const x=boxMinX+(boxMaxW-fw)*.12,y=boxMinY+(boxMaxH-fh)*.12,right=x+fw,bottom=y+fh;
- const front='M '+x+' '+y+' L '+right+' '+y+' L '+right+' '+bottom+' L '+x+' '+bottom+' Z';
- const top='M '+x+' '+y+' L '+(x+dx)+' '+(y+dy)+' L '+(right+dx)+' '+(y+dy)+' L '+right+' '+y+' Z';
- const side='M '+right+' '+y+' L '+(right+dx)+' '+(y+dy)+' L '+(right+dx)+' '+(bottom+dy)+' L '+right+' '+bottom+' Z';
- const count=Math.max(1,Math.min(4,Number($('quantity').value)||1)),size=Number($('size').value)||12;
- const rows=count>2?2:1,cols=count===1?1:count===2?2:2;
- const usableW=fw*.76,usableH=fh*.67,gapX=usableW/cols,gapY=usableH/rows;
- // Keep driver diameter tied to the selected speaker size, not the enclosure dimensions.
- // The enclosure only affects available placement space; it must not visually shrink the driver.
- // Approximate the driver's outside diameter (nominal size plus basket/surround allowance)
- // using the same scale as the enclosure. A driver that cannot physically fit should look too large,
- // rather than being silently shrunk to fit the panel.
- const driverOuterDiameter=size+1.25;
- // Speaker face diameter uses the same inch-to-pixel scale as the enclosure.
- const rad=(driverOuterDiameter*scale)/2;
- let drivers='';
- for(let n=0;n<count;n++){const col=n%cols,row=Math.floor(n/cols);const cx=x+fw*.12+gapX*(col+.5),cy=y+fh*.13+gapY*(row+.5);const r=rad;drivers+='<g><circle cx="'+cx+'" cy="'+cy+'" r="'+(r+5)+'" fill="#08090b" stroke="#050607" stroke-width="2"/><circle cx="'+cx+'" cy="'+(cy+1)+'" r="'+(r+2)+'" fill="url(#surround)" stroke="#6c737d" stroke-width="1.4"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*.78)+'" fill="url(#cone)" stroke="#101216" stroke-width="2"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*.47)+'" fill="#252a30" stroke="#737b84" stroke-width="1.2"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*.23)+'" fill="url(#dust)" stroke="#0a0b0d" stroke-width="1.4"/>'+[[-.72,-.72],[.72,-.72],[-.72,.72],[.72,.72]].map(([a,b])=>'<circle cx="'+(cx+a*r)+'" cy="'+(cy+b*r)+'" r="1.8" fill="#c5cbd2" stroke="#252a30" stroke-width=".7"/>').join('')+'</g>';}
- let port='';
- if(ported){
-  if(style==='Slot front panel'){
-   const pw=Math.max(15,fw*.055),ph=fh*.88,px=x+fw-pw-10,py=y+fh*.06;
-   port='<path d="M '+px+' '+py+' h '+pw+' v '+ph+' h '+(-pw)+' Z" fill="#050608" stroke="#d9dce0" stroke-width="2.2" stroke-linejoin="round"/><path d="M '+(px+3)+' '+(py+4)+' h '+Math.max(6,pw-6)+' v '+Math.max(8,ph-8)+' h '+(-Math.max(6,pw-6))+' Z" fill="#252b33"/><path d="M '+(px+5)+' '+(py+ph*.5)+' H '+(px+pw-5)+'" stroke="#687381" stroke-width="1.3"/>';
-  }
-  else if(style==='Slot side panel'){
-   const sw=dx*.30,sh=fh*.82,sx=right+dx*.28,sy=y+fh*.09+dy*.09;
-   const inset=Math.max(3,sw*.12),innerW=Math.max(5,sw-inset*2),innerH=sh-8;
-   port='<path d="M '+sx+' '+sy+' l '+sw+' '+dy*.30+' v '+sh+' l '+(-sw)+' '+(-dy*.30)+' Z" fill="#050608" stroke="#d9dce0" stroke-width="2.2" stroke-linejoin="round"/><path d="M '+(sx+inset)+' '+(sy+4)+' l '+innerW+' '+(dy*.30*.72)+' v '+innerH+' l '+(-innerW)+' '+(-dy*.30*.72)+' Z" fill="#252b33"/><path d="M '+(sx+inset+2)+' '+(sy+sh*.5)+' l '+(innerW-4)+' '+(dy*.30*.72)+'" stroke="#687381" stroke-width="1.3"/>';
-  }
-  else if(style==='Hole front panel'){const r=Math.max(11,Math.min(19,fh*.13)),cx=x+fw*.78,cy=bottom-fh*.19;port='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="#050607" stroke="#d0d5db" stroke-width="3"/><circle cx="'+cx+'" cy="'+cy+'" r="'+(r*.7)+'" fill="#242a32"/><ellipse cx="'+(cx-3)+'" cy="'+(cy-4)+'" rx="'+(r*.45)+'" ry="'+(r*.24)+'" fill="#58616c" opacity=".6"/>';}
-  else {const cx=right+dx*.64,cy=y+fh*.67,rx=dx*.18,ry=fh*.13;port='<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" transform="rotate(-25 '+cx+' '+cy+')" fill="#050607" stroke="#d0d5db" stroke-width="3"/><ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(rx*.65)+'" ry="'+(ry*.65)+'" transform="rotate(-25 '+cx+' '+cy+')" fill="#252b33"/>';}
- }
- let pattern='';
- const pd=$('paintDesign')?.value||'None',wd=$('wrapDesign')?.value||'None';
- if(selectedFinish==='Paint'&&pd==='Splatter paint'){
-  const designBase=$('designPaintColor')?.value||'#ffffff';
-  const light=designBase,mid=shadeColor(designBase,.72),dark=shadeColor(designBase,.42);
-  const splats=[];
-  // Irregular paint bursts: tapered arms, connected blobs, drips, and fine overspray.
-  const bursts=[[.18,.22,1],[.43,.36,0],[.72,.25,2],[.82,.68,1],[.32,.76,2],[.59,.58,0]];
-  bursts.forEach((b,i)=>{
-   const cx=x+fw*b[0],cy=y+fh*b[1],s=Math.max(3,fh*(i%3===0?.12:i%3===1?.085:.065)),col=[light,mid,dark][b[2]];
-   splats.push('<g fill="'+col+'" stroke="'+col+'" stroke-linecap="round" stroke-linejoin="round">');
-   splats.push('<path d="M '+(cx-s*.9)+' '+(cy-s*.12)+' Q '+(cx-s*.72)+' '+(cy-s*.82)+' '+(cx-s*.15)+' '+(cy-s*.62)+' Q '+(cx+s*.15)+' '+(cy-s*1.03)+' '+(cx+s*.42)+' '+(cy-s*.55)+' Q '+(cx+s*1.02)+' '+(cy-s*.47)+' '+(cx+s*.76)+' '+(cy-s*.02)+' Q '+(cx+s*1.08)+' '+(cy+s*.38)+' '+(cx+s*.43)+' '+(cy+s*.43)+' Q '+(cx+s*.13)+' '+(cy+s*.88)+' '+(cx-s*.18)+' '+(cy+s*.48)+' Q '+(cx-s*.82)+' '+(cy+s*.58)+' '+(cx-s*.9)+' '+(cy-s*.12)+' Z"/>');
-   splats.push('<path d="M '+(cx+s*.18)+' '+(cy+s*.28)+' Q '+(cx+s*.28)+' '+(cy+s*.8)+' '+(cx+s*.16)+' '+(cy+s*1.28)+' Q '+(cx+s*.04)+' '+(cy+s*1.42)+' '+(cx-s*.01)+' '+(cy+s*1.22)+' L '+(cx-s*.03)+' '+(cy+s*.35)+' Z" opacity=".9"/>');
-   for(let j=0;j<5;j++){const ang=(i*47+j*71)*Math.PI/180,dist=s*(1.15+(j%3)*.34),rr=Math.max(.55,s*(j%2?.045:.075));splats.push('<ellipse cx="'+(cx+Math.cos(ang)*dist)+'" cy="'+(cy+Math.sin(ang)*dist)+'" rx="'+rr*1.35+'" ry="'+rr+'" transform="rotate('+(j*23)+' '+(cx+Math.cos(ang)*dist)+' '+(cy+Math.sin(ang)*dist)+')"/>');}
-   splats.push('</g>');
-  });
-  const flecks=Array.from({length:82},(_,i)=>{const fx=x+fw*((i*37%97)+1)/99,fy=y+fh*((i*61%89)+2)/92,rr=i%9===0?1.5:i%4===0?1:.55,col=i%3===0?light:i%3===1?mid:dark;return '<ellipse cx="'+fx+'" cy="'+fy+'" rx="'+(rr*(i%5===0?1.9:1))+'" ry="'+(rr*.62)+'" transform="rotate('+((i*29)%160)+' '+fx+' '+fy+')" fill="'+col+'" opacity="'+(i%4===0?.9:.68)+'"/>';}).join('');
-  pattern='<g>'+splats.join('')+flecks+'</g>';
- }
- if(selectedFinish==='Paint'&&pd==='Two-tone paint')pattern='<path d="M '+x+' '+(y+fh*.63)+' H '+right+' V '+bottom+' H '+x+' Z" fill="'+shadeColor(surface.front,.48)+'"/>';
- if(selectedFinish==='Paint'&&pd==='Metallic / flake')pattern='<g fill="#fff" opacity=".7">'+Array.from({length:28},(_,i)=>'<circle cx="'+(x+12+(i*37)%220)+'" cy="'+(y+10+(i*23)%120)+'" r="'+(i%3===0?1.5:.8)+'"/>').join('')+'</g>';
- if(selectedFinish==='Paint'&&pd==='Color fade / gradient')pattern='<path d="'+front+'" fill="url(#fadeFinish)" opacity=".9"/>';
- if(selectedFinish==='Paint'&&(pd==='Custom graphics / lettering'||pd==='Other custom design')&&$('paintNotes')?.value)pattern='<text x="'+(x+fw/2)+'" y="'+(y+fh*.91)+'" text-anchor="middle" fill="#fff" stroke="#111" stroke-width=".7" font-size="10" font-weight="bold">'+$('paintNotes').value.replace(/[&<>"]/g,'').slice(0,26)+'</text>';
- if(selectedFinish==='Wrap'&&$('wrapType').value==='Carbon fiber')pattern='<path d="'+top+'" fill="url(#carbonPattern)"/><path d="'+side+'" fill="url(#carbonPattern)"/><path d="'+front+'" fill="url(#carbonPattern)"/><path d="'+front+'" fill="url(#wrapGloss)" opacity=".34"/><path d="'+top+'" fill="url(#wrapGloss)" opacity=".18"/><path d="'+side+'" fill="url(#wrapGloss)" opacity=".12"/>';
- if(selectedFinish==='Wrap'&&$('wrapType').value==='Forged carbon fiber')pattern='<path d="'+top+'" fill="url(#forgedPattern)"/><path d="'+side+'" fill="url(#forgedPattern)"/><path d="'+front+'" fill="url(#forgedPattern)"/><path d="'+front+'" fill="url(#wrapGloss)" opacity=".30"/><path d="'+top+'" fill="url(#wrapGloss)" opacity=".17"/><path d="'+side+'" fill="url(#wrapGloss)" opacity=".12"/>';
- if(selectedFinish==='Wrap'&&wd==='Two-tone wrap')pattern+='<path d="M '+x+' '+(y+fh*.63)+' H '+right+' V '+bottom+' H '+x+' Z" fill="'+shadeColor(surface.front,.42)+'"/>';
- svg.innerHTML='<defs><linearGradient id="cone" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#69717b"/><stop offset=".42" stop-color="#1a1d22"/><stop offset="1" stop-color="#07080a"/></linearGradient><radialGradient id="dust"><stop offset="0" stop-color="#626b76"/><stop offset="1" stop-color="#111317"/></radialGradient><linearGradient id="surround" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#737b84"/><stop offset=".4" stop-color="#17191d"/><stop offset=".75" stop-color="#3b4149"/><stop offset="1" stop-color="#08090b"/></linearGradient><linearGradient id="fadeFinish" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="'+surface.top+'"/><stop offset="1" stop-color="'+shadeColor(surface.front,.35)+'"/></linearGradient><pattern id="carbonPattern" width="16" height="16" patternUnits="userSpaceOnUse"><rect width="16" height="16" fill="#17191c"/><path d="M-8 0L0 8L-8 16M0 0L8 8L0 16M8 0L16 8L8 16M16 0L24 8L16 16" fill="none" stroke="#5b626b" stroke-width="4"/><path d="M-8 0L0 8L-8 16M0 0L8 8L0 16M8 0L16 8L8 16M16 0L24 8L16 16" fill="none" stroke="#252a30" stroke-width="2"/><path d="M0 0L8 8L16 0M0 16L8 8L16 16" fill="none" stroke="#090a0c" stroke-width="1.2"/></pattern><pattern id="forgedPattern" width="42" height="34" patternUnits="userSpaceOnUse"><rect width="42" height="34" fill="#202328"/><path d="M2 5Q7 0 14 5L18 10L12 15L3 12Z M22 2L31 0L38 7L34 13L25 11Z M16 20L24 14L31 20L28 28L18 30L12 25Z M1 25L8 18L13 23L9 32L2 33Z M34 23L40 17L44 24L39 33L33 31Z" fill="#68717b" stroke="#9ba3ac" stroke-width=".7"/><path d="M4 7L11 8M25 4L32 7M17 24L25 22M3 28L8 25M35 27L40 23" stroke="#d3d8de" stroke-width="1.1" opacity=".5"/><path d="M0 16L12 12M20 33L29 27M30 14L42 10" stroke="#090b0e" stroke-width="2.2"/></pattern><linearGradient id="wrapGloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity=".48"/><stop offset=".22" stop-color="#ffffff" stop-opacity=".10"/><stop offset=".58" stop-color="#000000" stop-opacity=".02"/><stop offset="1" stop-color="#000000" stop-opacity=".28"/></linearGradient></defs><ellipse cx="225" cy="'+(bottom+22)+'" rx="165" ry="10" fill="#18202b" opacity=".13"/><path d="'+top+'" fill="'+surface.top+'" stroke="#303741" stroke-width="2" stroke-linejoin="round"/><path d="'+side+'" fill="'+surface.side+'" stroke="#303741" stroke-width="2" stroke-linejoin="round"/><path d="'+front+'" fill="'+surface.front+'" stroke="#303741" stroke-width="2" stroke-linejoin="round"/>'+pattern+drivers+port+'<g fill="currentColor" font-size="11" font-weight="700"><text x="'+(x+fw/2)+'" y="'+(bottom+23)+'" text-anchor="middle">Width '+w+' in</text><text x="'+(right+dx+6)+'" y="'+(y+fh*.52+dy*.4)+'" transform="rotate(90 '+(right+dx+6)+' '+(y+fh*.52+dy*.4)+')" text-anchor="middle">Length '+l+' in</text><text x="'+(x-8)+'" y="'+(y+fh/2)+'" transform="rotate(-90 '+(x-8)+' '+(y+fh/2)+')" text-anchor="middle">Depth '+d+' in</text></g>';
- $('previewDimensions').textContent=w+' W × '+h+' H × '+d+' D in';$('previewFinish').textContent=surface.label+(selectedFinish==='Paint'&&pd!=='None'?' · '+pd:selectedFinish==='Wrap'&&wd!=='None'?' · '+wd:'');$('previewBoxType').textContent=ported?'PORTED · '+style:'SEALED · no port';
-}['width','length','depth','material','type','portStyle','wrapType','rawMaterial','customPaintName','customWrapName'].forEach(id=>{const el=$(id);if(el)el.addEventListener('input',update3DPreview);if(el)el.addEventListener('change',update3DPreview);});
-document.querySelectorAll('#paintColors .color-choice').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
-document.querySelectorAll('#wrapColors .color-choice').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
-document.querySelectorAll('.finish-toggle').forEach(b=>b.addEventListener('click',()=>setTimeout(update3DPreview,0)));
-
-function estimateBoxWeight(){
- const w=Number($('width').value),h=Number($('length').value),d=Number($('depth').value),t=.75;
- const density={'MDF (Suggested)':46.8,'Birch':42.4,'Plywood':32}[$('material').value]||46.8;
- const innerW=Math.max(0,w-2*t),innerH=Math.max(0,h-2*t),innerD=Math.max(0,d-2*t);
- const woodVolume=Math.max(0,(w*h*d-innerW*innerH*innerD)/1728);
- const factor=$('type').value==='Ported'?1.18:1.08;
- return Math.max(1,woodVolume*density*factor+1.5);
-}
-function updateWeight(){const weight=estimateBoxWeight();$('weightEstimate').innerHTML='<strong>Estimated material weight: '+weight.toFixed(1)+' lb</strong><br>Estimate assumes ¾-inch panels and the selected maximum dimensions. Includes an allowance for internal panels and assembly; actual weight can vary.';return weight}
-function updateTuning(){const ported=$('type').value==='Ported';$('tuningField').classList.toggle('hidden',!ported);$('tuning').required=ported;updateWeight()}
-
-$('type').addEventListener('change',updateTuning);
-['material','width','length','depth'].forEach(id=>$(id).addEventListener('change',updateWeight));
-updateTuning();
-setTimeout(updateWeight,0);
-window.addEventListener('load',updateWeight,{once:true});
-update3DPreview();
-function capture3DPreviewImage(){
- try{
-  if(!box3DRenderer||!box3DRenderer.domElement)return '';
-  box3DControls&&box3DControls.update();
-  box3DRenderer.render(box3DScene,box3DCamera);
-  const source=box3DRenderer.domElement;
-  const target=document.createElement('canvas');target.width=420;target.height=270;
-  const ctx=target.getContext('2d');if(!ctx)return '';
-  ctx.fillStyle='#f7f8fa';ctx.fillRect(0,0,target.width,target.height);
-  const scale=Math.min(target.width/source.width,target.height/source.height);
-  const w=Math.round(source.width*scale),h=Math.round(source.height*scale);
-  ctx.drawImage(source,Math.round((target.width-w)/2),Math.round((target.height-h)/2),w,h);
-  return target.toDataURL('image/jpeg',.55);
- }catch(err){return ''}
-}
-function addCustomBoxToCart(e){ if(e)e.preventDefault();
- const weight=updateWeight();
- const config={material:$('material').value,width:Number($('width').value),height:Number($('length').value),depth:Number($('depth').value),type:$('type').value,portStyle:$('type').value==='Ported'?$('portStyle').value:'',finish:selectedFinish,paintColor:selectedFinish==='Paint'?selectedPaintColor:'Not applicable',customPaintColor:selectedFinish==='Paint'&&selectedPaintColor==='Custom Color'?$('customPaintName').value.trim():'',paintType:'',paintDesign:selectedFinish==='Paint'?$('paintDesign').value:'',paintNotes:selectedFinish==='Paint'?$('paintNotes').value.trim():'',wrapType:selectedFinish==='Wrap'?$('wrapType').value:'',wrapColor:selectedFinish==='Wrap'?selectedWrapColor:'',customWrapColor:selectedFinish==='Wrap'&&selectedWrapColor==='Custom Color'?$('customWrapName').value.trim():'',wrapDesign:selectedFinish==='Wrap'?$('wrapDesign').value:'',wrapNotes:selectedFinish==='Wrap'?$('wrapNotes').value.trim():'',rawMaterial:selectedFinish==='Raw'?$('rawMaterial').value:'',model:$('model').value.trim(),size:$('size').value,quantity:Number($('quantity').value),tuning:$('type').value==='Ported'?Number($('tuning').value):null,weightLb:Number(weight.toFixed(1))};
- const details='Custom subwoofer enclosure — '+config.type+' — '+config.quantity+' × '+config.size+' in ('+config.material+')';
- const previewImage=capture3DPreviewImage();const item={name:details,category:'enclosure',price:null,qty:1,weightLb:config.weightLb,configuration:config,previewImage:previewImage};
- try{const cart=JSON.parse(localStorage.getItem(CART_KEY)||'[]');const signature=JSON.stringify(config);const index=cart.findIndex(i=>i.category==='enclosure'&&i.configuration&&JSON.stringify(i.configuration)===signature);if(index>=0){cart[index].qty=(Number(cart[index].qty)||1)+1;if(previewImage)cart[index].previewImage=previewImage;}else cart.push(item);const serialized=JSON.stringify(cart);localStorage.setItem(CART_KEY,serialized);localStorage.setItem('enclosureLabCustomBoxConfig',JSON.stringify(config));if(localStorage.getItem(CART_KEY)!==serialized)throw new Error('Cart could not be verified in browser storage');}
- catch(err){try{const safeItem={name:details,category:'enclosure',price:null,qty:1,weightLb:config.weightLb,configuration:config};const fallbackCart=JSON.parse(localStorage.getItem(CART_KEY)||'[]');fallbackCart.push(safeItem);localStorage.setItem(CART_KEY,JSON.stringify(fallbackCart));}catch(storageError){$('summary').textContent='Your browser could not save this box to the cart. Please allow website storage and try again.';return}}
- const d=[['Material',config.material],['Maximum dimensions',config.width+' W × '+config.height+' H × '+config.depth+' D inches'],['Box type',config.type],['Port style',config.type==='Ported'?config.portStyle:'Not applicable'],['Finish',config.finish],['Paint color',config.finish==='Paint'?config.paintColor+(config.customPaintColor?' — '+config.customPaintColor:''):'Not applicable'],['Paint design',config.paintDesign||'Not applicable'],['Paint design notes',config.paintNotes||'None provided'],['Wrap type',config.wrapType||'Not applicable'],['Wrap color',config.finish==='Wrap'?config.wrapColor+(config.customWrapColor?' — '+config.customWrapColor:''):'Not applicable'],['Wrap design',config.wrapDesign||'Not applicable'],['Wrap design notes',config.wrapNotes||'None provided'],['Raw material',config.rawMaterial||'Not applicable'],['Subwoofer model',config.model],['Subwoofer size',config.size+' inches'],['Quantity',config.quantity],['Target tuning',config.tuning===null?'Not applicable (sealed)':config.tuning+' Hz'],['Estimated material weight',config.weightLb+' lb']];
- $('summary').textContent='CUSTOM BOX ADDED TO CART\n'+d.map(x=>x[0]+': '+x[1]).join('\n')+'\n\nAdded to cart. The custom enclosure price will be confirmed after review; estimated weight is used for preliminary shipping.';
- try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'el-add-custom-box',configuration:config,item:item},location.origin);}}catch(ignore){}
- // Keep the confirmation in place without jumping the embedded page to it.
- if(window.parent&&window.parent!==window){window.parent.postMessage({type:'el-open-checkout'},location.origin);setTimeout(()=>{if(!window.__elCheckoutOpened){try{window.top.location.href=new URL('checkout.html',window.location.href).href;}catch(err){window.location.href=new URL('checkout.html',window.location.href).href;}}},500);}else{window.location.href=new URL('checkout.html',window.location.href).href;}
-}
-const customBoxForm=document.getElementById('customBoxForm');
-const addCustomBoxButton=customBoxForm?.querySelector('button[type="submit"]');
-if(customBoxForm)customBoxForm.addEventListener('submit',addCustomBoxToCart);
-if(addCustomBoxButton)addCustomBoxButton.addEventListener('click',event=>{event.preventDefault();addCustomBoxToCart(event);});
-</script>
-<script>
 (function(){
- function bindPortStyleCards(){
-  document.querySelectorAll('.port-style-choice[data-port-style]').forEach(function(button){
-   if(button.dataset.portStyleBound==='true')return;
-   button.dataset.portStyleBound='true';
-   button.addEventListener('click',function(event){
-    event.preventDefault();event.stopPropagation();
-    var value=button.getAttribute('data-port-style');
-    var field=document.getElementById('portStyle');
-    if(!field||!value)return;
-    field.value=value;
-    document.querySelectorAll('.port-style-choice').forEach(function(choice){
-     var active=choice===button;
-     choice.classList.toggle('selected',active);
-     choice.setAttribute('aria-pressed',String(active));
-    });
-    field.dispatchEvent(new Event('change',{bubbles:true}));
-    if(typeof window.update3DPreview==='function')window.update3DPreview();
-   });
-  });
- }
- function bindBoxTypeCards(){
-  document.querySelectorAll('.box-type-toggle[data-box-type]').forEach(function(button){
-   if(button.dataset.boxTypeBound==='true')return;
-   button.dataset.boxTypeBound='true';
-   button.addEventListener('click',function(event){
-    event.preventDefault();event.stopPropagation();
-    var value=button.getAttribute('data-box-type');
-    if(value!=='Ported'&&value!=='Sealed')return;
-    var field=document.getElementById('type');
-    if(field){field.value=value;field.dispatchEvent(new Event('change',{bubbles:true}));}
-    document.querySelectorAll('.box-type-card').forEach(function(card){card.classList.toggle('selected',card.id===(value==='Ported'?'portedTypeCard':'sealedTypeCard'));});
-    document.querySelectorAll('.box-type-toggle').forEach(function(b){b.setAttribute('aria-expanded',String(b===button));});
-    var p=document.getElementById('portedTypeDetails'),s=document.getElementById('sealedTypeDetails');
-    if(p)p.classList.toggle('hidden',value!=='Ported');
-    if(s)s.classList.toggle('hidden',value!=='Sealed');
-    var tf=document.getElementById('tuningField'),t=document.getElementById('tuning');
-    if(tf)tf.classList.toggle('hidden',value!=='Ported');
-    if(t)t.required=value==='Ported';
-    if(typeof window.updateTuning==='function')window.updateTuning();
-    if(typeof window.update3DPreview==='function')window.update3DPreview();
-   });
-  });
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){bindBoxTypeCards();bindPortStyleCards();});else{bindBoxTypeCards();bindPortStyleCards();}
+"use strict";
+const $=id=>document.getElementById(id);
+const cartKey="enclosureLabCart";
+const selects=[["width",8,60],["height",8,60],["depth",8,48]];
+selects.forEach(([id,min,max])=>{for(let n=min;n<=max;n++){const o=document.createElement("option");o.value=String(n);o.textContent=n+" in";$(id).append(o)}});
+$("width").value="36";$("height").value="18";$("depth").value="16";
+for(let n=25;n<=45;n+=.5){const o=document.createElement("option");o.value=String(n);o.textContent=n.toFixed(1)+" Hz";$("tuning").append(o)}
+$("tuning").value="32";
+let scene,camera,renderer,controls,boxGroup,boxMaterial;
+function finishColor(){const finish=document.querySelector('input[name="finish"]:checked').value;if(finish==="Paint"){const c=$("paintColor").value;return c==="Custom Color"?"#9ca3af":({"Black":"#202124","White":"#f4f4f2","Red":"#b51f2a","Blue":"#1769aa","Dark Blue":"#102f59","Green":"#286344","Yellow":"#e5c43b","Orange":"#df762c","Purple":"#68428d","Pink":"#d88aa7","Gray":"#777d83","Silver":"#aeb6bd","Gold":"#b38a32","Bronze":"#8b5b37"}[c]||"#202124")}if(finish==="Wrap"){const c=$("wrapColor").value;return({"Black":"#242424","Gray":"#777d83","White":"#e9e9e9","Red":"#a9252e","Blue":"#1e4f86","Custom Color":"#8c9299"}[c]||"#242424")}return "#b58c5a"}
+function init3D(){const canvas=$("modelCanvas");if(!window.THREE||!canvas)return;scene=new THREE.Scene();scene.background=new THREE.Color("#f5f7f9");camera=new THREE.PerspectiveCamera(38,1,.1,1000);camera.position.set(48,38,48);renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.outputEncoding=THREE.sRGBEncoding;controls=new THREE.OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.08;scene.add(new THREE.HemisphereLight(0xffffff,0x77808a,1.4));const light=new THREE.DirectionalLight(0xffffff,1.2);light.position.set(30,50,40);scene.add(light);boxGroup=new THREE.Group();scene.add(boxGroup);const resize=()=>{const w=canvas.clientWidth||600,h=canvas.clientHeight||400;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()};new ResizeObserver(resize).observe(canvas.parentElement);resize();(function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)})();updateModel()}
+function updateModel(){if(!boxGroup)return;while(boxGroup.children.length){const obj=boxGroup.children.pop();obj.traverse(n=>{if(n.geometry)n.geometry.dispose();if(n.material)n.material.dispose()})}
+const w=Number($("width").value),h=Number($("height").value),d=Number($("depth").value);const scale=34/Math.max(w,h,d);const W=w*scale,H=h*scale,D=d*scale;const finish=document.querySelector('input[name="finish"]:checked').value;const color=finishColor();const mat=new THREE.MeshStandardMaterial({color,roughness:finish==="Wrap"?.88:.48,metalness:finish==="Paint"&&$("paintDesign").value==="Metallic / flake"?.45:0});
+const body=new THREE.Mesh(new THREE.BoxGeometry(W,H,D),mat);boxGroup.add(body);
+const edge=new THREE.LineSegments(new THREE.EdgesGeometry(body.geometry),new THREE.LineBasicMaterial({color:0x333a42,transparent:true,opacity:.5}));boxGroup.add(edge);
+const type=document.querySelector('input[name="boxType"]:checked').value;const style=$("portStyle").value;
+if(type==="Ported"){const dark=new THREE.MeshStandardMaterial({color:0x15191e,roughness:1});const side=style.includes("side");const hole=style.includes("Hole");if(side){const port=new THREE.Mesh(new THREE.BoxGeometry(.16*scale,Math.min(H*.62,9*scale),Math.min(D*.48,7*scale)),dark);port.position.set(W/2+.01,0,0);boxGroup.add(port)}else if(hole){const port=new THREE.Mesh(new THREE.CylinderGeometry(2.3*scale,2.3*scale,.16*scale,32),dark);port.rotation.z=Math.PI/2;port.position.set(0,-H*.08,D/2+.01);boxGroup.add(port)}else{const port=new THREE.Mesh(new THREE.BoxGeometry(Math.min(W*.38,10*scale),Math.min(H*.62,9*scale),.16*scale),dark);port.position.set(-W*.25,0,D/2+.01);boxGroup.add(port)}}
+boxGroup.rotation.y=-.12;camera.position.set(Math.max(W,H,D)*1.55,Math.max(W,H,D)*1.2,Math.max(W,H,D)*1.65);controls.target.set(0,0,0);controls.update();$("specDimensions").textContent=w+" × "+h+" × "+d+" in";$("specType").textContent=type;$("specMaterial").textContent=$("material").value;$("specFinish").textContent=finish+(finish==="Paint"?" · "+$("paintColor").value:finish==="Wrap"?" · "+$("wrapType").value+" / "+$("wrapColor").value:"")}
+function calcWeight(){const w=Number($("width").value),h=Number($("height").value),d=Number($("depth").value);const surface=(w*h*2+w*d*2+h*d*2)/144;const density=$("material").value==="MDF (Suggested)"?2.3:$("material").value==="Birch"?1.9:1.8;const estimate=surface*.75*density*1.22;return Math.round(estimate*10)/10}
+function config(){const type=document.querySelector('input[name="boxType"]:checked').value,finish=document.querySelector('input[name="finish"]:checked').value;return{material:$("material").value,width:Number($("width").value),height:Number($("height").value),depth:Number($("depth").value),type,portStyle:type==="Ported"?$("portStyle").value:"",finish,paintColor:finish==="Paint"?$("paintColor").value:"Not applicable",customPaintColor:finish==="Paint"&&$("paintColor").value==="Custom Color"?$("customPaint").value:"",paintDesign:finish==="Paint"?$("paintDesign").value:"",paintNotes:finish==="Paint"?$("paintNotes").value.trim():"",wrapType:finish==="Wrap"?$("wrapType").value:"",wrapColor:finish==="Wrap"?$("wrapColor").value:"",customWrapColor:finish==="Wrap"&&$("wrapColor").value==="Custom Color"?$("customWrap").value:"",wrapNotes:finish==="Wrap"?$("wrapNotes").value.trim():"",rawMaterial:finish==="Raw"?$("rawMaterial").value:"",model:$("model").value.trim(),size:$("size").value,quantity:Number($("quantity").value),tuning:type==="Ported"?Number($("tuning").value):null,weightLb:calcWeight()}}
+function previewImage(){try{renderer.render(scene,camera);const c=document.createElement("canvas");c.width=420;c.height=270;const ctx=c.getContext("2d");ctx.fillStyle="#f5f7f9";ctx.fillRect(0,0,420,270);const src=$("modelCanvas");const scale=Math.min(420/src.width,270/src.height);const w=src.width*scale,h=src.height*scale;ctx.drawImage(src,(420-w)/2,(270-h)/2,w,h);return c.toDataURL("image/jpeg",.58)}catch(e){return""}}
+function update(){const finish=document.querySelector('input[name="finish"]:checked').value,type=document.querySelector('input[name="boxType"]:checked').value;$("portOptions").classList.toggle("hidden",type!=="Ported");$("tuningField").classList.toggle("hidden",type!=="Ported");$("paintOptions").classList.toggle("hidden",finish!=="Paint");$("wrapOptions").classList.toggle("hidden",finish!=="Wrap");$("rawOptions").classList.toggle("hidden",finish!=="Raw");$("customPaintWrap").classList.toggle("hidden",$("paintColor").value!=="Custom Color");$("customWrapWrap").classList.toggle("hidden",$("wrapColor").value!=="Custom Color");$("weight").textContent=calcWeight().toFixed(1)+" lb";updateModel()}
+document.querySelectorAll("input,select,textarea").forEach(el=>el.addEventListener("input",update));
+document.querySelectorAll("input[name=boxType],input[name=finish]").forEach(el=>el.addEventListener("change",update));
+$("boxForm").addEventListener("submit",function(e){e.preventDefault();const status=$("status");if(!$("model").value.trim()){status.textContent="Enter your subwoofer brand and model before adding the box.";status.classList.add("error");$("model").focus();return}const q=config();const details="Custom subwoofer enclosure — "+q.type+" — "+q.quantity+" × "+q.size+" in ("+q.material+")";const item={name:details,category:"enclosure",price:null,qty:1,weightLb:q.weightLb,configuration:q,previewImage:previewImage()};try{const cart=JSON.parse(localStorage.getItem(cartKey)||"[]");if(!Array.isArray(cart))throw new Error("Invalid cart");cart.push(item);localStorage.setItem(cartKey,JSON.stringify(cart));localStorage.setItem("enclosureLabCustomBoxConfig",JSON.stringify(q));if(JSON.parse(localStorage.getItem(cartKey)||"[]").length!==cart.length)throw new Error("Cart verification failed");status.classList.remove("error");status.textContent="Box added. Taking you to checkout…";window.location.href=new URL("checkout.html",location.href).href}catch(err){status.textContent="Your browser could not save this box. Please allow site storage and try again.";status.classList.add("error")}});
+init3D();update();
+function reportHeight(){if(window.parent===window)return;const h=document.documentElement.scrollHeight;window.parent.postMessage({type:"enclosure-designer-height",height:h},location.origin)}
+new ResizeObserver(reportHeight).observe(document.body);window.addEventListener("load",reportHeight);setTimeout(reportHeight,500);
 })();
 </script>
 </body>
