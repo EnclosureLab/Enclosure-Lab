@@ -432,13 +432,28 @@ function addCustomBoxToCart(e){ if(e)e.preventDefault();
  const config={material:$('material').value,width:Number($('width').value),height:Number($('length').value),depth:Number($('depth').value),type:$('type').value,portStyle:$('type').value==='Ported'?$('portStyle').value:'',finish:selectedFinish,paintColor:selectedFinish==='Paint'?selectedPaintColor:'Not applicable',customPaintColor:selectedFinish==='Paint'&&selectedPaintColor==='Custom Color'?$('customPaintName').value.trim():'',paintType:'',paintDesign:selectedFinish==='Paint'?$('paintDesign').value:'',paintNotes:selectedFinish==='Paint'?$('paintNotes').value.trim():'',wrapType:selectedFinish==='Wrap'?$('wrapType').value:'',wrapColor:selectedFinish==='Wrap'?selectedWrapColor:'',customWrapColor:selectedFinish==='Wrap'&&selectedWrapColor==='Custom Color'?$('customWrapName').value.trim():'',wrapDesign:selectedFinish==='Wrap'?$('wrapDesign').value:'',wrapNotes:selectedFinish==='Wrap'?$('wrapNotes').value.trim():'',rawMaterial:selectedFinish==='Raw'?$('rawMaterial').value:'',model:$('model').value.trim(),size:$('size').value,quantity:Number($('quantity').value),tuning:$('type').value==='Ported'?Number($('tuning').value):null,weightLb:Number(weight.toFixed(1))};
  const details='Custom subwoofer enclosure — '+config.type+' — '+config.quantity+' × '+config.size+' in ('+config.material+')';
  const item={name:details,category:'enclosure',price:null,qty:1,weightLb:config.weightLb,configuration:config};
- try{const cart=JSON.parse(localStorage.getItem(CART_KEY)||'[]');const index=cart.findIndex(i=>i.category==='enclosure'&&i.configuration);if(index>=0)cart[index]=item;else cart.push(item);const serialized=JSON.stringify(cart);localStorage.setItem(CART_KEY,serialized);localStorage.setItem('enclosureLabCustomBoxConfig',JSON.stringify(config));if(localStorage.getItem(CART_KEY)!==serialized)throw new Error('Cart could not be verified in browser storage');}
- catch(err){$('summary').textContent='Could not save this configuration in this browser. Please enable site storage and try again.';return}
+ const embedded=new URLSearchParams(location.search).get('embed')==='1';
+ try{
+  if(embedded){
+   if(!window.parent||window.parent===window)throw new Error('Embedded parent page is unavailable');
+   window.parent.postMessage({type:'el-add-custom-box',configuration:config,item:item},location.origin);
+  }else{
+   const cart=JSON.parse(localStorage.getItem(CART_KEY)||'[]');
+   if(!Array.isArray(cart))throw new Error('Cart data is invalid');
+   const signature=JSON.stringify(config);
+   const existing=cart.find(i=>i&&i.category==='enclosure'&&i.configuration&&JSON.stringify(i.configuration)===signature);
+   if(existing)existing.qty=Math.max(1,Number(existing.qty)||1)+1;
+   else cart.push(item);
+   const serialized=JSON.stringify(cart);
+   localStorage.setItem(CART_KEY,serialized);
+   localStorage.setItem('enclosureLabCustomBoxConfig',JSON.stringify(config));
+   if(localStorage.getItem(CART_KEY)!==serialized)throw new Error('Cart could not be verified in browser storage');
+  }
+ }catch(err){$('summary').textContent='Could not send this configuration to the cart. Please enable site storage and try again.';return}
  const d=[['Material',config.material],['Maximum dimensions',config.width+' W × '+config.height+' H × '+config.depth+' D inches'],['Box type',config.type],['Port style',config.type==='Ported'?config.portStyle:'Not applicable'],['Finish',config.finish],['Paint color',config.finish==='Paint'?config.paintColor+(config.customPaintColor?' — '+config.customPaintColor:''):'Not applicable'],['Paint design',config.paintDesign||'Not applicable'],['Paint design notes',config.paintNotes||'None provided'],['Wrap type',config.wrapType||'Not applicable'],['Wrap color',config.finish==='Wrap'?config.wrapColor+(config.customWrapColor?' — '+config.customWrapColor:''):'Not applicable'],['Wrap design',config.wrapDesign||'Not applicable'],['Wrap design notes',config.wrapNotes||'None provided'],['Raw material',config.rawMaterial||'Not applicable'],['Subwoofer model',config.model],['Subwoofer size',config.size+' inches'],['Quantity',config.quantity],['Target tuning',config.tuning===null?'Not applicable (sealed)':config.tuning+' Hz'],['Estimated material weight',config.weightLb+' lb']];
  $('summary').textContent='CUSTOM BOX ADDED TO CART\n'+d.map(x=>x[0]+': '+x[1]).join('\n')+'\n\nAdded to cart. The custom enclosure price will be confirmed after review; estimated weight is used for preliminary shipping.';
- try{if(window.parent&&window.parent!==window){window.parent.postMessage({type:'el-add-custom-box',configuration:config,item:item},location.origin);}}catch(ignore){}
  $('summary').scrollIntoView({behavior:'smooth',block:'nearest'});
- setTimeout(()=>{const target=new URL('checkout.html',window.location.href).href;try{if(window.top&&window.top!==window.self){window.top.location.href=target;}else{window.location.href=target;}}catch(err){window.location.href=target;}},250);
+ if(!embedded)setTimeout(()=>{window.location.href=new URL('checkout.html',window.location.href).href;},250);
 }
 const customBoxForm=document.getElementById('customBoxForm');
 const addCustomBoxButton=customBoxForm?.querySelector('button[type="submit"]');
