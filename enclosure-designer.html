@@ -21,7 +21,7 @@
 <main class="wrap">
 <div class="intro"><div class="eyebrow">CUSTOM ENCLOSURE ORDER</div><h1>Build your box</h1><p>Tell us what you need for your custom subwoofer enclosure. Select your material, maximum available dimensions, box style, and subwoofer details below.</p></div>
 <div class="designer-layout">
-<form class="form-card" id="customBoxForm">
+<form class="form-card" id="customBoxForm" novalidate>
 
 <div class="section-title">1. Material & maximum dimensions</div>
 <div class="fields">
@@ -438,8 +438,18 @@ $('customBoxForm').addEventListener('submit',e=>{
  const d=[['Material',config.material],['Maximum dimensions',config.width+' W × '+config.height+' H × '+config.depth+' D inches'],['Box type',config.type],['Port style',config.type==='Ported'?config.portStyle:'Not applicable'],['Finish',config.finish],['Paint color',config.finish==='Paint'?config.paintColor+(config.customPaintColor?' — '+config.customPaintColor:''):'Not applicable'],['Paint design',config.paintDesign||'Not applicable'],['Paint design notes',config.paintNotes||'None provided'],['Wrap type',config.wrapType||'Not applicable'],['Wrap color',config.finish==='Wrap'?config.wrapColor+(config.customWrapColor?' — '+config.customWrapColor:''):'Not applicable'],['Wrap design',config.wrapDesign||'Not applicable'],['Wrap design notes',config.wrapNotes||'None provided'],['Raw material',config.rawMaterial||'Not applicable'],['Subwoofer model',config.model],['Subwoofer size',config.size+' inches'],['Quantity',config.quantity],['Target tuning',config.tuning===null?'Not applicable (sealed)':config.tuning+' Hz'],['Estimated material weight',config.weightLb+' lb']];
  $('summary').textContent='CUSTOM BOX ADDED TO CART\n'+d.map(x=>x[0]+': '+x[1]).join('\n')+'\n\nAdded to cart. The custom enclosure price will be confirmed after review; estimated weight is used for preliminary shipping.';
  $('summary').scrollIntoView({behavior:'smooth',block:'nearest'});
- setTimeout(()=>{const target=new URL('checkout.html',window.top.location.href).href;if(window.top&&window.top!==window.self){window.top.location.assign(target);}else{window.location.assign(new URL('checkout.html',window.location.href).href);}},150);
+ setTimeout(()=>{const target=new URL('checkout.html',window.location.href).href;try{if(window.top&&window.top!==window.self){window.top.location.assign(target);}else{window.location.assign(target);}}catch(err){window.location.assign(target);}},150);
 });
+// Make the visible Add to Cart button invoke the same save routine even when
+// browser-native validation would otherwise prevent the form submit event.
+const customBoxForm=document.getElementById('customBoxForm');
+const addCustomBoxButton=customBoxForm?.querySelector('button[type="submit"]');
+if(customBoxForm&&addCustomBoxButton){
+ addCustomBoxButton.addEventListener('click',function(event){
+  event.preventDefault();
+  customBoxForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));
+ });
+}
 </script>
 <script>
 (function(){
