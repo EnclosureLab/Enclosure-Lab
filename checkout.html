@@ -15,8 +15,18 @@
 <body>
 <header class="site-header"><div class="container nav">
 <a class="brand" href="index.html#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span>Enclosure Lab</span></a>
-<nav id="mobileNavigation"><a href="index.html#how">How It Works</a><a href="products.html">Products</a><a href="index.html#quote">Request a Quote</a><a href="index.html#about">About</a></nav>
-<a class="nav-cta" href="products.html">Continue Shopping</a><button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileNavigation">☰</button>
+<nav id="mobileNavigation" aria-label="Main navigation">
+<a href="index.html#how">How It Works</a>
+<a href="index.html#top">Home</a>
+<a href="products.html">Products</a>
+<a href="index.html#quote">Request a Quote</a>
+<a href="checkout.html">Checkout / Cart</a>
+<a href="index.html#reviews">Reviews</a>
+<a href="index.html#about">About</a>
+<a href="customer-assistant.html">Customer Assistant</a>
+<a href="manager-quotes.html">Manager Portal</a>
+</nav>
+<button class="mobile-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileNavigation">☰</button>
 </div></header>
 <main>
 <section class="checkout-hero"><div class="container"><p class="eyebrow">ENCLOSURE LAB CHECKOUT</p><h1>Review your <span>order.</span></h1><p>Confirm your items and delivery preference. Payments are not enabled yet.</p></div></section>
@@ -43,7 +53,7 @@
 <script>
 const CART_KEY="enclosureLabCart";
 const STICKER_PRICES={"Large EL Enclosure Lab":5,"Circular EL Logo":4,"Brush Style EL":3,"Rectangle Logo":2,"Small EL Logo":1};
-function getCart(){try{let cart=JSON.parse(localStorage.getItem(CART_KEY)||"[]");if(!Array.isArray(cart))cart=[];if(!cart.some(item=>item&&item.category==="enclosure"&&item.configuration)){const savedConfig=JSON.parse(localStorage.getItem("enclosureLabCustomBoxConfig")||"null");if(savedConfig&&savedConfig.width&&savedConfig.height&&savedConfig.depth){const details="Custom subwoofer enclosure — "+(savedConfig.type||"Box")+" — "+(savedConfig.quantity||1)+" × "+(savedConfig.size||"")+" in ("+(savedConfig.material||"Material")+")";cart=cart.filter(item=>item&&item.category!=="enclosure");cart.push({name:details,category:"enclosure",price:null,qty:1,weightLb:Number(savedConfig.weightLb)||0,configuration:savedConfig});localStorage.setItem(CART_KEY,JSON.stringify(cart));}}const speakerPrices=[[/DS18.*6PRO500MR-4/i,94.95],[/DS18.*PRO-X6\.4M/i,44.95],[/DS18.*PRO-ZT6/i,94.95],[/DS18.*PRO-HY6\.4B/i,114.95]];let changed=false;cart.forEach(item=>{if(item.price==null){const match=speakerPrices.find(([pattern])=>pattern.test(item.name||""));if(match){item.price=match[1];changed=true}}});if(changed)localStorage.setItem(CART_KEY,JSON.stringify(cart));return cart}catch(e){return[]}}
+function getCart(){try{const raw=localStorage.getItem(CART_KEY);let cart=JSON.parse(raw||"[]");if(!Array.isArray(cart))cart=[];if(raw===null){const savedConfig=JSON.parse(localStorage.getItem("enclosureLabCustomBoxConfig")||"null");if(savedConfig&&savedConfig.width&&savedConfig.height&&savedConfig.depth){const details="Custom subwoofer enclosure — "+(savedConfig.type||"Box")+" — "+(savedConfig.quantity||1)+" × "+(savedConfig.size||"")+" in ("+(savedConfig.material||"Material")+")";cart.push({name:details,category:"enclosure",price:null,qty:1,weightLb:Number(savedConfig.weightLb)||0,configuration:savedConfig});localStorage.setItem(CART_KEY,JSON.stringify(cart));}}const speakerPrices=[[/DS18.*6PRO500MR-4/i,94.95],[/DS18.*PRO-X6\.4M/i,44.95],[/DS18.*PRO-ZT6/i,94.95],[/DS18.*PRO-HY6\.4B/i,114.95]];let changed=false;cart.forEach(item=>{if(item.price==null){const match=speakerPrices.find(([pattern])=>pattern.test(item.name||""));if(match){item.price=match[1];changed=true}}});if(changed)localStorage.setItem(CART_KEY,JSON.stringify(cart));return cart}catch(e){return[]}}
 function saveCart(cart){localStorage.setItem(CART_KEY,JSON.stringify(cart))}
 function money(n){return "$"+Number(n).toFixed(2)}
 
@@ -128,7 +138,7 @@ document.getElementById("checkoutForm").addEventListener("submit",e=>{
 document.getElementById("year").textContent=new Date().getFullYear();renderCart();
 </script>
 <script>
-(()=>{const toggle=document.querySelector(".mobile-menu-toggle"),nav=document.querySelector(".site-header .nav nav");if(!toggle||!nav)return;toggle.addEventListener("click",()=>{const open=nav.classList.toggle("mobile-open");nav.style.display=open?"flex":"none";nav.style.visibility=open?"visible":"hidden";nav.style.pointerEvents=open?"auto":"none";toggle.setAttribute("aria-expanded",String(open));toggle.setAttribute("aria-label",open?"Close navigation menu":"Open navigation menu");toggle.textContent=open?"×":"☰"});nav.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{nav.classList.remove("mobile-open");nav.style.display="none";nav.style.visibility="hidden";nav.style.pointerEvents="none";toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-label","Open navigation menu");toggle.textContent="☰"}));})();
+(()=>{const toggle=document.querySelector(".mobile-menu-toggle"),nav=document.getElementById("mobileNavigation");if(!toggle||!nav)return;toggle.addEventListener("click",()=>{const open=nav.classList.toggle("mobile-open");toggle.setAttribute("aria-expanded",String(open));toggle.setAttribute("aria-label",open?"Close navigation menu":"Open navigation menu");toggle.textContent=open?"×":"☰"});nav.querySelectorAll("a").forEach(link=>link.addEventListener("click",()=>{nav.classList.remove("mobile-open");toggle.setAttribute("aria-expanded","false");toggle.setAttribute("aria-label","Open navigation menu");toggle.textContent="☰"}));})();
 </script>
 <style>.mobile-menu-toggle{display:none}@media(max-width:850px){.site-header .nav{position:relative}.mobile-menu-toggle{display:grid;place-items:center;margin-left:10px;width:42px;height:42px;border:1px solid #dce1e6;border-radius:9px;background:#fff;color:#17202b;font-size:24px;line-height:1;cursor:pointer}.site-header .nav nav{display:none;position:absolute;top:100%;left:0;right:0;margin:0;padding:10px;background:#fff;border:1px solid #e3e7eb;border-radius:0 0 12px 12px;box-shadow:0 16px 30px rgba(20,30,40,.12);flex-direction:column;gap:0;z-index:101}.site-header .nav nav.mobile-open{display:flex}.site-header .nav nav a{display:block;padding:13px 12px;border-radius:7px}.site-header .nav nav a:hover{background:#f4f6f8}.nav-cta{margin-left:auto}}</style>
 </body></html>
