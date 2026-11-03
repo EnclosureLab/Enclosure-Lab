@@ -145,11 +145,9 @@
   if(!q||!Number.isFinite(Number(q.width))||!Number.isFinite(Number(q.height))||!Number.isFinite(Number(q.depth))||!q.material||!q.type)return false;
   let cart;
   try{cart=JSON.parse(localStorage.getItem(CART_KEY)||"[]");if(!Array.isArray(cart))cart=[];}catch(error){return false;}
-  const name="Custom subwoofer enclosure — "+q.type+" — "+(q.quantity||1)+" × "+(q.size||"")+" in ("+q.material+")";
   const signature=JSON.stringify(q);
   const existing=cart.find(item=>item&&item.category==="enclosure"&&item.configuration&&JSON.stringify(item.configuration)===signature);
-  if(existing){existing.qty=Math.max(1,Number(existing.qty)||1)+1;}
-  else{cart.push({name,category:"enclosure",price:null,qty:1,weightLb:Number(q.weightLb)||0,configuration:q});}
+  if(!existing)cart.push({name:"Custom subwoofer enclosure — "+q.type+" — "+(q.quantity||1)+" × "+(q.size||"")+" in ("+q.material+")",category:"enclosure",price:null,qty:1,weightLb:Number(q.weightLb)||0,configuration:q});
   try{
    const serialized=JSON.stringify(cart);
    localStorage.setItem(CART_KEY,serialized);
