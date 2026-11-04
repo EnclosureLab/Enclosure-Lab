@@ -1,0 +1,4 @@
+project_id = "lblrmljsjimrrighqbdo"
+
+[functions.enclosure-assistant]
+verify_jwt = false
