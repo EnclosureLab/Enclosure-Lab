@@ -291,6 +291,19 @@ function updateModel(){
  function subwooferFrontPanel(){
   frontFaceWithCutouts(W-2*t,H-2*t,0,0,D/2-t/2,"");
  }
+ function sidePortFace(){
+  const faceWidth=D-2*t,faceHeight=H-2*t;
+  const shape=new THREE.Shape();
+  shape.moveTo(-faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,faceHeight/2);shape.lineTo(-faceWidth/2,faceHeight/2);shape.closePath();
+  const opening=new THREE.Path();
+  if(round) opening.absarc(0,0,portR,0,Math.PI*2,false);
+  else{
+   // Side slot spans the enclosure depth and is centered vertically on the side panel.
+   opening.moveTo(-portW/2,-portH/2);opening.lineTo(-portW/2,portH/2);opening.lineTo(portW/2,portH/2);opening.lineTo(portW/2,-portH/2);opening.closePath();
+  }
+  shape.holes.push(opening);
+  add(new THREE.ShapeGeometry(shape,48),shellMat,W/2-t/2,0,0,0,Math.PI/2,0);
+ }
  function slotTunnelFront(length,centerX=0,openingWidth=portW,openingHeight=portH){
   const wall=Math.min(t*.72,openingWidth*.18,openingHeight*.12);
   const ductZ=D/2-t-length/2;
@@ -308,10 +321,11 @@ function updateModel(){
   panel(W/2-t-length/2,0,-portW/2+wall/2,length,portH-2*wall,wall,shellMat);
   panel(W/2-t-length/2,0,portW/2-wall/2,length,portH-2*wall,wall,shellMat);
  }
- function roundTunnelFront(length){
-  // Open-ended tube wall plus a dark inner surface gives a visible cylindrical tunnel.
-  add(new THREE.CylinderGeometry(portR,portR,length,48,1,true),shellMat,0,0,D/2-t-length/2,Math.PI/2);
-  add(new THREE.CylinderGeometry(portR-t*.62,portR-t*.62,length*.995,48,1,true),darkMat,0,0,D/2-t-length/2,Math.PI/2);
+ function roundTunnelFront(length,centerX=0){
+  // A hollow cylindrical duct centered directly behind the circular front-panel opening.
+  const z=D/2-t-length/2;
+  add(new THREE.CylinderGeometry(portR,portR,length,48,1,true),shellMat,centerX,0,z,Math.PI/2);
+  add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length*.995,48,1,true),darkMat,centerX,0,z,Math.PI/2);
  }
  function roundTunnelSide(length){
   add(new THREE.CylinderGeometry(portR,portR,length,48,1,true),shellMat,W/2-t-length/2,0,0,0,0,Math.PI/2);
@@ -319,12 +333,12 @@ function updateModel(){
  }
  if(type==="Ported"){
   const length=Math.max(t*2,Math.min((side?W:D)*.58,Math.max(7*scale,(side?W:D)*.32)));
-  if(side){subwooferFrontPanel();portFace(D-2*t,H-2*t,W/2-t/2,0,0,Math.PI/2);if(round)roundTunnelSide(length);else slotTunnelSide(length)}
+  if(side){subwooferFrontPanel();sidePortFace();if(round)roundTunnelSide(length);else slotTunnelSide(length)}
   else if(round){
    // Keep the round port separate from the centered subwoofer cutout, toward the left edge.
    const frontRoundPortX=-(W-2*t)/2+portR+t;
    frontFaceWithCutouts(W-2*t,H-2*t,0,0,D/2-t/2,"round",frontRoundPortX,0);
-   roundTunnelFront(length);
+   roundTunnelFront(length,frontRoundPortX);
   }
   else{
    // Front slot is a tall, narrow opening positioned at the right edge of the front panel.
