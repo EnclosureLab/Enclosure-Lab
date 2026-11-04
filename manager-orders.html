@@ -1,7 +1,58 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Enclosure Lab | Private Order Manager</title>
 <style>
-:root{color-scheme:dark;--bg:#101114;--panel:#1b1d22;--line:#33363e;--muted:#a9acb5;--accent:#d9a86c;--text:#f5f3ef}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,sans-serif}.wrap{max-width:1120px;margin:auto;padding:28px 18px 70px}.top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:20px}.eyebrow{color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.16em}h1{margin:4px 0;font-size:clamp(26px,4vw,38px)}h2{font-size:19px;margin:0}.muted,p{color:var(--muted)}button,.back{background:var(--accent);color:#21180f;border:0;border-radius:9px;padding:11px 15px;font-weight:800;cursor:pointer;text-decoration:none}.secondary{background:transparent;color:var(--text);border:1px solid var(--line)}.panel,.order{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:18px}.login{max-width:460px}.field{display:grid;gap:6px;margin:14px 0}.field input{width:100%;padding:12px;border-radius:8px;border:1px solid #454852;background:#101114;color:white}.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.status{color:var(--muted);min-height:24px}.hidden{display:none!important}.count{display:inline-block;border:1px solid var(--line);border-radius:20px;padding:5px 11px;color:var(--accent);font-size:12px}.orders{display:grid;grid-template-columns:1fr;gap:14px}.order-head{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;flex-wrap:wrap}.order-id{font-size:11px;color:var(--accent);letter-spacing:.1em;font-weight:800}.order h2{margin:3px 0}.section{border-top:1px solid var(--line);margin-top:17px;padding-top:13px}.section h3{font-size:11px;letter-spacing:.13em;color:var(--accent);margin:0 0 8px}.details{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 18px}.detail{margin:0;overflow-wrap:anywhere}.detail b{color:#fff}.item{padding:12px;border:1px solid var(--line);border-radius:10px;margin:8px 0}.item-title{font-weight:800}.config{white-space:pre-wrap;overflow-wrap:anywhere;color:#c6c8ce;font:12px/1.55 ui-monospace,monospace;margin:8px 0 0}.complete{display:flex;align-items:center;gap:9px;border:1px solid #6e593f;border-radius:9px;padding:10px 13px;color:var(--text);font-weight:800;cursor:pointer}.complete input{width:19px;height:19px;accent-color:#d9a86c}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 10px}.tabs button{background:transparent;color:var(--text);border:1px solid var(--line)}.tabs button.active{background:var(--accent);color:#21180f;border-color:var(--accent)}.manage-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.manage-grid label{display:grid;gap:6px;color:var(--muted);font-size:12px;font-weight:700}.manage-grid select,.manage-grid input,.manage-grid textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #454852;background:#101114;color:white;font:inherit}.manage-grid textarea{min-height:82px;resize:vertical}.order-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.order-actions button{padding:9px 12px}.fulfilled-label{color:#9fd6a9;font-weight:800}.tabs button:focus-visible,.order-actions button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.empty{padding:35px;text-align:center;color:var(--muted)}.money{font-variant-numeric:tabular-nums}@media(max-width:560px){.wrap{padding:18px 12px 50px}.panel,.order{padding:15px}.order-head{display:grid}.complete{width:100%}}
+:root{color-scheme:light;--bg:#f5f7f9;--panel:#fff;--line:#e0e5e9;--muted:#687480;--accent:#17202b;--text:#17202b;--soft:#f7f9fb;--bluegray:#7a8795}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,sans-serif}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1160px;margin:auto;padding:34px 4% 70px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;border-bottom:1px solid #e7eaed;padding-bottom:24px}
+.eyebrow{color:#66717e;font-size:12px;font-weight:800;letter-spacing:.15em}
+h1{margin:5px 0;font-size:clamp(34px,4vw,48px);line-height:1.08;letter-spacing:-.05em}
+h2{font-size:19px;margin:0;color:#17202b}
+p{color:var(--muted)}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+button,.back{background:#17202b;color:#fff;border:1px solid #17202b;border-radius:9px;padding:11px 16px;font:700 14px Inter,system-ui,sans-serif;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+button:hover,.back:hover{background:#293542}
+.secondary{background:#fff;color:#25313e;border:1px solid #dce1e6}
+.secondary:hover{background:#f4f6f8}
+.panel,.order{background:#fff;border:1px solid #e0e5e9;border-radius:16px;padding:24px;margin-top:20px;box-shadow:0 8px 24px rgba(27,38,49,.045)}
+.login{max-width:480px}
+.field{display:grid;gap:7px;margin:16px 0;color:#4d5965;font-size:13px;font-weight:700}
+.field input{width:100%;padding:12px 13px;border-radius:8px;border:1px solid #dce1e5;background:#fff;color:#17202b;font:500 14px Inter,system-ui,sans-serif}
+.field input:focus,.manage-grid select:focus,.manage-grid input:focus,.manage-grid textarea:focus{outline:0;border-color:#8794a0;box-shadow:0 0 0 3px rgba(85,101,116,.09)}
+.status{color:#536170;min-height:24px}
+.hidden{display:none!important}
+.count{display:inline-block;border:1px solid #dce1e6;border-radius:20px;padding:6px 12px;color:#536170;background:#fff;font-size:12px;font-weight:700}
+.orders{display:grid;grid-template-columns:1fr;gap:14px}
+.order-head{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;flex-wrap:wrap}
+.order-id{font-size:11px;color:#7a8795;letter-spacing:.1em;font-weight:800}
+.order h2{margin:4px 0}
+.muted{color:#687480}
+.section{border-top:1px solid #e7eaed;margin-top:19px;padding-top:15px}
+.section h3{font-size:11px;letter-spacing:.14em;color:#66717e;margin:0 0 10px;font-weight:800}
+.details{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 18px}
+.detail{margin:0;overflow-wrap:anywhere;color:#596674}
+.detail b{color:#17202b}
+.item{padding:14px;border:1px solid #e5e9ed;border-radius:10px;margin:9px 0;background:#fbfcfd}
+.item-title{font-weight:800;color:#17202b}
+.config{white-space:pre-wrap;overflow-wrap:anywhere;color:#536170;background:#f5f7f9;border-radius:8px;padding:12px;font:12px/1.55 ui-monospace,monospace;margin:8px 0 0}
+.complete{display:flex;align-items:center;gap:9px;border:1px solid #dce1e6;border-radius:9px;padding:10px 13px;color:#17202b;font-weight:800;cursor:pointer}
+.complete input{width:19px;height:19px;accent-color:#17202b}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 12px}
+.tabs button{background:#fff;color:#536170;border:1px solid #dce1e6}
+.tabs button.active{background:#17202b;color:#fff;border-color:#17202b}
+.manage-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.manage-grid label{display:grid;gap:6px;color:#596674;font-size:12px;font-weight:700}
+.manage-grid select,.manage-grid input,.manage-grid textarea{width:100%;padding:11px 12px;border-radius:8px;border:1px solid #dce1e5;background:#fff;color:#17202b;font:500 14px Inter,system-ui,sans-serif}
+.manage-grid textarea{min-height:82px;resize:vertical}
+.order-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+.order-actions button{padding:10px 13px}
+.fulfilled-label{color:#2e6639;font-weight:800;background:#eef7f0;border-radius:20px;padding:6px 11px}
+.tabs button:focus-visible,.order-actions button:focus-visible,button:focus-visible,.back:focus-visible{outline:2px solid #8794a0;outline-offset:2px}
+.empty{padding:38px;text-align:center;color:#687480;background:#fff;border:1px dashed #cbd3da;border-radius:14px}
+.money{font-variant-numeric:tabular-nums}
+@media(max-width:560px){.wrap{padding:22px 4% 50px}.panel,.order{padding:17px}.order-head{display:grid}.toolbar{width:100%}.toolbar>*{flex:1}.top{align-items:flex-start}}
 </style></head><body><main class="wrap">
 <header class="top"><div><div class="eyebrow">ENCLOSURE LAB · OWNER ONLY</div><h1>Order Manager</h1><p>Private order dashboard · Manage status, fulfillment, notes, and tracking.</p></div><div class="toolbar"><a class="back" href="https://enclosurelab.github.io/Enclosure-Lab/">← Main Website</a><button class="secondary" id="refresh" type="button">Refresh</button><button class="secondary hidden" id="signout" type="button">Sign out</button></div></header>
 <section class="panel login" id="login"><h2>Owner sign in</h2><p>Sign in with the approved owner account.</p><form id="loginForm"><label class="field">Email<input id="email" type="email" autocomplete="username" required value="lawsonhughes53@gmail.com"></label><label class="field">Password<input id="password" type="password" autocomplete="current-password" required></label><button type="submit">Sign in</button></form></section>
