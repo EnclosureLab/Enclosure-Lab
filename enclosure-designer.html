@@ -178,7 +178,7 @@ function setupWheel(id){
  slider.value=Math.max(10,Math.round(hsv.v*100));apply();
 }
 function finishColor(){const finish=document.querySelector('input[name="finish"]:checked').value;if(finish==="Paint"){return $("paintColor").value}if(finish==="Wrap"){return $("wrapColor").value}return "#b58c5a"}
-function init3D(){const canvas=$("modelCanvas");if(!window.THREE||!canvas)return;scene=new THREE.Scene();scene.background=new THREE.Color("#ffffff");camera=new THREE.PerspectiveCamera(38,1,.1,1000);camera.position.set(48,38,48);renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.outputEncoding=THREE.sRGBEncoding;controls=new THREE.OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.08;scene.add(new THREE.HemisphereLight(0xffffff,0x77808a,1.4));const light=new THREE.DirectionalLight(0xffffff,1.2);light.position.set(30,50,40);scene.add(light);boxGroup=new THREE.Group();scene.add(boxGroup);const resize=()=>{const w=canvas.clientWidth||600,h=canvas.clientHeight||400;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()};new ResizeObserver(resize).observe(canvas.parentElement);resize();(function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)})();updateModel()}
+function init3D(){const canvas=$("modelCanvas");if(!window.THREE||!canvas)return;scene=new THREE.Scene();scene.background=new THREE.Color("#ffffff");camera=new THREE.PerspectiveCamera(34,1,.1,1000);camera.position.set(48,38,48);renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;controls=new THREE.OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.075;scene.add(new THREE.HemisphereLight(0xffffff,0x8c8174,1.25));const key=new THREE.DirectionalLight(0xfff5e8,2.15);key.position.set(-32,48,42);key.castShadow=true;key.shadow.mapSize.set(2048,2048);key.shadow.camera.near=1;key.shadow.camera.far=180;key.shadow.bias=-.00025;key.shadow.radius=5;scene.add(key);const fill=new THREE.DirectionalLight(0xffffff,.85);fill.position.set(38,22,12);scene.add(fill);const rim=new THREE.DirectionalLight(0xffffff,1.05);rim.position.set(-12,28,-42);scene.add(rim);boxGroup=new THREE.Group();scene.add(boxGroup);const floor=new THREE.Mesh(new THREE.PlaneGeometry(300,300),new THREE.ShadowMaterial({color:0x000000,opacity:.19}));floor.rotation.x=-Math.PI/2;floor.position.y=-30;floor.receiveShadow=true;scene.add(floor);const resize=()=>{const w=canvas.clientWidth||600,h=canvas.clientHeight||400;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()};new ResizeObserver(resize).observe(canvas.parentElement);resize();(function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)})();updateModel()}
 function designOptionMarkup(){
  const type=$("paintDesign").value,wrap=$("paintDesignOptions");let html="";
  const color=(id,label,value)=>'<div class="field"><label for="'+id+'">'+label+'</label><div class="design-color"><input type="color" id="'+id+'" value="'+value+'"><span class="design-help">Choose a second color</span></div></div>';
@@ -203,9 +203,11 @@ function createFinishMaterial(baseColor,finish){
  const ctx=canvas.getContext("2d");ctx.fillStyle=baseColor;ctx.fillRect(0,0,512,512);
  let textured=false;
  if(finish==="Raw"){
-  // Fine, low-contrast MDF fiber texture for the unfinished default surface.
+  // Warm, fine MDF fiber with faint directional sanding/grain and natural tonal variation.
   textured=true;let seed=241;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
-  for(let i=0;i<22000;i++){const light=rand()>.52;ctx.fillStyle=light?"rgba(255,244,222,.10)":"rgba(92,62,35,.075)";ctx.fillRect(rand()*512,rand()*512,.5+rand()*1.4,.5+rand()*2.2)}
+  for(let i=0;i<36000;i++){const light=rand()>.51;ctx.fillStyle=light?"rgba(255,247,230,.13)":"rgba(82,55,31,.105)";const x=rand()*512,y=rand()*512;ctx.fillRect(x,y,.45+rand()*1.1,.7+rand()*3.8)}
+  for(let i=0;i<180;i++){const y=rand()*512;ctx.strokeStyle=rand()>.5?"rgba(255,249,235,.10)":"rgba(95,67,43,.075)";ctx.lineWidth=.35+rand()*.65;ctx.beginPath();ctx.moveTo(0,y);ctx.bezierCurveTo(130,y+(rand()-.5)*5,360,y+(rand()-.5)*5,512,y+(rand()-.5)*4);ctx.stroke()}
+  const wash=ctx.createLinearGradient(0,0,512,512);wash.addColorStop(0,"rgba(255,255,255,.075)");wash.addColorStop(.52,"rgba(255,255,255,0)");wash.addColorStop(1,"rgba(70,43,22,.085)");ctx.fillStyle=wash;ctx.fillRect(0,0,512,512);
  }
  if(finish==="Wrap"){
   textured=true;
@@ -261,8 +263,8 @@ function updateModel(){
  const w=Number($("width").value),h=Number($("height").value),d=Number($("depth").value);
  const scale=34/Math.max(w,h,d),W=w*scale,H=h*scale,D=d*scale,t=Math.max(.42,scale*.75);
  const finish=document.querySelector('input[name="finish"]:checked').value,color=finishColor(),type=document.querySelector('input[name="boxType"]:checked').value,style=document.querySelector('input[name="portStyle"]:checked').value,side=style.includes("side"),round=style.includes("Hole");
- const shellMat=createFinishMaterial(color,finish),innerMat=new THREE.MeshStandardMaterial({color:0x262a30,roughness:.95}),darkMat=new THREE.MeshStandardMaterial({color:0x080b10,roughness:1,side:THREE.DoubleSide}),edgeMat=new THREE.LineBasicMaterial({color:0x303640,transparent:true,opacity:.48});
- const add=(geo,mat,x,y,z,rx=0,ry=0,rz=0)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);boxGroup.add(m);return m};
+ const shellMat=createFinishMaterial(color,finish),innerMat=new THREE.MeshStandardMaterial({color:0x262a30,roughness:.98}),darkMat=new THREE.MeshStandardMaterial({color:0x080b10,roughness:1,side:THREE.DoubleSide}),edgeMat=new THREE.LineBasicMaterial({color:0x765f49,transparent:true,opacity:.24});
+ const add=(geo,mat,x,y,z,rx=0,ry=0,rz=0)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);m.castShadow=true;m.receiveShadow=true;boxGroup.add(m);return m};
  const panel=(x,y,z,sx,sy,sz,mat=shellMat)=>add(new THREE.BoxGeometry(sx,sy,sz),mat,x,y,z);
  // Five cabinet panels create a closed, hollow enclosure; the selected port face is cut around its opening.
  panel(0,H/2-t/2,0,W,t,D);
