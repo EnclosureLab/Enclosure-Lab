@@ -116,13 +116,33 @@ function updateDelivery(){const shipping=delivery.value==="shipping";addressFiel
 delivery.addEventListener("change",updateDelivery);
 ["zip","state"].forEach(id=>document.getElementById(id).addEventListener("input",renderCart));
 updateDelivery();
-document.getElementById("checkoutForm").addEventListener("submit",e=>{
- e.preventDefault();const cart=getCart();if(!cart.length)return;
- const f=new FormData(e.currentTarget);const subtotal=cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);const discount=getAppliedDiscount(subtotal),discountAmount=discount.amount;const taxable=Math.max(0,subtotal-discountAmount);const tax=Math.round(taxable*0.0925*100)/100;const shipping=estimateShipping(cart,f.get("zip"),f.get("delivery"));const total=taxable+tax+(shipping||0);
- const items=cart.map(i=>"- "+i.name+" x "+i.qty+" — "+(i.price==null?"price to be confirmed":money(i.price)+" each")+(i.category==="enclosure"&&i.weightLb?"\n  Estimated material weight: "+i.weightLb+" lb\n  Configuration: "+JSON.stringify(i.configuration):"")).join("\n");
- const body=["Enclosure Lab order request","", "Name: "+f.get("name"),"Email: "+f.get("email"),"Phone: "+(f.get("phone")||"Not provided"),"Preferred payment method: "+f.get("paymentMethod"),"Fulfillment: "+(f.get("delivery")==="pickup"?"Local pickup":"Shipping") ,...(f.get("delivery")==="shipping"?["Address: "+f.get("address"),"City: "+f.get("city"),"State: "+f.get("state"),"ZIP: "+f.get("zip")]:[]),"","Items:",items,"","Subtotal: "+money(subtotal),"Discount: "+(discountAmount>0?discount.code+" (-"+money(discountAmount)+")":"None"),"Estimated tax (9.25%): "+money(tax),"Estimated shipping: "+(shipping===null?"ZIP code required":money(shipping)),"Estimated total: "+money(total),"Shipping: estimated; final cost may vary","Notes: "+(f.get("notes")||"None"),"","No payment has been collected. Please confirm pricing and next steps."].join("\n");
- document.getElementById("formStatus").textContent="Your email app will open with the order request. Review it and press Send to submit it.";
- window.location.href="mailto:lawsonhughes53@gmail.com?subject="+encodeURIComponent("Enclosure Lab order request")+"&body="+encodeURIComponent(body);
+const orderDb=window.supabase?.createClient("https://lblrmljsjimrrighqbdo.supabase.co","sb_publishable_s2YnH1DT5diDmM781NXxqw_gIJVxPRx");
+document.getElementById("checkoutForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const form=e.currentTarget,button=document.getElementById("submitOrder"),status=document.getElementById("formStatus"),cart=getCart();
+ if(!cart.length){status.textContent="Your cart is empty.";return;}
+ if(!form.reportValidity())return;
+ if(!orderDb){status.textContent="Order submission is temporarily unavailable. Please try again later.";return;}
+ const f=new FormData(form),subtotal=cart.reduce((sum,item)=>sum+(Number(item.price)||0)*(Number(item.qty)||1),0);
+ const discount=getAppliedDiscount(subtotal),discountAmount=discount.amount,taxable=Math.max(0,subtotal-discountAmount),tax=Math.round(taxable*.0925*100)/100;
+ const shipping=estimateShipping(cart,f.get("zip"),f.get("delivery"));
+ if(shipping===null){status.textContent="Please enter a valid ZIP code to calculate shipping.";document.getElementById("zip").focus();return;}
+ const total=Math.round((taxable+tax+shipping)*100)/100;
+ const items=cart.map(item=>({name:String(item.name||"Item"),category:String(item.category||"product"),quantity:Math.max(1,Number(item.qty)||1),unit_price:item.price==null?null:Number(item.price),line_total:item.price==null?null:Math.round(Number(item.price)*(Number(item.qty)||1)*100)/100,estimated_weight_lb:Number(item.weightLb||item.configuration?.weightLb)||null,configuration:item.configuration||null}));
+ const payload={
+  customer_name:String(f.get("name")||"").trim(),customer_email:String(f.get("email")||"").trim(),customer_phone:String(f.get("phone")||"").trim()||null,
+  fulfillment:String(f.get("delivery")),shipping_address:f.get("delivery")==="shipping"?{street:f.get("address"),city:f.get("city"),state:f.get("state"),zip:f.get("zip")}:null,
+  payment_method:String(f.get("paymentMethod")),items,subtotal,discount_code:discountAmount>0?discount.code:null,discount_amount:discountAmount,
+  estimated_tax:tax,estimated_shipping:shipping,estimated_total:total,customer_notes:String(f.get("notes")||"").trim()||null
+ };
+ button.disabled=true;button.textContent="Submitting order…";status.textContent="Securely saving your order…";
+ const {error}=await orderDb.from("enclosure_orders").insert(payload);
+ if(error){console.error("Order submission failed:",error);status.textContent="We couldn't save your order. Please try again. If the problem continues, contact Enclosure Lab.";button.disabled=false;button.textContent="Prepare order request";return;}
+ localStorage.removeItem(CART_KEY);localStorage.removeItem("enclosureLabCustomBoxConfig");localStorage.removeItem("enclosureLabDiscountCode");
+ document.getElementById("cartList").innerHTML='<div class="empty-cart">Your order has been submitted successfully.</div>';
+ status.textContent="Your order has been submitted! Enclosure Lab will contact you to confirm the details and payment. No payment has been collected.";
+ button.textContent="Order submitted";
+ renderCart();
 });
 document.getElementById("year").textContent=new Date().getFullYear();renderCart();
 </script>
