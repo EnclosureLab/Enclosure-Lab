@@ -18,7 +18,10 @@ create table if not exists public.enclosure_orders (
  estimated_shipping numeric(12,2) not null default 0,
  estimated_total numeric(12,2) not null default 0,
  customer_notes text,
- completed_at timestamptz
+ completed_at timestamptz,
+ order_status text not null default 'new',
+ internal_notes text,
+ tracking_number text
 );
 alter table public.enclosure_orders enable row level security;
 grant insert on public.enclosure_orders to anon, authenticated;
@@ -56,3 +59,23 @@ create policy "Only Lawson can mark orders complete"
  );
 create index if not exists enclosure_orders_active_created_idx
  on public.enclosure_orders (created_at desc) where completed_at is null;
+
+-- Add owner workflow fields safely to existing installations.
+alter table public.enclosure_orders
+ add column if not exists order_status text not null default 'new',
+ add column if not exists internal_notes text,
+ add column if not exists tracking_number text;
+
+-- Preserve previously completed orders in the fulfilled history.
+update public.enclosure_orders
+ set order_status='fulfilled'
+ where completed_at is not null and order_status='new';
+
+alter table public.enclosure_orders
+ drop constraint if exists enclosure_orders_order_status_check;
+alter table public.enclosure_orders
+ add constraint enclosure_orders_order_status_check
+ check (order_status in ('new','reviewing','quoted','awaiting_payment','building','ready_for_pickup','shipped','fulfilled','cancelled'));
+
+create index if not exists enclosure_orders_status_created_idx
+ on public.enclosure_orders (order_status, created_at desc);
