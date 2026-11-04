@@ -262,7 +262,9 @@ function updateModel(){
  panel(0,H/2-t/2,0,W,t,D);
  panel(0,-H/2+t/2,0,W,t,D);
  panel(-W/2+t/2,0,0,t,H-2*t,D);
- panel(W/2-t/2,0,0,t,H-2*t,D);
+ // Do not place a solid right-side wall behind a selected side-port cutout.
+ // sidePortFace() below creates the replacement side panel with a true opening.
+ if(!side)panel(W/2-t/2,0,0,t,H-2*t,D);
  panel(0,0,-D/2+t/2,W-2*t,H-2*t,t,innerMat);
  const portW=Math.min(W*.30,Math.max(3.0*scale,W*.22));
  const portH=Math.min(H*.62,Math.max(3.6*scale,H*.50));
