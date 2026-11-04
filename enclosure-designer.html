@@ -239,24 +239,75 @@ function createFinishMaterial(baseColor,finish){
 function updateModel(){
  if(!boxGroup)return;
  while(boxGroup.children.length){const obj=boxGroup.children.pop();obj.traverse(n=>{if(n.geometry)n.geometry.dispose();if(n.material){if(Array.isArray(n.material))n.material.forEach(m=>m.dispose());else n.material.dispose()}})}
- const w=Number($("width").value),h=Number($("height").value),d=Number($("depth").value),scale=34/Math.max(w,h,d),W=w*scale,H=h*scale,D=d*scale,t=Math.max(.42,scale*.75);
+ const w=Number($("width").value),h=Number($("height").value),d=Number($("depth").value);
+ const scale=34/Math.max(w,h,d),W=w*scale,H=h*scale,D=d*scale,t=Math.max(.42,scale*.75);
  const finish=document.querySelector('input[name="finish"]:checked').value,color=finishColor(),type=document.querySelector('input[name="boxType"]:checked').value,style=$("portStyle").value,side=style.includes("side"),round=style.includes("Hole");
- const shellMat=createFinishMaterial(color,finish),innerMat=new THREE.MeshStandardMaterial({color:0x34302b,roughness:.95}),dark=new THREE.MeshStandardMaterial({color:0x090d12,roughness:1}),edges=new THREE.LineBasicMaterial({color:0x202832,transparent:true,opacity:.55});
- const add=(geo,mat,x,y,z,rx=0,ry=0,rz=0)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);boxGroup.add(m);return m},panel=(x,y,z,sx,sy,sz,mat=shellMat)=>add(new THREE.BoxGeometry(sx,sy,sz),mat,x,y,z);
- // A closed rectangular cabinet with a single real port aperture in the selected face.
- panel(0,H/2-t/2,0,W,t,D);panel(0,-H/2+t/2,0,W,t,D);panel(-W/2+t/2,0,0,t,H-2*t,D);panel(W/2-t/2,0,0,t,H-2*t,D);panel(0,0,-D/2+t/2,W-2*t,H-2*t,t,innerMat);
- const portW=Math.min(W*.24,Math.max(2.4*scale,W*.18)),portH=Math.min(H*.58,Math.max(3.4*scale,H*.48)),portR=Math.min(H*.18,W*.12,2.35*scale);
- function faceWithOpening(fw,fh,x,y,z,ry){const shape=new THREE.Shape();shape.moveTo(-fw/2,-fh/2);shape.lineTo(fw/2,-fh/2);shape.lineTo(fw/2,fh/2);shape.lineTo(-fw/2,fh/2);shape.closePath();const hole=new THREE.Path();if(round)hole.absarc(0,0,portR,0,Math.PI*2,true);else{hole.moveTo(-portW/2,-portH/2);hole.lineTo(portW/2,-portH/2);hole.lineTo(portW/2,portH/2);hole.lineTo(-portW/2,portH/2);hole.closePath()}shape.holes.push(hole);add(new THREE.ShapeGeometry(shape,48),shellMat,x,y,z,0,ry,0)}
+ const shellMat=createFinishMaterial(color,finish),innerMat=new THREE.MeshStandardMaterial({color:0x262a30,roughness:.95}),darkMat=new THREE.MeshStandardMaterial({color:0x080b10,roughness:1,side:THREE.DoubleSide}),edgeMat=new THREE.LineBasicMaterial({color:0x303640,transparent:true,opacity:.48});
+ const add=(geo,mat,x,y,z,rx=0,ry=0,rz=0)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);boxGroup.add(m);return m};
+ const panel=(x,y,z,sx,sy,sz,mat=shellMat)=>add(new THREE.BoxGeometry(sx,sy,sz),mat,x,y,z);
+ // Five cabinet panels create a closed, hollow enclosure; the selected port face is cut around its opening.
+ panel(0,H/2-t/2,0,W,t,D);
+ panel(0,-H/2+t/2,0,W,t,D);
+ panel(-W/2+t/2,0,0,t,H-2*t,D);
+ panel(W/2-t/2,0,0,t,H-2*t,D);
+ panel(0,0,-D/2+t/2,W-2*t,H-2*t,t,innerMat);
+ const portW=Math.min(W*.30,Math.max(3.0*scale,W*.22));
+ const portH=Math.min(H*.62,Math.max(3.6*scale,H*.50));
+ const portR=Math.min(H*.22,W*.14,2.7*scale);
+ function portFace(faceWidth,faceHeight,x,y,z,rotationY){
+  const shape=new THREE.Shape();
+  shape.moveTo(-faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,faceHeight/2);shape.lineTo(-faceWidth/2,faceHeight/2);shape.closePath();
+  const hole=new THREE.Path();
+  if(round){
+   // Circular hole winding is opposite to the outside boundary so Three.js cuts a true aperture.
+   hole.absarc(0,0,portR,0,Math.PI*2,false);
+  }else{
+   // Reverse winding is essential: this is a real rectangular hole, not a dark rectangle painted on the face.
+   hole.moveTo(-portW/2,-portH/2);hole.lineTo(-portW/2,portH/2);hole.lineTo(portW/2,portH/2);hole.lineTo(portW/2,-portH/2);hole.closePath();
+  }
+  shape.holes.push(hole);
+  add(new THREE.ShapeGeometry(shape,48),shellMat,x,y,z,0,rotationY,0);
+ }
+ function slotTunnelFront(length){
+  const wall=Math.min(t*.72,portW*.18,portH*.18);
+  // Four separate walls form an open-ended rectangular duct; no solid block fills the port.
+  panel(0,portH/2-wall/2,D/2-t-length/2,portW,wall,length,shellMat);
+  panel(0,-portH/2+wall/2,D/2-t-length/2,portW,wall,length,shellMat);
+  panel(-portW/2+wall/2,0,D/2-t-length/2,wall,portH-2*wall,length,shellMat);
+  panel(portW/2-wall/2,0,D/2-t-length/2,wall,portH-2*wall,length,shellMat);
+ }
+ function slotTunnelSide(length){
+  const wall=Math.min(t*.72,portW*.18,portH*.18);
+  // Slot width runs along enclosure depth on the side face.
+  panel(W/2-t-length/2,portH/2-wall/2,0,length,wall,portW,shellMat);
+  panel(W/2-t-length/2,-portH/2+wall/2,0,length,wall,portW,shellMat);
+  panel(W/2-t-length/2,0,-portW/2+wall/2,length,portH-2*wall,wall,shellMat);
+  panel(W/2-t-length/2,0,portW/2-wall/2,length,portH-2*wall,wall,shellMat);
+ }
+ function roundTunnelFront(length){
+  // Open-ended tube wall plus a dark inner surface gives a visible cylindrical tunnel.
+  add(new THREE.CylinderGeometry(portR,portR,length,48,1,true),shellMat,0,0,D/2-t-length/2,Math.PI/2);
+  add(new THREE.CylinderGeometry(portR-t*.62,portR-t*.62,length*.995,48,1,true),darkMat,0,0,D/2-t-length/2,Math.PI/2);
+ }
+ function roundTunnelSide(length){
+  add(new THREE.CylinderGeometry(portR,portR,length,48,1,true),shellMat,W/2-t-length/2,0,0,0,0,Math.PI/2);
+  add(new THREE.CylinderGeometry(portR-t*.62,portR-t*.62,length*.995,48,1,true),darkMat,W/2-t-length/2,0,0,0,0,Math.PI/2);
+ }
  if(type==="Ported"){
-  if(side){panel(0,0,D/2-t/2,W-2*t,H-2*t,t);faceWithOpening(D-2*t,H-2*t,W/2-t/2,0,0,Math.PI/2)}
-  else faceWithOpening(W-2*t,H-2*t,0,0,D/2-t/2,0);
-  const len=Math.min((side?W:D)*.62,8*scale);
-  if(round){if(side)add(new THREE.CylinderGeometry(portR*.96,portR*.96,len,48),dark,W/2-t-len/2,0,0,0,0,Math.PI/2);else add(new THREE.CylinderGeometry(portR*.96,portR*.96,len,48),dark,0,0,D/2-t-len/2,Math.PI/2)}
-  else{if(side)panel(W/2-t-len/2,0,0,len,portH*.96,portW*.96,dark);else panel(0,0,D/2-t-len/2,portW*.96,portH*.96,len,dark)}
- }else panel(0,0,D/2-t/2,W-2*t,H-2*t,t);
- boxGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,D)),edges));boxGroup.rotation.set(0,-.10,0);
- const m=Math.max(W,H,D);camera.position.set(m*1.75,m*1.25,m*2.05);controls.target.set(0,0,0);controls.update();
- $("specDimensions").textContent=w+" × "+h+" × "+d+" in";$("specType").textContent=type;$("specMaterial").textContent=$("material").value;$("specFinish").textContent=finish+(finish==="Paint"?" · "+$("paintColor").value+" · "+$("paintDesign").value:finish==="Wrap"?" · "+$("wrapType").value+" / "+$("wrapColor").value:"");
+  const length=Math.max(t*2,Math.min((side?W:D)*.58,Math.max(7*scale,(side?W:D)*.32)));
+  if(side){panel(0,0,D/2-t/2,W-2*t,H-2*t,t);portFace(D-2*t,H-2*t,W/2-t/2,0,0,Math.PI/2);if(round)roundTunnelSide(length);else slotTunnelSide(length)}
+  else{portFace(W-2*t,H-2*t,0,0,D/2-t/2,0);if(round)roundTunnelFront(length);else slotTunnelFront(length)}
+ }else{
+  // Sealed box has a complete front panel with no port aperture.
+  panel(0,0,D/2-t/2,W-2*t,H-2*t,t,shellMat);
+ }
+ boxGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,D)),edgeMat));
+ boxGroup.rotation.set(0,-.10,0);
+ const maxDim=Math.max(W,H,D);camera.position.set(maxDim*1.75,maxDim*1.25,maxDim*2.05);controls.target.set(0,0,0);controls.update();
+ $("specDimensions").textContent=w+" × "+h+" × "+d+" in";
+ $("specType").textContent=type;
+ $("specMaterial").textContent=$("material").value;
+ $("specFinish").textContent=finish+(finish==="Paint"?" · "+$("paintColor").value+" · "+$("paintDesign").value:finish==="Wrap"?" · "+$("wrapType").value+" / "+$("wrapColor").value:"");
 }
 function enclosureSurfaceSqFt(){const w=Number($("width").value),h=Number($("height").value),d=Number($("depth").value);return 2*(w*h+w*d+h*d)/144}
 function calcWeight(){const surface=enclosureSurfaceSqFt();const density=MATERIAL_DENSITY_LB_SQFT[$("material").value]||2.30;return Math.round(surface*.75*density*1.25*10)/10}
