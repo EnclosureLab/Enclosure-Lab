@@ -26,7 +26,7 @@ grant select, update on public.enclosure_orders to authenticated;
 drop policy if exists "Customers can submit orders" on public.enclosure_orders;
 create policy "Customers can submit orders"
  on public.enclosure_orders for insert to anon, authenticated
- with check (true);
+ with check (completed_at is null);
 drop policy if exists "Only Lawson can view orders" on public.enclosure_orders;
 create policy "Only Lawson can view orders"
  on public.enclosure_orders for select to authenticated
