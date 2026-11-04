@@ -267,19 +267,29 @@ function updateModel(){
  const portW=Math.min(W*.30,Math.max(3.0*scale,W*.22));
  const portH=Math.min(H*.62,Math.max(3.6*scale,H*.50));
  const portR=Math.min(H*.22,W*.14,2.7*scale);
- function portFace(faceWidth,faceHeight,x,y,z,rotationY,holeX=0,holeY=0,holeWidth=portW,holeHeight=portH){
+ const selectedSubSize=Number($("size").value);
+ const cutoutDiameter=Math.max(1,selectedSubSize-1);
+ const wooferRadius=cutoutDiameter*scale/2;
+ function frontFaceWithCutouts(faceWidth,faceHeight,x,y,z,portKind="",portX=0,portY=0,slotWidth=portW,slotHeight=portH){
   const shape=new THREE.Shape();
   shape.moveTo(-faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,faceHeight/2);shape.lineTo(-faceWidth/2,faceHeight/2);shape.closePath();
-  const hole=new THREE.Path();
-  if(round){
-   // Circular hole winding is opposite to the outside boundary so Three.js cuts a true aperture.
-   hole.absarc(0,0,portR,0,Math.PI*2,false);
-  }else{
-   // Cut the rectangular slot at its requested position on the face.
-   hole.moveTo(holeX-holeWidth/2,holeY-holeHeight/2);hole.lineTo(holeX-holeWidth/2,holeY+holeHeight/2);hole.lineTo(holeX+holeWidth/2,holeY+holeHeight/2);hole.lineTo(holeX+holeWidth/2,holeY-holeHeight/2);hole.closePath();
+  // Centered subwoofer mounting cutout. Diameter is exactly one inch smaller than selected woofer size.
+  const wooferHole=new THREE.Path();
+  wooferHole.absarc(0,0,wooferRadius,0,Math.PI*2,false);
+  shape.holes.push(wooferHole);
+  if(portKind==="round"){
+   const portHole=new THREE.Path();
+   portHole.absarc(portX,portY,portR,0,Math.PI*2,false);
+   shape.holes.push(portHole);
+  }else if(portKind==="slot"){
+   const slotHole=new THREE.Path();
+   slotHole.moveTo(portX-slotWidth/2,portY-slotHeight/2);slotHole.lineTo(portX-slotWidth/2,portY+slotHeight/2);slotHole.lineTo(portX+slotWidth/2,portY+slotHeight/2);slotHole.lineTo(portX+slotWidth/2,portY-slotHeight/2);slotHole.closePath();
+   shape.holes.push(slotHole);
   }
-  shape.holes.push(hole);
-  add(new THREE.ShapeGeometry(shape,48),shellMat,x,y,z,0,rotationY,0);
+  add(new THREE.ShapeGeometry(shape,48),shellMat,x,y,z,0,0,0);
+ }
+ function subwooferFrontPanel(){
+  frontFaceWithCutouts(W-2*t,H-2*t,0,0,D/2-t/2,"");
  }
  function slotTunnelFront(length,centerX=0,openingWidth=portW,openingHeight=portH){
   const wall=Math.min(t*.72,openingWidth*.18,openingHeight*.12);
@@ -309,19 +319,24 @@ function updateModel(){
  }
  if(type==="Ported"){
   const length=Math.max(t*2,Math.min((side?W:D)*.58,Math.max(7*scale,(side?W:D)*.32)));
-  if(side){panel(0,0,D/2-t/2,W-2*t,H-2*t,t);portFace(D-2*t,H-2*t,W/2-t/2,0,0,Math.PI/2);if(round)roundTunnelSide(length);else slotTunnelSide(length)}
-  else if(round){portFace(W-2*t,H-2*t,0,0,D/2-t/2,0);roundTunnelFront(length)}
+  if(side){subwooferFrontPanel();portFace(D-2*t,H-2*t,W/2-t/2,0,0,Math.PI/2);if(round)roundTunnelSide(length);else slotTunnelSide(length)}
+  else if(round){
+   // Keep the round port separate from the centered subwoofer cutout, toward the left edge.
+   const frontRoundPortX=-(W-2*t)/2+portR+t;
+   frontFaceWithCutouts(W-2*t,H-2*t,0,0,D/2-t/2,"round",frontRoundPortX,0);
+   roundTunnelFront(length);
+  }
   else{
-   // Front slot is a tall, narrow opening positioned at the right edge of the front panel, not centered.
+   // Front slot is a tall, narrow opening positioned at the right edge of the front panel.
    const frontSlotWidth=Math.min(W*.16,Math.max(2*scale,W*.12));
    const frontSlotHeight=H-2*t;
    const frontSlotX=W/2-t-frontSlotWidth/2;
-   portFace(W-2*t,H-2*t,0,0,D/2-t/2,0,frontSlotX,0,frontSlotWidth,frontSlotHeight);
+   frontFaceWithCutouts(W-2*t,H-2*t,0,0,D/2-t/2,"slot",frontSlotX,0,frontSlotWidth,frontSlotHeight);
    slotTunnelFront(length,frontSlotX,frontSlotWidth,frontSlotHeight);
   }
  }else{
-  // Sealed box has a complete front panel with no port aperture.
-  panel(0,0,D/2-t/2,W-2*t,H-2*t,t,shellMat);
+  // Sealed box front includes the centered subwoofer mounting cutout.
+  subwooferFrontPanel();
  }
  boxGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,D)),edgeMat));
  boxGroup.rotation.set(0,-.10,0);
