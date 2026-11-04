@@ -73,7 +73,7 @@
      
     </div>
     <div id="wrapOptions" class="subchoices field-grid hidden">
-     <div class="field"><label for="wrapType">Wrap type</label><select id="wrapType"><option>Vinyl</option><option>Carpet</option><option>Carbon fiber</option><option>Other</option></select></div>
+     <div class="field"><label for="wrapType">Wrap type</label><select id="wrapType"><option value="Vinyl">Smooth vinyl</option><option value="Carpet">Automotive carpet</option><option value="Carbon Fiber">Carbon fiber vinyl</option><option value="Forged Carbon Fiber">Forged carbon fiber</option><option value="Suede">Automotive suede</option><option value="Leather">Leather-look vinyl</option></select></div>
      <div class="field"><label for="wrapColor">Wrap color</label><div class="advanced-color-picker"><canvas id="wrapWheel" class="color-wheel" width="240" height="240" aria-label="Interactive color wheel" tabindex="0"></canvas><div class="color-picker-controls"><label for="wrapBrightness">Brightness</label><input id="wrapBrightness" class="brightness-slider" type="range" min="10" max="100" value="100"><span class="selected-color"><i id="wrapSwatch"></i><output id="wrapHex">#242424</output></span></div><input id="wrapColor" class="native-color-value" type="color" value="#242424" aria-hidden="true" tabindex="-1"></div><small>Drag on the color wheel to choose any shade. Adjust brightness below.</small></div>
      <div class="field full"><label for="wrapNotes">Wrap/design notes (optional)</label><textarea id="wrapNotes" placeholder="Describe the wrap or custom details"></textarea></div>
     </div>
@@ -179,16 +179,62 @@ function designOptionMarkup(){
  wrap.querySelectorAll("input,select,textarea").forEach(el=>{el.addEventListener("input",update);el.addEventListener("change",update)});
 }
 function createFinishMaterial(baseColor,finish){
- const design=finish==="Paint"?$("paintDesign").value:"",mat=new THREE.MeshStandardMaterial({color:new THREE.Color(baseColor),roughness:finish==="Wrap"?.88:design==="Metallic / flake"?.28:.52,metalness:design==="Metallic / flake"?.42:0});
- if(finish==="Paint"&&design!=="No custom design"){
-  const canvas=document.createElement("canvas");canvas.width=512;canvas.height=512;const ctx=canvas.getContext("2d"),secondary=$("designColor")?.value||"#f4f4f4";ctx.fillStyle=baseColor;ctx.fillRect(0,0,512,512);
+ const design=finish==="Paint"?$("paintDesign").value:"";
+ const wrap=finish==="Wrap"?$("wrapType").value:"";
+ const mat=new THREE.MeshStandardMaterial({
+  color:new THREE.Color(baseColor),
+  roughness:finish==="Wrap"?(wrap==="Smooth vinyl"?.42:wrap==="Leather-look vinyl"?.62:wrap==="Automotive suede"?.96:wrap==="Automotive carpet"?.98:.72):(design==="Metallic / flake"?.28:.52),
+  metalness:design==="Metallic / flake"?.42:0
+ });
+ const canvas=document.createElement("canvas");canvas.width=512;canvas.height=512;
+ const ctx=canvas.getContext("2d");ctx.fillStyle=baseColor;ctx.fillRect(0,0,512,512);
+ let textured=false;
+ if(finish==="Wrap"){
+  textured=true;
+  if(wrap==="Carbon fiber vinyl"){
+   // Repeating diagonal carbon-fiber weave.
+   ctx.fillStyle="#15191d";ctx.fillRect(0,0,512,512);
+   for(let y=-32;y<544;y+=16)for(let x=-32;x<544;x+=16){
+    ctx.fillStyle=((Math.floor(x/16)+Math.floor(y/16))%2===0)?"#555d64":"#252b31";
+    ctx.fillRect(x+1,y+1,14,7);
+    ctx.fillStyle="rgba(255,255,255,.20)";ctx.fillRect(x+2,y+2,11,1);
+    ctx.fillStyle="rgba(0,0,0,.42)";ctx.fillRect(x+1,y+9,14,5);
+   }
+  }else if(wrap==="Forged carbon fiber"){
+   // Irregular chopped-fiber flakes for forged-carbon appearance.
+   ctx.fillStyle="#171b20";ctx.fillRect(0,0,512,512);
+   let seed=87;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+   for(let i=0;i<1250;i++){const x=rand()*512,y=rand()*512,a=rand()*Math.PI,len=5+rand()*22,w=1+rand()*4;ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.fillStyle=["#626a70","#343b42","#858c91","#20262b"][Math.floor(rand()*4)];ctx.globalAlpha=.45+rand()*.5;ctx.fillRect(-len/2,-w/2,len,w);ctx.restore()}
+  }else if(wrap==="Automotive carpet"){
+   let seed=33;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+   for(let i=0;i<24000;i++){const v=rand()>.5?255:0;ctx.fillStyle="rgba("+v+","+v+","+v+","+(0.025+rand()*.10)+")";ctx.fillRect(rand()*512,rand()*512,1,2+rand()*3)}
+  }else if(wrap==="Automotive suede"){
+   let seed=12;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+   for(let i=0;i<13000;i++){ctx.fillStyle="rgba(255,255,255,"+(rand()*.045)+")";ctx.fillRect(rand()*512,rand()*512,1,1+rand()*5)}
+  }else if(wrap==="Leather-look vinyl"){
+   ctx.strokeStyle="rgba(0,0,0,.10)";ctx.lineWidth=1;
+   for(let y=0;y<512;y+=13){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(512,y);ctx.stroke()}
+   for(let x=0;x<512;x+=13){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,512);ctx.stroke()}
+  }else{
+   // Smooth vinyl: subtle satin sheen.
+   const g=ctx.createLinearGradient(0,0,512,512);g.addColorStop(0,"rgba(255,255,255,.12)");g.addColorStop(.5,"rgba(255,255,255,0)");g.addColorStop(1,"rgba(0,0,0,.10)");ctx.fillStyle=g;ctx.fillRect(0,0,512,512);
+  }
+ }else if(finish==="Paint"&&design!=="No custom design"){
+  const secondary=$("designColor")?.value||"#f4f4f4";ctx.fillStyle=baseColor;ctx.fillRect(0,0,512,512);
   if(design==="Splatter paint"){const amount=$("splatterAmount")?.value||"Medium",n=amount==="Light"?180:amount==="Heavy"?900:450;ctx.fillStyle=secondary;let seed=42;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};for(let i=0;i<n;i++){ctx.beginPath();ctx.arc(rand()*512,rand()*512,1+rand()*(amount==="Heavy"?7:4),0,Math.PI*2);ctx.fill()}}
   else if(design==="Two-tone paint"){const layout=$("twoToneLayout")?.value||"Top and sides";ctx.fillStyle=secondary;if(layout==="Top and sides")ctx.fillRect(0,0,512,165);else if(layout==="Left and right"){ctx.fillRect(0,0,165,512);ctx.fillRect(347,0,165,512)}else ctx.fillRect(0,0,512,256)}
-  else if(design==="Metallic / flake"){const level=$("flakeLevel")?.value||"Medium",n=level==="Subtle"?600:level==="Heavy"?3600:1800;let seed=21;const rand=()=>{seed=(seed*1103515245+12345)>>>0;return seed/4294967296};ctx.fillStyle="#ffffff";for(let i=0;i<n;i++){ctx.globalAlpha=.12+rand()*.45;ctx.fillRect(rand()*512,rand()*512,1+rand()*2,1+rand()*2)}ctx.globalAlpha=1}
+  else if(design==="Metallic / flake"){const level=$("flakeLevel")?.value||"Medium",n=level==="Subtle"?600:level==="Heavy"?3600:1800;let seed=21;const rand=()=>{seed=(seed*1103515245+12345)>>>0;return seed/4294967296};ctx.fillStyle="#fff";for(let i=0;i<n;i++){ctx.globalAlpha=.12+rand()*.45;ctx.fillRect(rand()*512,rand()*512,1+rand()*2,1+rand()*2)}ctx.globalAlpha=1}
   else if(design==="Color fade / gradient"){const direction=$("gradientDirection")?.value||"Front to back",g=direction==="Top to bottom"?ctx.createLinearGradient(0,0,0,512):ctx.createLinearGradient(0,0,512,0);g.addColorStop(0,baseColor);g.addColorStop(1,secondary);ctx.fillStyle=g;ctx.fillRect(0,0,512,512)}
   else if(design==="Custom graphics / lettering"){const label=$("graphicText")?.value||"";if(label){ctx.fillStyle=secondary;ctx.font="bold 42px Arial";ctx.textAlign="center";ctx.fillText(label,256,270,470)}}
-  const tex=new THREE.CanvasTexture(canvas);tex.encoding=THREE.sRGBEncoding;mat.map=tex;mat.color.set("#ffffff");mat.needsUpdate=true;
- }return mat;
+  textured=true;
+ }
+ if(textured){
+  const tex=new THREE.CanvasTexture(canvas);tex.encoding=THREE.sRGBEncoding;tex.wrapS=tex.wrapT=THREE.RepeatWrapping;tex.needsUpdate=true;mat.map=tex;
+  if(finish==="Wrap"&&wrap==="Carbon fiber vinyl")mat.roughness=.42;
+  if(finish==="Wrap"&&wrap==="Forged carbon fiber")mat.roughness=.48;
+  mat.color.set("#ffffff");mat.needsUpdate=true;
+ }
+ return mat;
 }
 function updateModel(){
  if(!boxGroup)return;
@@ -216,7 +262,7 @@ function enclosureSurfaceSqFt(){const w=Number($("width").value),h=Number($("hei
 function calcWeight(){const surface=enclosureSurfaceSqFt();const density=MATERIAL_DENSITY_LB_SQFT[$("material").value]||2.30;return Math.round(surface*.75*density*1.25*10)/10}
 function calcBuildCost(){const surface=enclosureSurfaceSqFt();const cutArea=surface*1.25;const sheets=Math.max(1,Math.ceil(cutArea/32));const material=MATERIAL_SHEET_PRICES[$("material").value]||49.98;const wood=sheets*material;const finish=document.querySelector('input[name="finish"]:checked').value;let finishCost=0,finishLabel="Raw finish";if(finish==="Paint"){finishCost=surface*.22+5;finishLabel="Estimated primer, paint, and application supplies";if($("paintDesign").value==="Splatter paint")finishCost+=12;else if($("paintDesign").value==="Two-tone paint")finishCost+=15;else if($("paintDesign").value==="Metallic / flake")finishCost+=18;else if($("paintDesign").value==="Color fade / gradient")finishCost+=15;else if($("paintDesign").value==="Custom graphics / lettering")finishCost+=20;else if($("paintDesign").value==="Other custom design")finishCost+=12}else if(finish==="Wrap"){finishCost=surface*(49.99/60)+9.97;finishLabel="Estimated vinyl wrap material and adhesive"}const consumables=12;const total=wood+finishCost+consumables;return{surfaceSqFt:surface,sheetCount:sheets,sheetPrice:material,woodCost:wood,finishCost,finishLabel,consumables,total:Math.round(total*100)/100}}
 
-function config(){const type=document.querySelector('input[name="boxType"]:checked').value,finish=document.querySelector('input[name="finish"]:checked').value;return{material:$("material").value,width:Number($("width").value),height:Number($("height").value),depth:Number($("depth").value),type,portStyle:type==="Ported"?$("portStyle").value:"",finish,paintColor:finish==="Paint"?$("paintColor").value:"Not applicable",customPaintColor:"",paintDesign:finish==="Paint"?$("paintDesign").value:"",paintDesignDetails:finish==="Paint"?{secondaryColor:$("designColor")?.value||"",splatterAmount:$("splatterAmount")?.value||"",twoToneLayout:$("twoToneLayout")?.value||"",flakeLevel:$("flakeLevel")?.value||"",gradientDirection:$("gradientDirection")?.value||"",graphicText:$("graphicText")?.value||"",graphicPlacement:$("graphicPlacement")?.value||"",otherDesign:$("otherDesign")?.value||""):{},wrapType:finish==="Wrap"?$("wrapType").value:"",wrapColor:finish==="Wrap"?$("wrapColor").value:"",customWrapColor:finish==="Wrap"&&$("wrapColor").value==="Custom Color"?$("customWrap").value:"",wrapNotes:finish==="Wrap"?$("wrapNotes").value.trim():"",rawMaterial:finish==="Raw"?$("rawMaterial").value:"",model:$("model").value.trim(),size:$("size").value,quantity:Number($("quantity").value),tuning:type==="Ported"?Number($("tuning").value):null,weightLb:calcWeight(),buildCost:calcBuildCost().total,costBreakdown:calcBuildCost()}}
+function config(){const type=document.querySelector('input[name="boxType"]:checked').value,finish=document.querySelector('input[name="finish"]:checked').value;return{material:$("material").value,width:Number($("width").value),height:Number($("height").value),depth:Number($("depth").value),type,portStyle:type==="Ported"?$("portStyle").value:"",finish,paintColor:finish==="Paint"?$("paintColor").value:"Not applicable",customPaintColor:"",paintDesign:finish==="Paint"?$("paintDesign").value:"",paintDesignDetails:finish==="Paint"?{secondaryColor:$("designColor")?.value||"",splatterAmount:$("splatterAmount")?.value||"",twoToneLayout:$("twoToneLayout")?.value||"",flakeLevel:$("flakeLevel")?.value||"",gradientDirection:$("gradientDirection")?.value||"",graphicText:$("graphicText")?.value||"",graphicPlacement:$("graphicPlacement")?.value||"",otherDesign:$("otherDesign")?.value||""}:{},wrapType:finish==="Wrap"?$("wrapType").value:"",wrapColor:finish==="Wrap"?$("wrapColor").value:"",customWrapColor:finish==="Wrap"&&$("wrapColor").value==="Custom Color"?$("customWrap").value:"",wrapNotes:finish==="Wrap"?$("wrapNotes").value.trim():"",rawMaterial:finish==="Raw"?$("rawMaterial").value:"",model:$("model").value.trim(),size:$("size").value,quantity:Number($("quantity").value),tuning:type==="Ported"?Number($("tuning").value):null,weightLb:calcWeight(),buildCost:calcBuildCost().total,costBreakdown:calcBuildCost()}}
 function previewImage(){try{renderer.render(scene,camera);const c=document.createElement("canvas");c.width=420;c.height=270;const ctx=c.getContext("2d");ctx.fillStyle="#f5f7f9";ctx.fillRect(0,0,420,270);const src=$("modelCanvas");const scale=Math.min(420/src.width,270/src.height);const w=src.width*scale,h=src.height*scale;ctx.drawImage(src,(420-w)/2,(270-h)/2,w,h);return c.toDataURL("image/jpeg",.58)}catch(e){return""}}
 function update(){const finish=document.querySelector('input[name="finish"]:checked').value,type=document.querySelector('input[name="boxType"]:checked').value;$("paintHex").textContent=$("paintColor").value.toUpperCase();$("wrapHex").textContent=$("wrapColor").value.toUpperCase();$("paintSwatch").style.background=$("paintColor").value;$("wrapSwatch").style.background=$("wrapColor").value;$("portOptions").classList.toggle("hidden",type!=="Ported");$("tuningField").classList.toggle("hidden",type!=="Ported");$("paintOptions").classList.toggle("hidden",finish!=="Paint");$("wrapOptions").classList.toggle("hidden",finish!=="Wrap");$("rawOptions").classList.toggle("hidden",finish!=="Raw");$("customPaintWrap").classList.toggle("hidden",finish!=="Paint"||$("paintDesign").value!=="Other custom design");$("weight").textContent=calcWeight().toFixed(1)+" lb";const costs=calcBuildCost();$("buildCost").textContent="$"+costs.total.toFixed(2);updateModel()}
 document.querySelectorAll("input,select,textarea").forEach(el=>{el.addEventListener("input",update);el.addEventListener("change",update)});$("paintDesign").addEventListener("change",()=>{designOptionMarkup();update()});designOptionMarkup();
