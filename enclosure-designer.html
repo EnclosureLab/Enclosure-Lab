@@ -117,9 +117,9 @@ function updateModel(){
  const edgeMat=new THREE.LineBasicMaterial({color:0x222a32,transparent:true,opacity:.7});
  const trimMat=new THREE.MeshStandardMaterial({color:0x303943,roughness:.55,metalness:.15});
  const screwMat=new THREE.MeshStandardMaterial({color:0x9aa3ad,metalness:.7,roughness:.3});
- const body=new THREE.Mesh(new THREE.BoxGeometry(W,H,D),shellMat);boxGroup.add(body);
+ const body=new THREE.Mesh(new THREE.BoxGeometry(W,H,D),shellMat);body.material.color.set(color);body.material.needsUpdate=true;boxGroup.add(body);
  // Front baffle and clean panel perimeter
- const baffle=new THREE.Mesh(new THREE.BoxGeometry(W*.992,H*.992,.16*scale),frontMat);baffle.position.z=D/2+.025*scale;boxGroup.add(baffle);
+ const baffle=new THREE.Mesh(new THREE.BoxGeometry(W*.992,H*.992,.16*scale),frontMat);baffle.material.color.set(color);baffle.material.needsUpdate=true;baffle.position.z=D/2+.025*scale;boxGroup.add(baffle);
  const outline=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,D)),edgeMat);boxGroup.add(outline);
  const panelEdge=new THREE.LineSegments(new THREE.EdgesGeometry(baffle.geometry),edgeMat);panelEdge.position.copy(baffle.position);boxGroup.add(panelEdge);
  // Fastener heads around the front baffle
@@ -177,8 +177,8 @@ document.querySelectorAll("input,select,textarea").forEach(el=>el.addEventListen
 document.querySelectorAll("input[name=boxType],input[name=finish]").forEach(el=>el.addEventListener("change",update));$("paintColor").addEventListener("input",update);$("paintColor").addEventListener("change",update);$("wrapColor").addEventListener("input",update);$("wrapColor").addEventListener("change",update);
 $("boxForm").addEventListener("submit",function(e){e.preventDefault();const status=$("status");if(!$("model").value.trim()){status.textContent="Enter your subwoofer brand and model before adding the box.";status.classList.add("error");$("model").focus();return}const q=config();const details="Custom subwoofer enclosure — "+q.type+" — "+q.quantity+" × "+q.size+" in ("+q.material+")";const item={name:details,category:"enclosure",price:null,qty:1,weightLb:q.weightLb,configuration:q,previewImage:previewImage()};try{const cart=JSON.parse(localStorage.getItem(cartKey)||"[]");if(!Array.isArray(cart))throw new Error("Invalid cart");cart.push(item);localStorage.setItem(cartKey,JSON.stringify(cart));localStorage.setItem("enclosureLabCustomBoxConfig",JSON.stringify(q));if(JSON.parse(localStorage.getItem(cartKey)||"[]").length!==cart.length)throw new Error("Cart verification failed");status.classList.remove("error");status.textContent="Box added. Taking you to checkout…";if(window.parent&&window.parent!==window){window.parent.postMessage({type:"el-open-checkout"},location.origin)}else{window.location.href=new URL("checkout.html",location.href).href}}catch(err){status.textContent="Your browser could not save this box. Please allow site storage and try again.";status.classList.add("error")}});
 init3D();update();
-function reportHeight(){if(window.parent===window)return;const h=document.documentElement.scrollHeight;window.parent.postMessage({type:"enclosure-designer-height",height:h},location.origin)}
-new ResizeObserver(reportHeight).observe(document.body);window.addEventListener("load",reportHeight);setTimeout(reportHeight,500);
+function reportHeight(){if(window.parent===window)return;const body=document.body,root=document.documentElement;const h=Math.ceil(Math.max(body.scrollHeight,body.offsetHeight,root.scrollHeight,root.offsetHeight,body.getBoundingClientRect().bottom+window.scrollY));window.parent.postMessage({type:"enclosure-designer-height",height:h},location.origin)}
+const heightObserver=new ResizeObserver(()=>requestAnimationFrame(reportHeight));heightObserver.observe(document.body);heightObserver.observe(document.documentElement);new MutationObserver(()=>requestAnimationFrame(reportHeight)).observe(document.body,{childList:true,subtree:true,attributes:true});window.addEventListener("load",reportHeight);window.addEventListener("resize",reportHeight);document.addEventListener("input",()=>requestAnimationFrame(reportHeight));document.addEventListener("change",()=>requestAnimationFrame(reportHeight));if(document.fonts&&document.fonts.ready)document.fonts.ready.then(reportHeight);[100,400,900,1600].forEach(ms=>setTimeout(reportHeight,ms));
 })();
 </script>
 </body>
