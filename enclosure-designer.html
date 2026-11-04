@@ -267,7 +267,7 @@ function updateModel(){
  const portW=Math.min(W*.30,Math.max(3.0*scale,W*.22));
  const portH=Math.min(H*.62,Math.max(3.6*scale,H*.50));
  const portR=Math.min(H*.22,W*.14,2.7*scale);
- function portFace(faceWidth,faceHeight,x,y,z,rotationY){
+ function portFace(faceWidth,faceHeight,x,y,z,rotationY,holeX=0,holeY=0,holeWidth=portW,holeHeight=portH){
   const shape=new THREE.Shape();
   shape.moveTo(-faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,faceHeight/2);shape.lineTo(-faceWidth/2,faceHeight/2);shape.closePath();
   const hole=new THREE.Path();
@@ -275,19 +275,20 @@ function updateModel(){
    // Circular hole winding is opposite to the outside boundary so Three.js cuts a true aperture.
    hole.absarc(0,0,portR,0,Math.PI*2,false);
   }else{
-   // Reverse winding is essential: this is a real rectangular hole, not a dark rectangle painted on the face.
-   hole.moveTo(-portW/2,-portH/2);hole.lineTo(-portW/2,portH/2);hole.lineTo(portW/2,portH/2);hole.lineTo(portW/2,-portH/2);hole.closePath();
+   // Cut the rectangular slot at its requested position on the face.
+   hole.moveTo(holeX-holeWidth/2,holeY-holeHeight/2);hole.lineTo(holeX-holeWidth/2,holeY+holeHeight/2);hole.lineTo(holeX+holeWidth/2,holeY+holeHeight/2);hole.lineTo(holeX+holeWidth/2,holeY-holeHeight/2);hole.closePath();
   }
   shape.holes.push(hole);
   add(new THREE.ShapeGeometry(shape,48),shellMat,x,y,z,0,rotationY,0);
  }
- function slotTunnelFront(length){
-  const wall=Math.min(t*.72,portW*.18,portH*.18);
-  // Four separate walls form an open-ended rectangular duct; no solid block fills the port.
-  panel(0,portH/2-wall/2,D/2-t-length/2,portW,wall,length,shellMat);
-  panel(0,-portH/2+wall/2,D/2-t-length/2,portW,wall,length,shellMat);
-  panel(-portW/2+wall/2,0,D/2-t-length/2,wall,portH-2*wall,length,shellMat);
-  panel(portW/2-wall/2,0,D/2-t-length/2,wall,portH-2*wall,length,shellMat);
+ function slotTunnelFront(length,centerX=0,openingWidth=portW,openingHeight=portH){
+  const wall=Math.min(t*.72,openingWidth*.18,openingHeight*.12);
+  const ductZ=D/2-t-length/2;
+  // Four open-ended duct walls line up with the vertical slot cut into the front face.
+  panel(centerX,openingHeight/2-wall/2,ductZ,openingWidth,wall,length,shellMat);
+  panel(centerX,-openingHeight/2+wall/2,ductZ,openingWidth,wall,length,shellMat);
+  panel(centerX-openingWidth/2+wall/2,0,ductZ,wall,openingHeight-2*wall,length,shellMat);
+  panel(centerX+openingWidth/2-wall/2,0,ductZ,wall,openingHeight-2*wall,length,shellMat);
  }
  function slotTunnelSide(length){
   const wall=Math.min(t*.72,portW*.18,portH*.18);
@@ -309,7 +310,15 @@ function updateModel(){
  if(type==="Ported"){
   const length=Math.max(t*2,Math.min((side?W:D)*.58,Math.max(7*scale,(side?W:D)*.32)));
   if(side){panel(0,0,D/2-t/2,W-2*t,H-2*t,t);portFace(D-2*t,H-2*t,W/2-t/2,0,0,Math.PI/2);if(round)roundTunnelSide(length);else slotTunnelSide(length)}
-  else{portFace(W-2*t,H-2*t,0,0,D/2-t/2,0);if(round)roundTunnelFront(length);else slotTunnelFront(length)}
+  else if(round){portFace(W-2*t,H-2*t,0,0,D/2-t/2,0);roundTunnelFront(length)}
+  else{
+   // Front slot is a tall, narrow opening positioned at the right edge of the front panel, not centered.
+   const frontSlotWidth=Math.min(W*.16,Math.max(2*scale,W*.12));
+   const frontSlotHeight=H-2*t;
+   const frontSlotX=W/2-t-frontSlotWidth/2;
+   portFace(W-2*t,H-2*t,0,0,D/2-t/2,0,frontSlotX,0,frontSlotWidth,frontSlotHeight);
+   slotTunnelFront(length,frontSlotX,frontSlotWidth,frontSlotHeight);
+  }
  }else{
   // Sealed box has a complete front panel with no port aperture.
   panel(0,0,D/2-t/2,W-2*t,H-2*t,t,shellMat);
