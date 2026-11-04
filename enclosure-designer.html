@@ -27,6 +27,8 @@
 #paintDesign,#wrapType{width:min(100%,280px);min-height:38px;padding:8px 10px;font-size:13px}
 #paintOptions .field,#wrapOptions .field{align-content:start;min-width:0}#paintOptions .field>small,#wrapOptions .field>small{max-width:320px;line-height:1.45}
 @media(max-width:540px){.advanced-color-picker{grid-template-columns:78px minmax(0,1fr);width:100%;max-width:320px;gap:9px}.color-wheel{width:78px;height:78px;max-width:78px}#paintDesign,#wrapType{width:100%}}
+
+.design-options{display:grid;gap:10px;margin-top:10px;padding:12px;border:1px solid #e0e6ec;border-radius:10px;background:#f8fafc}.design-options .field{gap:5px}.design-options label{font-size:12px}.design-options input,.design-options select{min-height:36px!important;font-size:13px!important}.design-options .design-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.design-options .design-help{font-size:11px;color:var(--muted);line-height:1.45}.design-color{display:flex;align-items:center;gap:8px}.design-color input[type=color]{width:38px;height:32px;min-height:32px!important;padding:2px;border:1px solid #cbd5df;border-radius:6px}
 </style>
 </head>
 <body>
@@ -66,9 +68,9 @@
     </div>
     <div id="paintOptions" class="subchoices field-grid">
      <div class="field"><label for="paintColor">Choose paint color</label><div class="advanced-color-picker"><canvas id="paintWheel" class="color-wheel" width="240" height="240" aria-label="Interactive color wheel" tabindex="0"></canvas><div class="color-picker-controls"><label for="paintBrightness">Brightness</label><input id="paintBrightness" class="brightness-slider" type="range" min="10" max="100" value="100"><span class="selected-color"><i id="paintSwatch"></i><output id="paintHex">#202124</output></span></div><input id="paintColor" class="native-color-value" type="color" value="#202124" aria-hidden="true" tabindex="-1"></div><small>Drag on the color wheel to choose any shade. Adjust brightness below.</small></div>
-     <div class="field"><label for="paintDesign">Custom design (optional)</label><select id="paintDesign"><option>No custom design</option><option>Splatter paint</option><option>Two-tone paint</option><option>Metallic / flake</option><option>Color fade / gradient</option><option>Custom graphics / lettering</option><option>Other custom design</option></select></div>
+     <div class="field"><label for="paintDesign">Custom design (optional)</label><select id="paintDesign"><option>No custom design</option><option>Splatter paint</option><option>Two-tone paint</option><option>Metallic / flake</option><option>Color fade / gradient</option><option>Custom graphics / lettering</option><option>Other custom design</option></select><div id="paintDesignOptions" class="design-options hidden"></div></div>
      <div class="field full hidden" id="customPaintWrap"><label for="customPaint">Custom paint color</label><input id="customPaint" maxlength="80" placeholder="Describe your custom color"></div>
-     <div class="field full"><label for="paintNotes">Paint/design notes (optional)</label><textarea id="paintNotes" placeholder="Describe any colors, graphics, lettering, or other details"></textarea></div>
+     
     </div>
     <div id="wrapOptions" class="subchoices field-grid hidden">
      <div class="field"><label for="wrapType">Wrap type</label><select id="wrapType"><option>Vinyl</option><option>Carpet</option><option>Carbon fiber</option><option>Other</option></select></div>
@@ -164,85 +166,60 @@ function setupWheel(id){
 }
 function finishColor(){const finish=document.querySelector('input[name="finish"]:checked').value;if(finish==="Paint"){return $("paintColor").value}if(finish==="Wrap"){return $("wrapColor").value}return "#b58c5a"}
 function init3D(){const canvas=$("modelCanvas");if(!window.THREE||!canvas)return;scene=new THREE.Scene();scene.background=new THREE.Color("#f5f7f9");camera=new THREE.PerspectiveCamera(38,1,.1,1000);camera.position.set(48,38,48);renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.outputEncoding=THREE.sRGBEncoding;controls=new THREE.OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.08;scene.add(new THREE.HemisphereLight(0xffffff,0x77808a,1.4));const light=new THREE.DirectionalLight(0xffffff,1.2);light.position.set(30,50,40);scene.add(light);boxGroup=new THREE.Group();scene.add(boxGroup);const resize=()=>{const w=canvas.clientWidth||600,h=canvas.clientHeight||400;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()};new ResizeObserver(resize).observe(canvas.parentElement);resize();(function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)})();updateModel()}
+function designOptionMarkup(){
+ const type=$("paintDesign").value,wrap=$("paintDesignOptions");let html="";
+ const color=(id,label,value)=>'<div class="field"><label for="'+id+'">'+label+'</label><div class="design-color"><input type="color" id="'+id+'" value="'+value+'"><span class="design-help">Choose a second color</span></div></div>';
+ if(type==="Splatter paint")html='<div class="design-grid">'+color("designColor","Splatter color","#f4f4f4")+'</div><div class="field"><label for="splatterAmount">Splatter coverage</label><select id="splatterAmount"><option>Light</option><option selected>Medium</option><option>Heavy</option></select></div><div class="design-help">The preview shows the selected splatter color and coverage.</div>';
+ else if(type==="Two-tone paint")html='<div class="design-grid">'+color("designColor","Second paint color","#ffffff")+'<div class="field"><label for="twoToneLayout">Color layout</label><select id="twoToneLayout"><option>Top and sides</option><option>Left and right</option><option>Horizontal split</option></select></div></div>';
+ else if(type==="Metallic / flake")html='<div class="field"><label for="flakeLevel">Metallic flake level</label><select id="flakeLevel"><option>Subtle</option><option selected>Medium</option><option>Heavy</option></select></div><div class="design-help">Adds a metallic finish to the preview. Actual appearance depends on paint and application.</div>';
+ else if(type==="Color fade / gradient")html='<div class="design-grid">'+color("designColor","Fade-to color","#ffffff")+'<div class="field"><label for="gradientDirection">Fade direction</label><select id="gradientDirection"><option>Front to back</option><option>Top to bottom</option><option>Left to right</option></select></div></div>';
+ else if(type==="Custom graphics / lettering")html='<div class="field"><label for="graphicText">Text or graphic description</label><input id="graphicText" maxlength="100" placeholder="Enter lettering or describe the graphic"></div><div class="field"><label for="graphicPlacement">Placement</label><select id="graphicPlacement"><option>Front panel</option><option>Top panel</option><option>Both sides</option></select></div><div class="design-help">Your graphic request is saved with the order for review.</div>';
+ else if(type==="Other custom design")html='<div class="field"><label for="otherDesign">Describe the custom design</label><textarea id="otherDesign" maxlength="300" rows="3" placeholder="Describe the custom paint design you want"></textarea></div>';
+ wrap.innerHTML=html;wrap.classList.toggle("hidden",type==="No custom design");
+ wrap.querySelectorAll("input,select,textarea").forEach(el=>{el.addEventListener("input",update);el.addEventListener("change",update)});
+}
+function createFinishMaterial(baseColor,finish){
+ const design=finish==="Paint"?$("paintDesign").value:"",mat=new THREE.MeshStandardMaterial({color:new THREE.Color(baseColor),roughness:finish==="Wrap"?.88:design==="Metallic / flake"?.28:.52,metalness:design==="Metallic / flake"?.42:0});
+ if(finish==="Paint"&&design!=="No custom design"){
+  const canvas=document.createElement("canvas");canvas.width=512;canvas.height=512;const ctx=canvas.getContext("2d"),secondary=$("designColor")?.value||"#f4f4f4";ctx.fillStyle=baseColor;ctx.fillRect(0,0,512,512);
+  if(design==="Splatter paint"){const amount=$("splatterAmount")?.value||"Medium",n=amount==="Light"?180:amount==="Heavy"?900:450;ctx.fillStyle=secondary;let seed=42;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};for(let i=0;i<n;i++){ctx.beginPath();ctx.arc(rand()*512,rand()*512,1+rand()*(amount==="Heavy"?7:4),0,Math.PI*2);ctx.fill()}}
+  else if(design==="Two-tone paint"){const layout=$("twoToneLayout")?.value||"Top and sides";ctx.fillStyle=secondary;if(layout==="Top and sides")ctx.fillRect(0,0,512,165);else if(layout==="Left and right"){ctx.fillRect(0,0,165,512);ctx.fillRect(347,0,165,512)}else ctx.fillRect(0,0,512,256)}
+  else if(design==="Metallic / flake"){const level=$("flakeLevel")?.value||"Medium",n=level==="Subtle"?600:level==="Heavy"?3600:1800;let seed=21;const rand=()=>{seed=(seed*1103515245+12345)>>>0;return seed/4294967296};ctx.fillStyle="#ffffff";for(let i=0;i<n;i++){ctx.globalAlpha=.12+rand()*.45;ctx.fillRect(rand()*512,rand()*512,1+rand()*2,1+rand()*2)}ctx.globalAlpha=1}
+  else if(design==="Color fade / gradient"){const direction=$("gradientDirection")?.value||"Front to back",g=direction==="Top to bottom"?ctx.createLinearGradient(0,0,0,512):ctx.createLinearGradient(0,0,512,0);g.addColorStop(0,baseColor);g.addColorStop(1,secondary);ctx.fillStyle=g;ctx.fillRect(0,0,512,512)}
+  else if(design==="Custom graphics / lettering"){const label=$("graphicText")?.value||"";if(label){ctx.fillStyle=secondary;ctx.font="bold 42px Arial";ctx.textAlign="center";ctx.fillText(label,256,270,470)}}
+  const tex=new THREE.CanvasTexture(canvas);tex.encoding=THREE.sRGBEncoding;mat.map=tex;mat.color.set("#ffffff");mat.needsUpdate=true;
+ }return mat;
+}
 function updateModel(){
  if(!boxGroup)return;
- while(boxGroup.children.length){
-  const obj=boxGroup.children.pop();
-  obj.traverse(n=>{if(n.geometry)n.geometry.dispose();if(n.material){if(Array.isArray(n.material))n.material.forEach(m=>m.dispose());else n.material.dispose()}});
- }
- const w=Number($("width").value),h=Number($("height").value),d=Number($("depth").value);
- const scale=34/Math.max(w,h,d),W=w*scale,H=h*scale,D=d*scale,t=Math.max(.42,scale*.75);
- const finish=document.querySelector('input[name="finish"]:checked').value,color=finishColor();
- const type=document.querySelector('input[name="boxType"]:checked').value,style=$("portStyle").value;
- const side=style.includes("side"),round=style.includes("Hole");
- const shellMat=new THREE.MeshStandardMaterial({color:new THREE.Color(color),roughness:finish==="Wrap"?.88:.48,metalness:finish==="Paint"&&$("paintDesign").value==="Metallic / flake"?.2:0});
- const innerMat=new THREE.MeshStandardMaterial({color:0x29323b,roughness:.94});
- const cavityMat=new THREE.MeshStandardMaterial({color:0x111820,roughness:1});
- const edgeMat=new THREE.LineBasicMaterial({color:0x202832,transparent:true,opacity:.7});
- const add=(geo,mat,x,y,z,rx=0,ry=0,rz=0)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);boxGroup.add(m);return m};
- const panel=(x,y,z,sx,sy,sz,mat=shellMat)=>add(new THREE.BoxGeometry(sx,sy,sz),mat,x,y,z);
- // Five solid cabinet panels form a hollow shell. The front is a viewing face
- // with a true aperture so the dark internal cavity remains visible.
- panel(0,H/2-t/2,0,W,t,D);
- panel(0,-H/2+t/2,0,W,t,D);
- panel(-W/2+t/2,0,0,t,H-2*t,D);
- panel(W/2-t/2,0,0,t,H-2*t,D);
- panel(0,0,-D/2+t/2,W-2*t,H-2*t,t,innerMat);
- // Dark internal surfaces emphasize the enclosure's hollow volume.
- panel(0,0,-D/2+t*.7,W-2*t,H-2*t,.035,cavityMat);
- const portW=Math.min(W*.24,Math.max(2.4*scale,W*.18));
- const portH=Math.min(H*.58,Math.max(3.4*scale,H*.48));
- const portR=Math.min(H*.18,W*.12,2.35*scale);
- const portX=side?0:-W*.34;
- const portY=0;
+ while(boxGroup.children.length){const obj=boxGroup.children.pop();obj.traverse(n=>{if(n.geometry)n.geometry.dispose();if(n.material){if(Array.isArray(n.material))n.material.forEach(m=>m.dispose());else n.material.dispose()}})}
+ const w=Number($("width").value),h=Number($("height").value),d=Number($("depth").value),scale=34/Math.max(w,h,d),W=w*scale,H=h*scale,D=d*scale,t=Math.max(.42,scale*.75);
+ const finish=document.querySelector('input[name="finish"]:checked').value,color=finishColor(),type=document.querySelector('input[name="boxType"]:checked').value,style=$("portStyle").value,side=style.includes("side"),round=style.includes("Hole");
+ const shellMat=createFinishMaterial(color,finish),innerMat=new THREE.MeshStandardMaterial({color:0x34302b,roughness:.95}),dark=new THREE.MeshStandardMaterial({color:0x090d12,roughness:1}),edges=new THREE.LineBasicMaterial({color:0x202832,transparent:true,opacity:.55});
+ const add=(geo,mat,x,y,z,rx=0,ry=0,rz=0)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);boxGroup.add(m);return m},panel=(x,y,z,sx,sy,sz,mat=shellMat)=>add(new THREE.BoxGeometry(sx,sy,sz),mat,x,y,z);
+ // A closed rectangular cabinet with a single real port aperture in the selected face.
+ panel(0,H/2-t/2,0,W,t,D);panel(0,-H/2+t/2,0,W,t,D);panel(-W/2+t/2,0,0,t,H-2*t,D);panel(W/2-t/2,0,0,t,H-2*t,D);panel(0,0,-D/2+t/2,W-2*t,H-2*t,t,innerMat);
+ const portW=Math.min(W*.24,Math.max(2.4*scale,W*.18)),portH=Math.min(H*.58,Math.max(3.4*scale,H*.48)),portR=Math.min(H*.18,W*.12,2.35*scale);
+ function faceWithOpening(fw,fh,x,y,z,ry){const shape=new THREE.Shape();shape.moveTo(-fw/2,-fh/2);shape.lineTo(fw/2,-fh/2);shape.lineTo(fw/2,fh/2);shape.lineTo(-fw/2,fh/2);shape.closePath();const hole=new THREE.Path();if(round)hole.absarc(0,0,portR,0,Math.PI*2,true);else{hole.moveTo(-portW/2,-portH/2);hole.lineTo(portW/2,-portH/2);hole.lineTo(portW/2,portH/2);hole.lineTo(-portW/2,portH/2);hole.closePath()}shape.holes.push(hole);add(new THREE.ShapeGeometry(shape,48),shellMat,x,y,z,0,ry,0)}
  if(type==="Ported"){
-  // Make a real hole in the selected face using ShapeGeometry holes.
-  const faceShape=new THREE.Shape();
-  const faceW=side?D-2*t:W-2*t;
-  faceShape.moveTo(-faceW/2,-H/2+t);faceShape.lineTo(faceW/2,-H/2+t);
-  faceShape.lineTo(faceW/2,H/2-t);faceShape.lineTo(-faceW/2,H/2-t);faceShape.closePath();
-  if(round){const hole=new THREE.Path();hole.absarc(0,0,portR,0,Math.PI*2,true);faceShape.holes.push(hole)}
-  else{const hole=new THREE.Path();hole.moveTo(-portW/2,-portH/2);hole.lineTo(portW/2,-portH/2);hole.lineTo(portW/2,portH/2);hole.lineTo(-portW/2,portH/2);hole.closePath();faceShape.holes.push(hole)}
-  const faceGeo=new THREE.ShapeGeometry(faceShape,48);
-  const faceMat=shellMat.clone();faceMat.transparent=true;faceMat.opacity=.34;faceMat.depthWrite=false;faceMat.side=THREE.DoubleSide;
-  if(side)add(faceGeo,faceMat,W/2-t/2,0,0,0,Math.PI/2,0);
-  else add(faceGeo,faceMat,0,0,D/2-t/2);
-  // Recessed dark port throat sits behind the opening, never a speaker or cone.
-  if(round){
-   if(side){
-    add(new THREE.CylinderGeometry(portR*.94,portR*.94,Math.min(D*.62,8*scale),48),cavityMat,W/2-t*1.5,0,0,0,0,Math.PI/2);
-   }else{
-    add(new THREE.CylinderGeometry(portR*.94,portR*.94,Math.min(D*.62,8*scale),48),cavityMat,0,0,D/2-Math.min(D*.31,4*scale),Math.PI/2);
-   }
-  }else{
-   if(side)panel(W/2-t*1.5,0,0,Math.min(D*.62,8*scale),portH*.94,portW*.94,cavityMat);
-   else panel(0,0,D/2-Math.min(D*.31,4*scale),portW*.94,portH*.94,Math.min(D*.62,8*scale),cavityMat);
-  }
- }else{
-  // Sealed cabinet: subtle transparent viewing face, no driver cut-outs.
-  const faceMat=shellMat.clone();faceMat.transparent=true;faceMat.opacity=.30;faceMat.depthWrite=false;faceMat.side=THREE.DoubleSide;
-  const face=new THREE.PlaneGeometry(W-2*t,H-2*t);
-  add(face,faceMat,0,0,D/2-t/2);
- }
- const outline=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,D)),edgeMat);
- boxGroup.add(outline);
- boxGroup.rotation.set(0,-.12,0);
- const maxDim=Math.max(W,H,D);
- camera.position.set(maxDim*1.75,maxDim*1.28,maxDim*1.95);
- controls.target.set(0,0,0);controls.update();
- $("specDimensions").textContent=w+" × "+h+" × "+d+" in";
- $("specType").textContent=type;
- $("specMaterial").textContent=$("material").value;
- $("specFinish").textContent=finish+(finish==="Paint"?" · "+$("paintColor").value:finish==="Wrap"?" · "+$("wrapType").value+" / "+$("wrapColor").value:"");
+  if(side){panel(0,0,D/2-t/2,W-2*t,H-2*t,t);faceWithOpening(D-2*t,H-2*t,W/2-t/2,0,0,Math.PI/2)}
+  else faceWithOpening(W-2*t,H-2*t,0,0,D/2-t/2,0);
+  const len=Math.min((side?W:D)*.62,8*scale);
+  if(round){if(side)add(new THREE.CylinderGeometry(portR*.96,portR*.96,len,48),dark,W/2-t-len/2,0,0,0,0,Math.PI/2);else add(new THREE.CylinderGeometry(portR*.96,portR*.96,len,48),dark,0,0,D/2-t-len/2,Math.PI/2)}
+  else{if(side)panel(W/2-t-len/2,0,0,len,portH*.96,portW*.96,dark);else panel(0,0,D/2-t-len/2,portW*.96,portH*.96,len,dark)}
+ }else panel(0,0,D/2-t/2,W-2*t,H-2*t,t);
+ boxGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,D)),edges));boxGroup.rotation.set(0,-.10,0);
+ const m=Math.max(W,H,D);camera.position.set(m*1.75,m*1.25,m*2.05);controls.target.set(0,0,0);controls.update();
+ $("specDimensions").textContent=w+" × "+h+" × "+d+" in";$("specType").textContent=type;$("specMaterial").textContent=$("material").value;$("specFinish").textContent=finish+(finish==="Paint"?" · "+$("paintColor").value+" · "+$("paintDesign").value:finish==="Wrap"?" · "+$("wrapType").value+" / "+$("wrapColor").value:"");
 }
 function enclosureSurfaceSqFt(){const w=Number($("width").value),h=Number($("height").value),d=Number($("depth").value);return 2*(w*h+w*d+h*d)/144}
 function calcWeight(){const surface=enclosureSurfaceSqFt();const density=MATERIAL_DENSITY_LB_SQFT[$("material").value]||2.30;return Math.round(surface*.75*density*1.25*10)/10}
-function calcBuildCost(){const surface=enclosureSurfaceSqFt();const cutArea=surface*1.25;const sheets=Math.max(1,Math.ceil(cutArea/32));const material=MATERIAL_SHEET_PRICES[$("material").value]||49.98;const wood=sheets*material;const finish=document.querySelector('input[name="finish"]:checked').value;let finishCost=0,finishLabel="Raw finish";if(finish==="Paint"){finishCost=surface*.22+5;finishLabel="Estimated primer, paint, and application supplies";if($("paintDesign").value!=="No custom design")finishCost+=8}else if(finish==="Wrap"){finishCost=surface*(49.99/60)+9.97;finishLabel="Estimated vinyl wrap material and adhesive"}const consumables=12;const total=wood+finishCost+consumables;return{surfaceSqFt:surface,sheetCount:sheets,sheetPrice:material,woodCost:wood,finishCost,finishLabel,consumables,total:Math.round(total*100)/100}}
+function calcBuildCost(){const surface=enclosureSurfaceSqFt();const cutArea=surface*1.25;const sheets=Math.max(1,Math.ceil(cutArea/32));const material=MATERIAL_SHEET_PRICES[$("material").value]||49.98;const wood=sheets*material;const finish=document.querySelector('input[name="finish"]:checked').value;let finishCost=0,finishLabel="Raw finish";if(finish==="Paint"){finishCost=surface*.22+5;finishLabel="Estimated primer, paint, and application supplies";if($("paintDesign").value==="Splatter paint")finishCost+=12;else if($("paintDesign").value==="Two-tone paint")finishCost+=15;else if($("paintDesign").value==="Metallic / flake")finishCost+=18;else if($("paintDesign").value==="Color fade / gradient")finishCost+=15;else if($("paintDesign").value==="Custom graphics / lettering")finishCost+=20;else if($("paintDesign").value==="Other custom design")finishCost+=12}else if(finish==="Wrap"){finishCost=surface*(49.99/60)+9.97;finishLabel="Estimated vinyl wrap material and adhesive"}const consumables=12;const total=wood+finishCost+consumables;return{surfaceSqFt:surface,sheetCount:sheets,sheetPrice:material,woodCost:wood,finishCost,finishLabel,consumables,total:Math.round(total*100)/100}}
 
-function config(){const type=document.querySelector('input[name="boxType"]:checked').value,finish=document.querySelector('input[name="finish"]:checked').value;return{material:$("material").value,width:Number($("width").value),height:Number($("height").value),depth:Number($("depth").value),type,portStyle:type==="Ported"?$("portStyle").value:"",finish,paintColor:finish==="Paint"?$("paintColor").value:"Not applicable",customPaintColor:"",paintDesign:finish==="Paint"?$("paintDesign").value:"",paintNotes:finish==="Paint"?$("paintNotes").value.trim():"",wrapType:finish==="Wrap"?$("wrapType").value:"",wrapColor:finish==="Wrap"?$("wrapColor").value:"",customWrapColor:finish==="Wrap"&&$("wrapColor").value==="Custom Color"?$("customWrap").value:"",wrapNotes:finish==="Wrap"?$("wrapNotes").value.trim():"",rawMaterial:finish==="Raw"?$("rawMaterial").value:"",model:$("model").value.trim(),size:$("size").value,quantity:Number($("quantity").value),tuning:type==="Ported"?Number($("tuning").value):null,weightLb:calcWeight(),buildCost:calcBuildCost().total,costBreakdown:calcBuildCost()}}
+function config(){const type=document.querySelector('input[name="boxType"]:checked').value,finish=document.querySelector('input[name="finish"]:checked').value;return{material:$("material").value,width:Number($("width").value),height:Number($("height").value),depth:Number($("depth").value),type,portStyle:type==="Ported"?$("portStyle").value:"",finish,paintColor:finish==="Paint"?$("paintColor").value:"Not applicable",customPaintColor:"",paintDesign:finish==="Paint"?$("paintDesign").value:"",paintDesignDetails:finish==="Paint"?{secondaryColor:$("designColor")?.value||"",splatterAmount:$("splatterAmount")?.value||"",twoToneLayout:$("twoToneLayout")?.value||"",flakeLevel:$("flakeLevel")?.value||"",gradientDirection:$("gradientDirection")?.value||"",graphicText:$("graphicText")?.value||"",graphicPlacement:$("graphicPlacement")?.value||"",otherDesign:$("otherDesign")?.value||""):{},wrapType:finish==="Wrap"?$("wrapType").value:"",wrapColor:finish==="Wrap"?$("wrapColor").value:"",customWrapColor:finish==="Wrap"&&$("wrapColor").value==="Custom Color"?$("customWrap").value:"",wrapNotes:finish==="Wrap"?$("wrapNotes").value.trim():"",rawMaterial:finish==="Raw"?$("rawMaterial").value:"",model:$("model").value.trim(),size:$("size").value,quantity:Number($("quantity").value),tuning:type==="Ported"?Number($("tuning").value):null,weightLb:calcWeight(),buildCost:calcBuildCost().total,costBreakdown:calcBuildCost()}}
 function previewImage(){try{renderer.render(scene,camera);const c=document.createElement("canvas");c.width=420;c.height=270;const ctx=c.getContext("2d");ctx.fillStyle="#f5f7f9";ctx.fillRect(0,0,420,270);const src=$("modelCanvas");const scale=Math.min(420/src.width,270/src.height);const w=src.width*scale,h=src.height*scale;ctx.drawImage(src,(420-w)/2,(270-h)/2,w,h);return c.toDataURL("image/jpeg",.58)}catch(e){return""}}
 function update(){const finish=document.querySelector('input[name="finish"]:checked').value,type=document.querySelector('input[name="boxType"]:checked').value;$("paintHex").textContent=$("paintColor").value.toUpperCase();$("wrapHex").textContent=$("wrapColor").value.toUpperCase();$("paintSwatch").style.background=$("paintColor").value;$("wrapSwatch").style.background=$("wrapColor").value;$("portOptions").classList.toggle("hidden",type!=="Ported");$("tuningField").classList.toggle("hidden",type!=="Ported");$("paintOptions").classList.toggle("hidden",finish!=="Paint");$("wrapOptions").classList.toggle("hidden",finish!=="Wrap");$("rawOptions").classList.toggle("hidden",finish!=="Raw");$("customPaintWrap").classList.toggle("hidden",finish!=="Paint"||$("paintDesign").value!=="Other custom design");$("weight").textContent=calcWeight().toFixed(1)+" lb";const costs=calcBuildCost();$("buildCost").textContent="$"+costs.total.toFixed(2);updateModel()}
-document.querySelectorAll("input,select,textarea").forEach(el=>{el.addEventListener("input",update);el.addEventListener("change",update)});
+document.querySelectorAll("input,select,textarea").forEach(el=>{el.addEventListener("input",update);el.addEventListener("change",update)});$("paintDesign").addEventListener("change",()=>{designOptionMarkup();update()});designOptionMarkup();
 document.addEventListener("change",event=>{if(event.target.matches('input[name="finish"],input[name="boxType"]'))requestAnimationFrame(update)},true);
 document.addEventListener("input",event=>{if(event.target.matches('input[type="color"]')){requestAnimationFrame(update)}},true);$("paintColor").addEventListener("input",update);$("paintColor").addEventListener("change",update);$("wrapColor").addEventListener("input",update);$("wrapColor").addEventListener("change",update);
 $("boxForm").addEventListener("submit",function(e){e.preventDefault();const status=$("status");if(!$("model").value.trim()){status.textContent="Enter your subwoofer brand and model before adding the box.";status.classList.add("error");$("model").focus();return}const q=config();const details="Custom subwoofer enclosure — "+q.type+" — "+q.quantity+" × "+q.size+" in ("+q.material+")";const item={name:details,category:"enclosure",price:Number(q.buildCost)||0,qty:1,weightLb:q.weightLb,configuration:q,previewImage:previewImage()};try{const cart=JSON.parse(localStorage.getItem(cartKey)||"[]");if(!Array.isArray(cart))throw new Error("Invalid cart");cart.push(item);localStorage.setItem(cartKey,JSON.stringify(cart));localStorage.setItem("enclosureLabCustomBoxConfig",JSON.stringify(q));if(JSON.parse(localStorage.getItem(cartKey)||"[]").length!==cart.length)throw new Error("Cart verification failed");status.classList.remove("error");status.textContent="Box added. Taking you to checkout…";if(window.parent&&window.parent!==window){window.parent.postMessage({type:"el-open-checkout"},location.origin)}else{window.location.href=new URL("checkout.html",location.href).href}}catch(err){status.textContent="Your browser could not save this box. Please allow site storage and try again.";status.classList.add("error")}});
