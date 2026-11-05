@@ -26,6 +26,7 @@ create table if not exists public.enclosure_orders (
 alter table public.enclosure_orders enable row level security;
 grant insert on public.enclosure_orders to anon, authenticated;
 grant select, update on public.enclosure_orders to authenticated;
+grant delete on public.enclosure_orders to authenticated;
 drop policy if exists "Customers can submit orders" on public.enclosure_orders;
 create policy "Customers can submit orders"
  on public.enclosure_orders for insert to anon, authenticated
@@ -57,6 +58,17 @@ create policy "Only Lawson can mark orders complete"
    where p.user_id=auth.uid() and p.role='manager' and p.approved=true
   )
  );
+drop policy if exists "Only Lawson can delete orders" on public.enclosure_orders;
+create policy "Only Lawson can delete orders"
+ on public.enclosure_orders for delete to authenticated
+ using (
+  lower(coalesce(auth.jwt()->>'email',''))='lawsonhughes53@gmail.com'
+  and exists (
+   select 1 from public.employee_profiles p
+   where p.user_id=auth.uid() and p.role='manager' and p.approved=true
+  )
+ );
+
 create index if not exists enclosure_orders_active_created_idx
  on public.enclosure_orders (created_at desc) where completed_at is null;
 
