@@ -327,10 +327,10 @@ function updateModel(){
  function slotTunnelSide(length){
   const wall=Math.min(t*.72,portW*.18,portH*.18);
   // Slot width runs along enclosure depth on the side face.
-  panel(W/2-t-length/2,portH/2-wall/2,0,length,wall,portW,shellMat);
-  panel(W/2-t-length/2,-portH/2+wall/2,0,length,wall,portW,shellMat);
-  panel(W/2-t-length/2,0,-portW/2+wall/2,length,portH-2*wall,wall,shellMat);
-  panel(W/2-t-length/2,0,portW/2-wall/2,length,portH-2*wall,wall,shellMat);
+  panel(W/2+.012-length/2,portH/2-wall/2,0,length,wall,portW,shellMat);
+  panel(W/2+.012-length/2,-portH/2+wall/2,0,length,wall,portW,shellMat);
+  panel(W/2+.012-length/2,0,-portW/2+wall/2,length,portH-2*wall,wall,shellMat);
+  panel(W/2+.012-length/2,0,portW/2-wall/2,length,portH-2*wall,wall,shellMat);
  }
  function roundTunnelFront(length,centerX=0){
   // A hollow cylindrical duct centered directly behind the circular front-panel opening.
@@ -339,7 +339,7 @@ function updateModel(){
   add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length*.995,48,1,true),darkMat,centerX,0,z,Math.PI/2);
  }
  function roundTunnelSide(length){
-  const centerX=W/2-t-length/2;
+  const centerX=W/2+.012-length/2;
   add(new THREE.CylinderGeometry(portR,portR,length,64,1,true),shellMat,centerX,0,0,0,0,Math.PI/2);
   add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length*.995,64,1,true),darkMat,centerX,0,0,0,0,Math.PI/2);
  }
