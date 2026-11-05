@@ -335,88 +335,73 @@ function updateModel(){
  }
  function addPreviewSubwoofer(){
   if(!previewSubwoofer)return;
-  const r=selectedSubSize*scale*.49;
-  const faceZ=D/2+.035;
+  const r=selectedSubSize*scale*.49, faceZ=D/2+.035;
   const driver=new THREE.Group();boxGroup.add(driver);
-  const cast=new THREE.MeshStandardMaterial({color:0x171a1e,metalness:.72,roughness:.34});
-  const edgeMetal=new THREE.MeshStandardMaterial({color:0x343a40,metalness:.86,roughness:.27});
-  const rubber=new THREE.MeshStandardMaterial({color:0x090b0e,metalness:.02,roughness:.9});
-  const coneMat=new THREE.MeshStandardMaterial({color:0x101317,metalness:.12,roughness:.76,side:THREE.DoubleSide});
-  const motorMat=new THREE.MeshStandardMaterial({color:0x20252b,metalness:.78,roughness:.32});
-  const highlight=new THREE.MeshStandardMaterial({color:0x555d65,metalness:.88,roughness:.24});
+  const cast=new THREE.MeshStandardMaterial({color:0x111418,metalness:.34,roughness:.62});
+  const edgeMetal=new THREE.MeshStandardMaterial({color:0x252a30,metalness:.48,roughness:.48});
+  const rubber=new THREE.MeshStandardMaterial({color:0x080a0d,metalness:.01,roughness:.94});
+  const coneMat=new THREE.MeshStandardMaterial({color:0x0b0e12,metalness:.04,roughness:.86,side:THREE.DoubleSide});
+  const motorMat=new THREE.MeshStandardMaterial({color:0x171b20,metalness:.38,roughness:.58});
+  const trim=new THREE.MeshStandardMaterial({color:0x30363d,metalness:.52,roughness:.45});
   const torus=(rad,tube,z,mat)=>{const m=new THREE.Mesh(new THREE.TorusGeometry(rad,tube,18,120),mat);m.position.z=z;driver.add(m);return m};
   const cyl=(rad,len,z,mat)=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(rad,rad,len,80),mat);m.rotation.x=Math.PI/2;m.position.z=z;driver.add(m);return m};
-  const bolt=(x,y,z)=>{
-   const b=new THREE.Mesh(new THREE.CylinderGeometry(r*.021,r*.021,r*.018,24),edgeMetal);b.rotation.x=Math.PI/2;b.position.set(x,y,z);driver.add(b);
-   const slot=new THREE.Mesh(new THREE.BoxGeometry(r*.025,r*.006,r*.004),rubber);slot.position.set(x,y,z+r*.011);driver.add(slot);
-  };
-  // Thick stamped mounting flange with a recessed gasket channel.
+  const bolt=(x,y,z)=>{const b=new THREE.Mesh(new THREE.CylinderGeometry(r*.018,r*.018,r*.014,20),edgeMetal);b.rotation.x=Math.PI/2;b.position.set(x,y,z);driver.add(b)};
+  // Shared heavy mounting flange, gasket and recessed fasteners.
   cyl(r*.985,r*.085,faceZ,cast);
-  torus(r*.965,r*.016,faceZ+r*.048,highlight);
+  torus(r*.965,r*.016,faceZ+r*.048,trim);
   torus(r*.91,r*.026,faceZ+r*.054,rubber);
   torus(r*.855,r*.018,faceZ+r*.065,edgeMetal);
   for(let n=0;n<12;n++){const a=n*Math.PI/6;bolt(Math.cos(a)*r*.925,Math.sin(a)*r*.925,faceZ+r*.058)}
   if(previewMount==="regular"){
-   // Deep, rounded high-roll surround. Several nested radii give it a molded rubber profile.
+   // Rounded high-roll surround; cone outer lip now overlaps its inner landing edge.
    torus(r*.805,r*.082,faceZ+r*.105,rubber);
    torus(r*.805,r*.048,faceZ+r*.145,rubber);
    torus(r*.735,r*.018,faceZ+r*.165,cast);
-   // Concave cone: outer edge is forward, center is recessed toward the enclosure.
    const profile=[
     new THREE.Vector2(0,0),
-    new THREE.Vector2(r*.12,r*.012),
-    new THREE.Vector2(r*.24,r*.035),
-    new THREE.Vector2(r*.39,r*.085),
-    new THREE.Vector2(r*.55,r*.155),
-    new THREE.Vector2(r*.68,r*.225),
-    new THREE.Vector2(r*.755,r*.255),
-    new THREE.Vector2(r*.78,r*.255)
+    new THREE.Vector2(r*.12,r*.008),
+    new THREE.Vector2(r*.25,r*.022),
+    new THREE.Vector2(r*.40,r*.045),
+    new THREE.Vector2(r*.55,r*.082),
+    new THREE.Vector2(r*.67,r*.125),
+    new THREE.Vector2(r*.745,r*.165),
+    new THREE.Vector2(r*.78,r*.17)
    ];
    const cone=new THREE.Mesh(new THREE.LatheGeometry(profile,128),coneMat);
-   cone.rotation.x=Math.PI/2;cone.position.z=faceZ+r*.11;driver.add(cone);
-   // Subtle concentric cone-roll detailing and recessed dust-cap seat.
-   torus(r*.47,r*.008,faceZ+r*.205,cast);
-   torus(r*.285,r*.014,faceZ+r*.135,edgeMetal);
+   cone.rotation.x=Math.PI/2;cone.position.z=faceZ+r*.025;driver.add(cone);
+   torus(r*.47,r*.008,faceZ+r*.071,edgeMetal);
+   torus(r*.285,r*.014,faceZ+r*.042,cast);
    const cap=new THREE.Mesh(new THREE.SphereGeometry(r*.205,64,40),rubber);
-   cap.scale.z=.34;cap.position.set(0,0,faceZ+r*.17);driver.add(cap);
-   torus(r*.207,r*.012,faceZ+r*.185,cast);
+   cap.scale.z=.34;cap.position.set(0,0,faceZ+r*.055);driver.add(cap);
+   torus(r*.207,r*.012,faceZ+r*.065,cast);
    if(enclosureLogoTexture){
     const badge=new THREE.Mesh(new THREE.CircleGeometry(r*.174,80),new THREE.MeshBasicMaterial({map:enclosureLogoTexture,side:THREE.DoubleSide,toneMapped:false}));
-    badge.position.set(0,0,faceZ+r*.242);driver.add(badge);
-   }else{torus(r*.13,r*.009,faceZ+r*.24,highlight)}
+    badge.position.set(0,0,faceZ+r*.125);driver.add(badge);
+   }else{torus(r*.13,r*.009,faceZ+r*.12,trim)}
   }else{
-   // Same driver viewed from behind: heavy cast basket, broad curved spokes and stacked motor.
-   const rimZ=faceZ+r*.12, motorZ=faceZ+r*.86, motorR=r*.405;
+   // Rear view of the same driver: one-piece cast basket and a single motor/magnet stack.
+   const rimZ=faceZ+r*.12, motorZ=faceZ+r*.78, motorR=r*.39;
    torus(r*.82,r*.065,rimZ,cast);
-   torus(r*.765,r*.028,rimZ+r*.045,edgeMetal);
-   for(let n=0;n<10;n++){
-    const a=n*Math.PI*2/10;
+   torus(r*.765,r*.025,rimZ+r*.035,edgeMetal);
+   for(let n=0;n<8;n++){
+    const a=n*Math.PI/4;
     const p0=new THREE.Vector3(Math.cos(a)*r*.77,Math.sin(a)*r*.77,rimZ+r*.015);
-    const p1=new THREE.Vector3(Math.cos(a)*r*.69,Math.sin(a)*r*.69,faceZ+r*.37);
-    const p2=new THREE.Vector3(Math.cos(a)*r*.52,Math.sin(a)*r*.52,faceZ+r*.65);
+    const p1=new THREE.Vector3(Math.cos(a)*r*.70,Math.sin(a)*r*.70,faceZ+r*.34);
+    const p2=new THREE.Vector3(Math.cos(a)*r*.53,Math.sin(a)*r*.53,faceZ+r*.59);
     const p3=new THREE.Vector3(Math.cos(a)*motorR,Math.sin(a)*motorR,motorZ);
     const curve=new THREE.CatmullRomCurve3([p0,p1,p2,p3]);
-    const spoke=new THREE.Mesh(new THREE.TubeGeometry(curve,32,r*.052,12,false),cast);driver.add(spoke);
-    // Narrow raised rib on each cast arm catches studio highlights.
-    const ribCurve=new THREE.CatmullRomCurve3([
-     p0.clone().multiplyScalar(.985).add(new THREE.Vector3(0,0,r*.035)),
-     p1.clone().multiplyScalar(.985).add(new THREE.Vector3(0,0,r*.035)),
-     p2.clone().multiplyScalar(.985).add(new THREE.Vector3(0,0,r*.035))
-    ]);
-    driver.add(new THREE.Mesh(new THREE.TubeGeometry(ribCurve,24,r*.012,8,false),highlight));
+    driver.add(new THREE.Mesh(new THREE.TubeGeometry(curve,36,r*.061,12,false),cast));
    }
-   // Multi-stage motor stack with a wide top plate, magnet body and vented pole.
-   torus(motorR*1.12,r*.035,motorZ,edgeMetal);
-   cyl(motorR, r*.20, motorZ+r*.12, edgeMetal);
-   cyl(motorR*.91,r*.27,motorZ+r*.34,motorMat);
-   torus(motorR*.92,r*.018,motorZ+r*.22,highlight);
-   torus(motorR*.92,r*.018,motorZ+r*.46,cast);
-   cyl(motorR*.72,r*.15,motorZ+r*.55,cast);
-   cyl(motorR*.34,r*.28,motorZ+r*.72,motorMat);
-   cyl(motorR*.19,r*.34,motorZ+r*.83,edgeMetal);
-   torus(motorR*.36,r*.018,motorZ+r*.64,highlight);
-   // Rear vent opening and center pole detail.
-   cyl(motorR*.115,r*.025,motorZ+r*.99,rubber);
+   // A single broad magnet body, bounded by one top and one bottom steel plate.
+   cyl(motorR*1.12,r*.075,motorZ-r*.035,edgeMetal);
+   cyl(motorR,r*.39,motorZ+r*.185,motorMat);
+   torus(motorR*.99,r*.012,motorZ+r*.39,trim);
+   cyl(motorR*1.10,r*.075,motorZ+r*.425,edgeMetal);
+   // Central pole/vent extends from the magnet; it is not another magnet.
+   cyl(motorR*.30,r*.28,motorZ+r*.56,cast);
+   cyl(motorR*.17,r*.22,motorZ+r*.72,edgeMetal);
+   cyl(motorR*.105,r*.018,motorZ+r*.84,rubber);
+   // Small recessed fasteners around the basket rim.
    for(let n=0;n<8;n++){const a=n*Math.PI/4;bolt(Math.cos(a)*r*.925,Math.sin(a)*r*.925,faceZ+r*.07)}
   }
  }
