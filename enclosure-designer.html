@@ -178,7 +178,7 @@ function setupWheel(id){
  slider.value=Math.max(10,Math.round(hsv.v*100));apply();
 }
 function finishColor(){const finish=document.querySelector('input[name="finish"]:checked').value;if(finish==="Paint"){return $("paintColor").value}if(finish==="Wrap"){return $("wrapColor").value}return "#b58c5a"}
-function init3D(){const canvas=$("modelCanvas");if(!window.THREE||!canvas)return;scene=new THREE.Scene();scene.background=new THREE.Color("#ffffff");camera=new THREE.PerspectiveCamera(34,1,.1,1000);camera.position.set(48,38,48);renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;controls=new THREE.OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.075;scene.add(new THREE.HemisphereLight(0xffffff,0x8c8174,1.25));const key=new THREE.DirectionalLight(0xfff5e8,2.15);key.position.set(-32,48,42);key.castShadow=true;key.shadow.mapSize.set(2048,2048);key.shadow.camera.near=1;key.shadow.camera.far=180;key.shadow.bias=-.00025;key.shadow.radius=5;scene.add(key);const fill=new THREE.DirectionalLight(0xffffff,.85);fill.position.set(38,22,12);scene.add(fill);const rim=new THREE.DirectionalLight(0xffffff,1.05);rim.position.set(-12,28,-42);scene.add(rim);boxGroup=new THREE.Group();scene.add(boxGroup);studioFloor=new THREE.Mesh(new THREE.PlaneGeometry(300,300),new THREE.ShadowMaterial({color:0x000000,opacity:.19}));studioFloor.rotation.x=-Math.PI/2;studioFloor.receiveShadow=true;scene.add(studioFloor);const resize=()=>{const w=canvas.clientWidth||600,h=canvas.clientHeight||400;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()};new ResizeObserver(resize).observe(canvas.parentElement);resize();(function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)})();updateModel()}
+function init3D(){const canvas=$("modelCanvas");if(!window.THREE||!canvas)return;scene=new THREE.Scene();scene.background=new THREE.Color("#ffffff");camera=new THREE.PerspectiveCamera(34,1,.1,1000);camera.position.set(48,38,48);renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=false;controls=new THREE.OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.075;scene.add(new THREE.HemisphereLight(0xffffff,0x8c8174,1.25));const key=new THREE.DirectionalLight(0xfff5e8,2.15);key.position.set(-32,48,42);key.castShadow=false;scene.add(key);const fill=new THREE.DirectionalLight(0xffffff,.85);fill.position.set(38,22,12);scene.add(fill);const rim=new THREE.DirectionalLight(0xffffff,1.05);rim.position.set(-12,28,-42);scene.add(rim);boxGroup=new THREE.Group();scene.add(boxGroup);studioFloor=null;const resize=()=>{const w=canvas.clientWidth||600,h=canvas.clientHeight||400;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()};new ResizeObserver(resize).observe(canvas.parentElement);resize();(function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)})();updateModel()}
 function designOptionMarkup(){
  const type=$("paintDesign").value,wrap=$("paintDesignOptions");let html="";
  const color=(id,label,value)=>'<div class="field"><label for="'+id+'">'+label+'</label><div class="design-color"><input type="color" id="'+id+'" value="'+value+'"><span class="design-help">Choose a second color</span></div></div>';
@@ -196,7 +196,7 @@ function createFinishMaterial(baseColor,finish){
  const wrap=finish==="Wrap"?$("wrapType").value:"";
  const mat=new THREE.MeshStandardMaterial({
   color:new THREE.Color(baseColor),
-  roughness:finish==="Raw"?.94:finish==="Wrap"?(wrap==="Smooth vinyl"?.42:wrap==="Leather-look vinyl"?.62:wrap==="Automotive suede"?.96:wrap==="Automotive carpet"?.98:.72):(design==="Metallic / flake"?.28:.52),
+  roughness:finish==="Raw"?.94:finish==="Wrap"?(wrap==="Vinyl"?.42:wrap==="Leather"?.62:wrap==="Suede"?.96:wrap==="Carpet"?.98:wrap==="Forged Carbon Fiber"?.48:wrap==="Carbon Fiber"?.42:.72):(design==="Metallic / flake"?.28:.52),
   metalness:design==="Metallic / flake"?.42:0
  });
  const canvas=document.createElement("canvas");canvas.width=512;canvas.height=512;
@@ -205,13 +205,12 @@ function createFinishMaterial(baseColor,finish){
  if(finish==="Raw"){
   // Warm, fine MDF fiber with faint directional sanding/grain and natural tonal variation.
   textured=true;let seed=241;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
-  for(let i=0;i<36000;i++){const light=rand()>.51;ctx.fillStyle=light?"rgba(255,247,230,.13)":"rgba(82,55,31,.105)";const x=rand()*512,y=rand()*512;ctx.fillRect(x,y,.45+rand()*1.1,.7+rand()*3.8)}
-  for(let i=0;i<180;i++){const y=rand()*512;ctx.strokeStyle=rand()>.5?"rgba(255,249,235,.10)":"rgba(95,67,43,.075)";ctx.lineWidth=.35+rand()*.65;ctx.beginPath();ctx.moveTo(0,y);ctx.bezierCurveTo(130,y+(rand()-.5)*5,360,y+(rand()-.5)*5,512,y+(rand()-.5)*4);ctx.stroke()}
-  const wash=ctx.createLinearGradient(0,0,512,512);wash.addColorStop(0,"rgba(255,255,255,.075)");wash.addColorStop(.52,"rgba(255,255,255,0)");wash.addColorStop(1,"rgba(70,43,22,.085)");ctx.fillStyle=wash;ctx.fillRect(0,0,512,512);
+  for(let i=0;i<52000;i++){const light=rand()>.52;ctx.fillStyle=light?"rgba(255,247,230,.12)":"rgba(82,55,31,.085)";const x=rand()*512,y=rand()*512,r=.35+rand()*.75;ctx.fillRect(x,y,r,r)}
+  const wash=ctx.createRadialGradient(256,256,40,256,256,360);wash.addColorStop(0,"rgba(255,255,255,.035)");wash.addColorStop(1,"rgba(70,43,22,.045)");ctx.fillStyle=wash;ctx.fillRect(0,0,512,512);
  }
  if(finish==="Wrap"){
   textured=true;
-  if(wrap==="Carbon fiber vinyl"){
+  if(wrap==="Carbon Fiber"){
    // Repeating diagonal carbon-fiber weave.
    ctx.fillStyle="#15191d";ctx.fillRect(0,0,512,512);
    for(let y=-32;y<544;y+=16)for(let x=-32;x<544;x+=16){
@@ -220,18 +219,18 @@ function createFinishMaterial(baseColor,finish){
     ctx.fillStyle="rgba(255,255,255,.20)";ctx.fillRect(x+2,y+2,11,1);
     ctx.fillStyle="rgba(0,0,0,.42)";ctx.fillRect(x+1,y+9,14,5);
    }
-  }else if(wrap==="Forged carbon fiber"){
+  }else if(wrap==="Forged Carbon Fiber"){
    // Irregular chopped-fiber flakes for forged-carbon appearance.
    ctx.fillStyle="#171b20";ctx.fillRect(0,0,512,512);
    let seed=87;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
    for(let i=0;i<1250;i++){const x=rand()*512,y=rand()*512,a=rand()*Math.PI,len=5+rand()*22,w=1+rand()*4;ctx.save();ctx.translate(x,y);ctx.rotate(a);ctx.fillStyle=["#626a70","#343b42","#858c91","#20262b"][Math.floor(rand()*4)];ctx.globalAlpha=.45+rand()*.5;ctx.fillRect(-len/2,-w/2,len,w);ctx.restore()}
-  }else if(wrap==="Automotive carpet"){
+  }else if(wrap==="Carpet"){
    let seed=33;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
    for(let i=0;i<24000;i++){const v=rand()>.5?255:0;ctx.fillStyle="rgba("+v+","+v+","+v+","+(0.025+rand()*.10)+")";ctx.fillRect(rand()*512,rand()*512,1,2+rand()*3)}
-  }else if(wrap==="Automotive suede"){
+  }else if(wrap==="Suede"){
    let seed=12;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
    for(let i=0;i<13000;i++){ctx.fillStyle="rgba(255,255,255,"+(rand()*.045)+")";ctx.fillRect(rand()*512,rand()*512,1,1+rand()*5)}
-  }else if(wrap==="Leather-look vinyl"){
+  }else if(wrap==="Leather"){
    ctx.strokeStyle="rgba(0,0,0,.10)";ctx.lineWidth=1;
    for(let y=0;y<512;y+=13){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(512,y);ctx.stroke()}
    for(let x=0;x<512;x+=13){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,512);ctx.stroke()}
@@ -250,8 +249,8 @@ function createFinishMaterial(baseColor,finish){
  }
  if(textured){
   const tex=new THREE.CanvasTexture(canvas);tex.encoding=THREE.sRGBEncoding;tex.wrapS=tex.wrapT=THREE.RepeatWrapping;tex.needsUpdate=true;mat.map=tex;
-  if(finish==="Wrap"&&wrap==="Carbon fiber vinyl")mat.roughness=.42;
-  if(finish==="Wrap"&&wrap==="Forged carbon fiber")mat.roughness=.48;
+  if(finish==="Wrap"&&wrap==="Carbon Fiber")mat.roughness=.42;
+  if(finish==="Wrap"&&wrap==="Forged Carbon Fiber")mat.roughness=.48;
   mat.color.set("#ffffff");mat.needsUpdate=true;
  }
  return mat;
@@ -262,10 +261,10 @@ function updateModel(){
  while(boxGroup.children.length){const obj=boxGroup.children.pop();obj.traverse(n=>{if(n.geometry)n.geometry.dispose();if(n.material){if(Array.isArray(n.material))n.material.forEach(m=>m.dispose());else n.material.dispose()}})}
  const w=Number($("width").value),h=Number($("height").value),d=Number($("depth").value);
  const scale=34/Math.max(w,h,d),W=w*scale,H=h*scale,D=d*scale,t=Math.max(.42,scale*.75);
- if(studioFloor)studioFloor.position.y=-H/2-.06;
+ 
  const finish=document.querySelector('input[name="finish"]:checked').value,color=finishColor(),type=document.querySelector('input[name="boxType"]:checked').value,style=document.querySelector('input[name="portStyle"]:checked').value,side=style.includes("side"),round=style.includes("Hole");
- const shellMat=createFinishMaterial(color,finish),innerMat=new THREE.MeshStandardMaterial({color:0x262a30,roughness:.98}),darkMat=new THREE.MeshStandardMaterial({color:0x080b10,roughness:1,side:THREE.DoubleSide}),edgeMat=new THREE.LineBasicMaterial({color:0x765f49,transparent:true,opacity:.24});
- const add=(geo,mat,x,y,z,rx=0,ry=0,rz=0)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);m.castShadow=true;m.receiveShadow=true;boxGroup.add(m);return m};
+ const shellMat=createFinishMaterial(color,finish),innerMat=new THREE.MeshStandardMaterial({color:0x262a30,roughness:.98}),darkMat=new THREE.MeshStandardMaterial({color:0x080b10,roughness:1,side:THREE.DoubleSide});
+ const add=(geo,mat,x,y,z,rx=0,ry=0,rz=0)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);boxGroup.add(m);return m};
  const panel=(x,y,z,sx,sy,sz,mat=shellMat)=>add(new THREE.BoxGeometry(sx,sy,sz),mat,x,y,z);
  // Five cabinet panels create a closed, hollow enclosure; the selected port face is cut around its opening.
  panel(0,H/2-t/2,0,W,t,D);
@@ -275,12 +274,14 @@ function updateModel(){
  // sidePortFace() below creates the replacement side panel with a true opening.
  if(!side)panel(W/2-t/2,0,0,t,H-2*t,D);
  panel(0,0,-D/2+t/2,W-2*t,H-2*t,t,innerMat);
- const portW=Math.min(W*.30,Math.max(3.0*scale,W*.22));
- const portH=Math.min(H*.62,Math.max(3.6*scale,H*.50));
- const portR=Math.min(H*.22,W*.14,2.7*scale);
+ const rearFace=new THREE.Mesh(new THREE.PlaneGeometry(W,H),shellMat);rearFace.position.set(0,0,-D/2-.012);rearFace.rotation.y=Math.PI;boxGroup.add(rearFace);
+ const portW=Math.min(D*.62,Math.max(3.0*scale,D*.22));
+ const portH=Math.min((H-2*t)*.72,Math.max(3.6*scale,(H-2*t)*.50));
+ const portR=Math.min((H-2*t)*.22,(D-2*t)*.18,2.7*scale);
  const selectedSubSize=Number($("size").value);
  const cutoutDiameter=Math.max(1,selectedSubSize-1);
  const wooferRadius=cutoutDiameter*scale/2;
+ function normalizePanelUV(geometry,width,height){const p=geometry.attributes.position,uv=geometry.attributes.uv;for(let i=0;i<p.count;i++)uv.setXY(i,(p.getX(i)+width/2)/width,(p.getY(i)+height/2)/height);uv.needsUpdate=true;return geometry}
  function frontFaceWithCutouts(faceWidth,faceHeight,x,y,z,portKind="",portX=0,portY=0,slotWidth=portW,slotHeight=portH){
   const shape=new THREE.Shape();
   shape.moveTo(-faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,faceHeight/2);shape.lineTo(-faceWidth/2,faceHeight/2);shape.closePath();
@@ -297,23 +298,22 @@ function updateModel(){
    slotHole.moveTo(portX-slotWidth/2,portY-slotHeight/2);slotHole.lineTo(portX-slotWidth/2,portY+slotHeight/2);slotHole.lineTo(portX+slotWidth/2,portY+slotHeight/2);slotHole.lineTo(portX+slotWidth/2,portY-slotHeight/2);slotHole.closePath();
    shape.holes.push(slotHole);
   }
-  add(new THREE.ShapeGeometry(shape,48),shellMat,x,y,z,0,0,0);
+  const faceGeometry=normalizePanelUV(new THREE.ShapeGeometry(shape,48),faceWidth,faceHeight);
+  add(faceGeometry,shellMat,x,y,z,0,0,0);
  }
  function subwooferFrontPanel(){
-  frontFaceWithCutouts(W-2*t,H-2*t,0,0,D/2-t/2,"");
+  frontFaceWithCutouts(W,H,0,0,D/2+.012,"");
  }
  function sidePortFace(){
-  const faceWidth=D-2*t,faceHeight=H-2*t;
+  const faceWidth=D,faceHeight=H;
   const shape=new THREE.Shape();
   shape.moveTo(-faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,faceHeight/2);shape.lineTo(-faceWidth/2,faceHeight/2);shape.closePath();
   const opening=new THREE.Path();
   if(round) opening.absarc(0,0,portR,0,Math.PI*2,false);
-  else{
-   // Side slot spans the enclosure depth and is centered vertically on the side panel.
-   opening.moveTo(-portW/2,-portH/2);opening.lineTo(-portW/2,portH/2);opening.lineTo(portW/2,portH/2);opening.lineTo(portW/2,-portH/2);opening.closePath();
-  }
+  else{const sideOpeningW=Math.min(portW,faceWidth*.72);opening.moveTo(-sideOpeningW/2,-portH/2);opening.lineTo(-sideOpeningW/2,portH/2);opening.lineTo(sideOpeningW/2,portH/2);opening.lineTo(sideOpeningW/2,-portH/2);opening.closePath();}
   shape.holes.push(opening);
-  add(new THREE.ShapeGeometry(shape,48),shellMat,W/2-t/2,0,0,0,Math.PI/2,0);
+  const sideGeometry=normalizePanelUV(new THREE.ShapeGeometry(shape,48),faceWidth,faceHeight);
+  add(sideGeometry,shellMat,W/2+.012,0,0,0,Math.PI/2,0);
  }
  function slotTunnelFront(length,centerX=0,openingWidth=portW,openingHeight=portH){
   const wall=Math.min(t*.72,openingWidth*.18,openingHeight*.12);
@@ -339,8 +339,9 @@ function updateModel(){
   add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length*.995,48,1,true),darkMat,centerX,0,z,Math.PI/2);
  }
  function roundTunnelSide(length){
-  add(new THREE.CylinderGeometry(portR,portR,length,48,1,true),shellMat,W/2-t-length/2,0,0,0,0,Math.PI/2);
-  add(new THREE.CylinderGeometry(portR-t*.62,portR-t*.62,length*.995,48,1,true),darkMat,W/2-t-length/2,0,0,0,0,Math.PI/2);
+  const centerX=W/2-t-length/2;
+  add(new THREE.CylinderGeometry(portR,portR,length,64,1,true),shellMat,centerX,0,0,0,0,Math.PI/2);
+  add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length*.995,64,1,true),darkMat,centerX,0,0,0,0,Math.PI/2);
  }
  if(type==="Ported"){
   const length=Math.max(t*2,Math.min((side?W:D)*.58,Math.max(7*scale,(side?W:D)*.32)));
@@ -348,7 +349,7 @@ function updateModel(){
   else if(round){
    // Keep the round port separate from the centered subwoofer cutout, toward the left edge.
    const frontRoundPortX=-(W-2*t)/2+portR+t;
-   frontFaceWithCutouts(W-2*t,H-2*t,0,0,D/2-t/2,"round",frontRoundPortX,0);
+   frontFaceWithCutouts(W,H,0,0,D/2+.012,"round",frontRoundPortX,0);
    roundTunnelFront(length,frontRoundPortX);
   }
   else{
@@ -356,22 +357,22 @@ function updateModel(){
    const frontSlotWidth=Math.min(W*.16,Math.max(2*scale,W*.12));
    const frontSlotHeight=H-2*t;
    const frontSlotX=W/2-t-frontSlotWidth/2;
-   frontFaceWithCutouts(W-2*t,H-2*t,0,0,D/2-t/2,"slot",frontSlotX,0,frontSlotWidth,frontSlotHeight);
+   frontFaceWithCutouts(W,H,0,0,D/2+.012,"slot",frontSlotX,0,frontSlotWidth,frontSlotHeight);
    slotTunnelFront(length,frontSlotX,frontSlotWidth,frontSlotHeight);
   }
  }else{
   // Sealed box front includes the centered subwoofer mounting cutout.
   subwooferFrontPanel();
  }
- boxGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(W,H,D)),edgeMat));
+ // Actual panel geometry defines the cabinet edges; no oversized wireframe overlay.
  // A soft, slightly stronger studio contact shadow sits independently beneath the rotating cabinet.
  const shadowCanvas=document.createElement("canvas");shadowCanvas.width=256;shadowCanvas.height=256;
  const shadowCtx=shadowCanvas.getContext("2d");const gradient=shadowCtx.createRadialGradient(128,128,18,128,128,126);
- gradient.addColorStop(0,"rgba(0,0,0,.34)");gradient.addColorStop(.48,"rgba(0,0,0,.19)");gradient.addColorStop(1,"rgba(0,0,0,0)");
+ gradient.addColorStop(0,"rgba(0,0,0,.22)");gradient.addColorStop(.42,"rgba(0,0,0,.10)");gradient.addColorStop(1,"rgba(0,0,0,0)");
  shadowCtx.fillStyle=gradient;shadowCtx.fillRect(0,0,256,256);
  const shadowTexture=new THREE.CanvasTexture(shadowCanvas);shadowTexture.encoding=THREE.sRGBEncoding;
- shadowPlane=new THREE.Mesh(new THREE.PlaneGeometry(W*1.55,D*1.55),new THREE.MeshBasicMaterial({map:shadowTexture,transparent:true,depthWrite:false,opacity:1}));
- shadowPlane.rotation.x=-Math.PI/2;shadowPlane.position.set(0,-H/2-.035,0);scene.add(shadowPlane);
+ shadowPlane=new THREE.Mesh(new THREE.PlaneGeometry(W*1.22,D*1.22),new THREE.MeshBasicMaterial({map:shadowTexture,transparent:true,depthWrite:false,opacity:1}));
+ shadowPlane.rotation.x=-Math.PI/2;shadowPlane.position.set(0,-H/2-.045,0);scene.add(shadowPlane);
  boxGroup.rotation.set(0,-.10,0);
  const maxDim=Math.max(W,H,D);camera.position.set(maxDim*1.75,maxDim*1.25,maxDim*2.05);controls.target.set(0,0,0);controls.update();
  $("specDimensions").textContent=w+" × "+h+" × "+d+" in";
