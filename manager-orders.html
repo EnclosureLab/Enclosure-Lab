@@ -51,12 +51,16 @@ button:hover,.back:hover{background:#293542}
 .fulfilled-label{color:#2e6639;font-weight:800;background:#eef7f0;border-radius:20px;padding:6px 11px}
 .tabs button:focus-visible,.order-actions button:focus-visible,button:focus-visible,.back:focus-visible{outline:2px solid #8794a0;outline-offset:2px}
 .empty{padding:38px;text-align:center;color:#687480;background:#fff;border:1px dashed #cbd3da;border-radius:14px}
-.money{font-variant-numeric:tabular-nums}
+.stats-heading{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:24px 0 12px}.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:12px}.stat-card{background:#fff;border:1px solid #e0e5e9;border-radius:14px;padding:17px 18px;box-shadow:0 6px 18px rgba(27,38,49,.035);min-width:0}.stat-label{font-size:11px;font-weight:800;letter-spacing:.11em;color:#687480;text-transform:uppercase}.stat-value{font-size:clamp(23px,3vw,30px);font-weight:800;letter-spacing:-.045em;margin-top:5px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.stat-note{font-size:12px;color:#687480;margin-top:3px}.stats-chart{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;align-items:end;height:145px;margin-top:18px}.month-col{height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:7px;min-width:0}.month-bar-wrap{height:105px;width:100%;display:flex;align-items:end;justify-content:center}.month-bar{width:min(34px,72%);min-height:3px;background:#34495e;border-radius:6px 6px 2px 2px}.month-label{font-size:11px;color:#687480}.month-amount{font-size:10px;color:#536170;white-space:nowrap}.stats-footnote{font-size:12px;color:#687480;line-height:1.5;margin:14px 0 0}.stat-positive{color:#245f39}.stat-negative{color:#8a3d32}@media(max-width:560px){.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stats-chart{gap:5px}.month-amount{font-size:9px}}.money{font-variant-numeric:tabular-nums}
 @media(max-width:560px){.wrap{padding:22px 4% 50px}.panel,.order{padding:17px}.order-head{display:grid}.toolbar{width:100%}.toolbar>*{flex:1}.top{align-items:flex-start}}
 </style></head><body><main class="wrap">
 <header class="top"><div><div class="eyebrow">ENCLOSURE LAB · OWNER ONLY</div><h1>Order Manager</h1><p>Private order dashboard · Manage status, fulfillment, notes, and tracking.</p></div><div class="toolbar"><a class="back" href="https://enclosurelab.github.io/Enclosure-Lab/">← Main Website</a><button class="secondary" id="refresh" type="button">Refresh</button><button class="secondary hidden" id="signout" type="button">Sign out</button></div></header>
 <section class="panel login" id="login"><h2>Owner sign in</h2><p>Sign in with the approved owner account.</p><form id="loginForm"><label class="field">Email<input id="email" type="email" autocomplete="username" required value="lawsonhughes53@gmail.com"></label><label class="field">Password<input id="password" type="password" autocomplete="current-password" required></label><button type="submit">Sign in</button></form></section>
-<p class="status" id="status" aria-live="polite"></p><section id="ordersSection" class="hidden"><div class="toolbar"><span class="count" id="count">0 active orders</span></div><div class="tabs" role="group" aria-label="Filter orders"><button type="button" class="active" data-filter="active">Active</button><button type="button" data-filter="fulfilled">Fulfilled</button><button type="button" data-filter="all">All orders</button></div><div id="orders" class="orders"></div></section>
+<p class="status" id="status" aria-live="polite"></p><section id="ordersSection" class="hidden">
+<div class="stats-heading"><div><div class="eyebrow">BUSINESS OVERVIEW</div><h2>Business statistics</h2></div><span class="count" id="statsPeriod">All recorded orders</span></div>
+<div class="stats-grid" id="statsGrid" aria-live="polite"></div>
+<section class="panel" style="margin-top:14px"><h2>Estimated sales · Last 6 months</h2><div class="stats-chart" id="salesChart" aria-label="Estimated sales over the last six months"></div><p class="stats-footnote" id="statsNote">Statistics are calculated from saved orders. Order totals are estimates until payment is collected.</p></section>
+<div class="toolbar" style="margin-top:22px"><span class="count" id="count">0 active orders</span></div><div class="tabs" role="group" aria-label="Filter orders"><button type="button" class="active" data-filter="active">Active</button><button type="button" data-filter="fulfilled">Fulfilled</button><button type="button" data-filter="all">All orders</button></div><div id="orders" class="orders"></div></section>
 </main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const db=window.supabase.createClient("https://lblrmljsjimrrighqbdo.supabase.co","sb_publishable_s2YnH1DT5diDmM781NXxqw_gIJVxPRx");
 const OWNER="lawsonhughes53@gmail.com", $=id=>document.getElementById(id);let currentUser=null;
@@ -75,7 +79,42 @@ function orderCard(order){
  const options=STATUS_OPTIONS.map(([value,label])=>'<option value="'+value+'" '+(status===value?"selected":"")+'>'+label+'</option>').join("");
  return '<article class="order" data-order-card="'+esc(order.id)+'"><div class="order-head"><div><div class="order-id">ORDER '+esc(String(order.id).slice(0,8).toUpperCase())+' · '+esc(new Date(order.created_at).toLocaleString())+'</div><h2>'+esc(order.customer_name)+'</h2><div class="muted">'+esc(order.customer_email)+'</div><div class="muted">Current status: '+esc(statusLabel(status))+'</div></div>'+(status==="fulfilled"?'<span class="fulfilled-label">✓ Fulfilled</span>':'')+'</div><div class="section"><h3>ORDER MANAGEMENT</h3><div class="manage-grid"><label>Status<select data-status>'+options+'</select></label><label>Tracking number<input data-tracking maxlength="120" value="'+esc(order.tracking_number||"")+'" placeholder="Add tracking number"></label><label style="grid-column:1/-1">Private owner notes<textarea data-notes maxlength="4000" placeholder="Internal notes — customers cannot see these">'+esc(order.internal_notes||"")+'</textarea></label></div><div class="order-actions"><button type="button" data-save="'+esc(order.id)+'">Save updates</button>'+(status==="fulfilled"?'':'<button type="button" class="secondary" data-fulfill="'+esc(order.id)+'">✓ Mark fulfilled</button>')+'</div></div><div class="section"><h3>CUSTOMER & FULFILLMENT</h3><div class="details">'+row("Name",order.customer_name)+row("Email",order.customer_email)+row("Phone",order.customer_phone)+row("Fulfillment",order.fulfillment==="pickup"?"Local pickup":"Shipping")+row("Payment preference",order.payment_method)+(order.fulfillment==="shipping"?row("Street",address.street)+row("City",address.city)+row("State",address.state)+row("ZIP",address.zip):"")+'</div></div><div class="section"><h3>ORDER ITEMS & CONFIGURATION</h3>'+itemMarkup+'</div><div class="section"><h3>PRICING SUMMARY · ESTIMATES</h3><div class="details">'+row("Subtotal",money(order.subtotal))+row("Discount",money(order.discount_amount)+(order.discount_code?" ("+order.discount_code+")":""))+row("Estimated tax",money(order.estimated_tax))+row("Estimated shipping",money(order.estimated_shipping))+row("Estimated total",money(order.estimated_total))+'</div><p class="muted">No payment is collected by this order request. Confirm final pricing and payment separately.</p></div><div class="section"><h3>CUSTOMER NOTES</h3><p>'+esc(order.customer_notes||"No additional notes")+'</p></div></article>';
 }
+function renderStats(){
+ const valid=allOrders.filter(o=>o.order_status!=="cancelled");
+ const active=valid.filter(o=>!["fulfilled","cancelled"].includes(o.order_status));
+ const fulfilled=valid.filter(o=>o.order_status==="fulfilled");
+ const sum=(orders,field="estimated_total")=>orders.reduce((n,o)=>n+(Number(o[field])||0),0);
+ const sales=sum(valid),fulfilledSales=sum(fulfilled),avg=valid.length?sales/valid.length:0;
+ let boxRevenue=0,boxCosts=0,pricedBoxCount=0;
+ valid.forEach(order=>(Array.isArray(order.items)?order.items:[]).forEach(item=>{
+  if(item.category!=="enclosure")return;
+  const revenue=Number(item.line_total);
+  const cost=Number(item.configuration?.costBreakdown?.total);
+  if(Number.isFinite(revenue)&&Number.isFinite(cost)&&item.configuration?.costBreakdown){
+   boxRevenue+=revenue;boxCosts+=cost;pricedBoxCount++;
+  }
+ }));
+ const boxProfit=boxRevenue-boxCosts;
+ const cards=[
+  ["Estimated sales",money(sales), "All non-cancelled orders · not necessarily paid"],
+  ["Fulfilled sales",money(fulfilledSales),fulfilled.length+" fulfilled orders"],
+  ["Estimated box profit",money(boxProfit),pricedBoxCount+" box line items with recorded costs"],
+  ["Recorded box costs",money(boxCosts),"Material, finish and consumables recorded"],
+  ["Total orders",String(allOrders.length),valid.length+" excluding cancelled"],
+  ["Active orders",String(active.length),"Not yet fulfilled or cancelled"],
+  ["Fulfilled orders",String(fulfilled.length),"Completed orders"],
+  ["Average order value",money(avg),"Across non-cancelled orders"]
+ ];
+ $("statsGrid").innerHTML=cards.map((c,i)=>'<article class="stat-card"><div class="stat-label">'+esc(c[0])+'</div><div class="stat-value '+(i===2?(boxProfit>=0?"stat-positive":"stat-negative"):"")+'">'+esc(c[1])+'</div><div class="stat-note">'+esc(c[2])+'</div></article>').join("");
+ const now=new Date(),months=[];
+ for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);months.push({year:d.getFullYear(),month:d.getMonth(),label:d.toLocaleDateString(undefined,{month:"short"}),value:0})}
+ valid.forEach(o=>{const d=new Date(o.created_at),m=months.find(x=>x.year===d.getFullYear()&&x.month===d.getMonth());if(m)m.value+=Number(o.estimated_total)||0});
+ const max=Math.max(1,...months.map(m=>m.value));
+ $("salesChart").innerHTML=months.map(m=>'<div class="month-col"><div class="month-amount">'+esc(money(m.value))+'</div><div class="month-bar-wrap"><div class="month-bar" style="height:'+Math.max(3,m.value/max*100)+'%" title="'+esc(money(m.value))+'"></div></div><div class="month-label">'+esc(m.label)+'</div></div>').join("");
+ $("statsNote").textContent="Sales use estimated order totals and exclude cancelled orders; they are not confirmed payments. Estimated box profit is calculated only for enclosure line items with a saved cost breakdown (materials, finish and consumables). It does not deduct labor, overhead, taxes, shipping expenses, or costs for other products. It is not net profit.";
+}
 function renderOrders(){
+ renderStats();
  const filtered=allOrders.filter(o=>activeFilter==="all"||(activeFilter==="fulfilled"?["fulfilled","cancelled"].includes(o.order_status):!["fulfilled","cancelled"].includes(o.order_status)));
  const active=allOrders.filter(o=>!["fulfilled","cancelled"].includes(o.order_status)).length;
  $("count").textContent=active+" active · "+allOrders.length+" total";
