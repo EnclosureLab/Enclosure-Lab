@@ -129,7 +129,7 @@ const MATERIAL_SHEET_PRICES={"Birch":79.98,"MDF (Suggested)":49.98,"Plywood":54.
 const selects=[["width",8,60],["height",8,60],["depth",8,48]];
 selects.forEach(([id,min,max])=>{for(let n=min;n<=max;n++){const o=document.createElement("option");o.value=String(n);o.textContent=n+" in";$(id).append(o)}});
 $("width").value="36";$("height").value="18";$("depth").value="16";
-for(let n=25;n<=45;n+=.5){const o=document.createElement("option");o.value=String(n);o.textContent=n.toFixed(1)+" Hz";$("tuning").append(o)}
+for(let n=25;n<=45;n++){const o=document.createElement("option");o.value=String(n);o.textContent=n+" Hz";$("tuning").append(o)}
 $("tuning").value="32";
 let scene,camera,renderer,controls,boxGroup,boxMaterial,shadowPlane,studioFloor;
 function wheelHex(h,s,v){const k=n=>(n+h/60)%6;const f=n=>v-v*s*Math.max(Math.min(k(n),4-k(n),1),0);return "#"+[f(5),f(3),f(1)].map(x=>Math.round(x*255).toString(16).padStart(2,"0")).join("")}
@@ -205,19 +205,19 @@ function createFinishMaterial(baseColor,finish){
  if(finish==="Raw"){
   // Warm, fine MDF fiber with faint directional sanding/grain and natural tonal variation.
   textured=true;let seed=241;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
-  for(let i=0;i<52000;i++){const light=rand()>.52;ctx.fillStyle=light?"rgba(255,247,230,.12)":"rgba(82,55,31,.085)";const x=rand()*512,y=rand()*512,r=.35+rand()*.75;ctx.fillRect(x,y,r,r)}
-  const wash=ctx.createRadialGradient(256,256,40,256,256,360);wash.addColorStop(0,"rgba(255,255,255,.035)");wash.addColorStop(1,"rgba(70,43,22,.045)");ctx.fillStyle=wash;ctx.fillRect(0,0,512,512);
+  for(let i=0;i<36000;i++){const light=rand()>.5;ctx.fillStyle=light?"rgba(255,247,230,.24)":"rgba(82,55,31,.19)";const x=rand()*512,y=rand()*512,r=.7+rand()*1.7;ctx.fillRect(x,y,r,r)}
+  const wash=ctx.createRadialGradient(256,256,40,256,256,360);wash.addColorStop(0,"rgba(255,255,255,.025)");wash.addColorStop(1,"rgba(70,43,22,.075)");ctx.fillStyle=wash;ctx.fillRect(0,0,512,512);
  }
  if(finish==="Wrap"){
   textured=true;
   if(wrap==="Carbon Fiber"){
    // Repeating diagonal carbon-fiber weave.
    ctx.fillStyle="#15191d";ctx.fillRect(0,0,512,512);
-   for(let y=-32;y<544;y+=16)for(let x=-32;x<544;x+=16){
-    ctx.fillStyle=((Math.floor(x/16)+Math.floor(y/16))%2===0)?"#555d64":"#252b31";
-    ctx.fillRect(x+1,y+1,14,7);
-    ctx.fillStyle="rgba(255,255,255,.20)";ctx.fillRect(x+2,y+2,11,1);
-    ctx.fillStyle="rgba(0,0,0,.42)";ctx.fillRect(x+1,y+9,14,5);
+   for(let y=-6;y<518;y+=6)for(let x=-6;x<518;x+=6){
+    ctx.fillStyle=((Math.floor(x/6)+Math.floor(y/6))%2===0)?"#555d64":"#252b31";
+    ctx.fillRect(x+.4,y+.4,5.2,2.6);
+    ctx.fillStyle="rgba(255,255,255,.16)";ctx.fillRect(x+.7,y+.7,4.4,.45);
+    ctx.fillStyle="rgba(0,0,0,.38)";ctx.fillRect(x+.4,y+3.2,5.2,2.2);
    }
   }else if(wrap==="Forged Carbon Fiber"){
    // Irregular chopped-fiber flakes for forged-carbon appearance.
@@ -260,7 +260,7 @@ function updateModel(){
  if(shadowPlane){scene.remove(shadowPlane);shadowPlane.geometry.dispose();shadowPlane.material.map?.dispose();shadowPlane.material.dispose();shadowPlane=null}
  while(boxGroup.children.length){const obj=boxGroup.children.pop();obj.traverse(n=>{if(n.geometry)n.geometry.dispose();if(n.material){if(Array.isArray(n.material))n.material.forEach(m=>m.dispose());else n.material.dispose()}})}
  const w=Number($("width").value),h=Number($("height").value),d=Number($("depth").value);
- const scale=34/Math.max(w,h,d),W=w*scale,H=h*scale,D=d*scale,t=Math.max(.42,scale*.75);
+ const scale=34/Math.max(w,h,d),W=w*scale,H=h*scale,D=d*scale,t=.75*scale;
  
  const finish=document.querySelector('input[name="finish"]:checked').value,color=finishColor(),type=document.querySelector('input[name="boxType"]:checked').value,style=document.querySelector('input[name="portStyle"]:checked').value,side=style.includes("side"),round=style.includes("Hole");
  const shellMat=createFinishMaterial(color,finish),innerMat=new THREE.MeshStandardMaterial({color:0x262a30,roughness:.98}),darkMat=new THREE.MeshStandardMaterial({color:0x080b10,roughness:1,side:THREE.DoubleSide});
@@ -273,8 +273,7 @@ function updateModel(){
  // Do not place a solid right-side wall behind a selected side-port cutout.
  // sidePortFace() below creates the replacement side panel with a true opening.
  if(!side)panel(W/2-t/2,0,0,t,H-2*t,D);
- panel(0,0,-D/2+t/2,W-2*t,H-2*t,t,innerMat);
- const rearFace=new THREE.Mesh(new THREE.PlaneGeometry(W,H),shellMat);rearFace.position.set(0,0,-D/2-.012);rearFace.rotation.y=Math.PI;boxGroup.add(rearFace);
+ panel(0,0,-D/2+t/2,W-2*t,H-2*t,t,shellMat);
  const portW=Math.min(D*.62,Math.max(3.0*scale,D*.22));
  const portH=Math.min((H-2*t)*.72,Math.max(3.6*scale,(H-2*t)*.50));
  const portR=Math.min((H-2*t)*.22,(D-2*t)*.18,2.7*scale);
@@ -298,8 +297,8 @@ function updateModel(){
    slotHole.moveTo(portX-slotWidth/2,portY-slotHeight/2);slotHole.lineTo(portX-slotWidth/2,portY+slotHeight/2);slotHole.lineTo(portX+slotWidth/2,portY+slotHeight/2);slotHole.lineTo(portX+slotWidth/2,portY-slotHeight/2);slotHole.closePath();
    shape.holes.push(slotHole);
   }
-  const faceGeometry=normalizePanelUV(new THREE.ShapeGeometry(shape,48),faceWidth,faceHeight);
-  add(faceGeometry,shellMat,x,y,z,0,0,0);
+  const faceGeometry=normalizePanelUV(new THREE.ExtrudeGeometry(shape,{depth:t,bevelEnabled:false,curveSegments:64}),faceWidth,faceHeight);
+  add(faceGeometry,shellMat,x,y,z-t,0,0,0);
  }
  function subwooferFrontPanel(){
   frontFaceWithCutouts(W,H,0,0,D/2+.012,"");
@@ -312,8 +311,8 @@ function updateModel(){
   if(round) opening.absarc(0,0,portR,0,Math.PI*2,false);
   else{const sideOpeningW=Math.min(portW,faceWidth*.72);opening.moveTo(-sideOpeningW/2,-portH/2);opening.lineTo(-sideOpeningW/2,portH/2);opening.lineTo(sideOpeningW/2,portH/2);opening.lineTo(sideOpeningW/2,-portH/2);opening.closePath();}
   shape.holes.push(opening);
-  const sideGeometry=normalizePanelUV(new THREE.ShapeGeometry(shape,48),faceWidth,faceHeight);
-  add(sideGeometry,shellMat,W/2+.012,0,0,0,Math.PI/2,0);
+  const sideGeometry=normalizePanelUV(new THREE.ExtrudeGeometry(shape,{depth:t,bevelEnabled:false,curveSegments:64}),faceWidth,faceHeight);
+  add(sideGeometry,shellMat,W/2-t,0,0,0,Math.PI/2,0);
  }
  function slotTunnelFront(length,centerX=0,openingWidth=portW,openingHeight=portH){
   const wall=Math.min(t*.72,openingWidth*.18,openingHeight*.12);
@@ -326,11 +325,12 @@ function updateModel(){
  }
  function slotTunnelSide(length){
   const wall=Math.min(t*.72,portW*.18,portH*.18);
-  // Slot width runs along enclosure depth on the side face.
-  panel(W/2+.012-length/2,portH/2-wall/2,0,length,wall,portW,shellMat);
-  panel(W/2+.012-length/2,-portH/2+wall/2,0,length,wall,portW,shellMat);
-  panel(W/2+.012-length/2,0,-portW/2+wall/2,length,portH-2*wall,wall,shellMat);
-  panel(W/2+.012-length/2,0,portW/2-wall/2,length,portH-2*wall,wall,shellMat);
+  // Duct begins exactly at the inside face of the side panel and extends inward.
+  const cx=W/2-t-length/2;
+  panel(cx,portH/2-wall/2,0,length,wall,portW,shellMat);
+  panel(cx,-portH/2+wall/2,0,length,wall,portW,shellMat);
+  panel(cx,0,-portW/2+wall/2,length,portH-2*wall,wall,shellMat);
+  panel(cx,0,portW/2-wall/2,length,portH-2*wall,wall,shellMat);
  }
  function roundTunnelFront(length,centerX=0){
   // A hollow cylindrical duct centered directly behind the circular front-panel opening.
@@ -339,7 +339,7 @@ function updateModel(){
   add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length*.995,48,1,true),darkMat,centerX,0,z,Math.PI/2);
  }
  function roundTunnelSide(length){
-  const centerX=W/2+.012-length/2;
+  const centerX=W/2-t-length/2;
   add(new THREE.CylinderGeometry(portR,portR,length,64,1,true),shellMat,centerX,0,0,0,0,Math.PI/2);
   add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length*.995,64,1,true),darkMat,centerX,0,0,0,0,Math.PI/2);
  }
