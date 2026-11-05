@@ -416,14 +416,24 @@ function updateModel(){
   shape.moveTo(-faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,faceHeight/2);shape.lineTo(-faceWidth/2,faceHeight/2);shape.closePath();
   const opening=new THREE.Path();
   if(round) opening.absarc(0,0,portR,0,Math.PI*2,false);
-  else{const sideOpeningW=Math.min(portW,faceWidth*.72);opening.moveTo(-sideOpeningW/2,-portH/2);opening.lineTo(-sideOpeningW/2,portH/2);opening.lineTo(sideOpeningW/2,portH/2);opening.lineTo(sideOpeningW/2,-portH/2);opening.closePath();}
+  else{
+   sideSlotOpeningW=Math.min(portW,faceWidth*.62);
+   // Local negative X maps to the enclosure's front edge after the side panel is rotated.
+   const openingCenterU=-faceWidth/2+t+sideSlotOpeningW/2;
+   sideSlotCenterZ=-openingCenterU;
+   opening.moveTo(openingCenterU-sideSlotOpeningW/2,-portH/2);
+   opening.lineTo(openingCenterU-sideSlotOpeningW/2,portH/2);
+   opening.lineTo(openingCenterU+sideSlotOpeningW/2,portH/2);
+   opening.lineTo(openingCenterU+sideSlotOpeningW/2,-portH/2);
+   opening.closePath();
+  }
   shape.holes.push(opening);
   const sideGeometry=normalizePanelUV(new THREE.ExtrudeGeometry(shape,{depth:t,bevelEnabled:false,curveSegments:64}),faceWidth,faceHeight);
   add(sideGeometry,shellMat,W/2-t,0,0,0,Math.PI/2,0);
  }
  function slotTunnelFront(length,centerX=0,openingWidth=portW,openingHeight=portH){
   const wall=Math.min(t*.72,openingWidth*.18,openingHeight*.12);
-  const ductZ=D/2-t-length/2;
+  const ductZ=D/2+.012-t-length/2;
   // Four open-ended duct walls line up with the vertical slot cut into the front face.
   panel(centerX,openingHeight/2-wall/2,ductZ,openingWidth,wall,length,shellMat);
   panel(centerX,-openingHeight/2+wall/2,ductZ,openingWidth,wall,length,shellMat);
@@ -431,21 +441,22 @@ function updateModel(){
   panel(centerX+openingWidth/2-wall/2,0,ductZ,wall,openingHeight-2*wall,length,shellMat);
  }
  function slotTunnelSide(length){
-  const wall=Math.min(t*.72,portW*.18,portH*.18);
-  // Duct begins exactly at the inside face of the side panel and extends inward.
-  const cx=W/2-t-length/2;
-  panel(cx,portH/2-wall/2,0,length,wall,portW,shellMat);
-  panel(cx,-portH/2+wall/2,0,length,wall,portW,shellMat);
-  panel(cx,0,-portW/2+wall/2,length,portH-2*wall,wall,shellMat);
-  panel(cx,0,portW/2-wall/2,length,portH-2*wall,wall,shellMat);
+  const wall=Math.min(t*.72,sideSlotOpeningW*.18,portH*.18);
+  // Match the side-panel opening exactly and extend the duct inward from its inner face.
+  const cx=W/2-t-length/2,cz=sideSlotCenterZ;
+  panel(cx,portH/2-wall/2,cz,length,wall,sideSlotOpeningW,shellMat);
+  panel(cx,-portH/2+wall/2,cz,length,wall,sideSlotOpeningW,shellMat);
+  panel(cx,0,cz-sideSlotOpeningW/2+wall/2,length,portH-2*wall,wall,shellMat);
+  panel(cx,0,cz+sideSlotOpeningW/2-wall/2,length,portH-2*wall,wall,shellMat);
  }
  function roundTunnelFront(length,centerX=0){
   // A hollow cylindrical duct centered directly behind the circular front-panel opening.
-  const z=D/2-t-length/2;
+  const z=D/2+.012-t-length/2;
   add(new THREE.CylinderGeometry(portR,portR,length,48,1,true),shellMat,centerX,0,z,Math.PI/2);
   add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length*.995,48,1,true),darkMat,centerX,0,z,Math.PI/2);
  }
  function roundTunnelSide(length){
+  // The cylindrical duct shares the side-panel opening centerline and meets its inner face.
   const centerX=W/2-t-length/2;
   add(new THREE.CylinderGeometry(portR,portR,length,64,1,true),shellMat,centerX,0,0,0,0,Math.PI/2);
   add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length*.995,64,1,true),darkMat,centerX,0,0,0,0,Math.PI/2);
