@@ -337,12 +337,13 @@ function updateModel(){
   if(!previewSubwoofer)return;
   const r=selectedSubSize*scale*.49, faceZ=D/2+.035;
   const driver=new THREE.Group();boxGroup.add(driver);
-  const cast=new THREE.MeshStandardMaterial({color:0x111418,metalness:.34,roughness:.62});
-  const edgeMetal=new THREE.MeshStandardMaterial({color:0x252a30,metalness:.48,roughness:.48});
+  const cast=new THREE.MeshStandardMaterial({color:0x10151b,metalness:.24,roughness:.72});
+  const edgeMetal=new THREE.MeshStandardMaterial({color:0x252d36,metalness:.38,roughness:.58});
   const rubber=new THREE.MeshStandardMaterial({color:0x080a0d,metalness:.01,roughness:.94});
   const coneMat=new THREE.MeshStandardMaterial({color:0x0b0e12,metalness:.04,roughness:.86,side:THREE.DoubleSide});
-  const motorMat=new THREE.MeshStandardMaterial({color:0x171b20,metalness:.38,roughness:.58});
-  const trim=new THREE.MeshStandardMaterial({color:0x30363d,metalness:.52,roughness:.45});
+  const motorMat=new THREE.MeshStandardMaterial({color:0x0b1017,metalness:.28,roughness:.68});
+  const accent=new THREE.MeshStandardMaterial({color:0x1769aa,metalness:.42,roughness:.48});
+  const trim=new THREE.MeshStandardMaterial({color:0x303a46,metalness:.38,roughness:.56});
   const torus=(rad,tube,z,mat)=>{const m=new THREE.Mesh(new THREE.TorusGeometry(rad,tube,18,120),mat);m.position.z=z;driver.add(m);return m};
   const cyl=(rad,len,z,mat)=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(rad,rad,len,80),mat);m.rotation.x=Math.PI/2;m.position.z=z;driver.add(m);return m};
   const bolt=(x,y,z)=>{const b=new THREE.Mesh(new THREE.CylinderGeometry(r*.018,r*.018,r*.014,20),edgeMetal);b.rotation.x=Math.PI/2;b.position.set(x,y,z);driver.add(b)};
@@ -392,15 +393,19 @@ function updateModel(){
     const curve=new THREE.CatmullRomCurve3([p0,p1,p2,p3]);
     driver.add(new THREE.Mesh(new THREE.TubeGeometry(curve,36,r*.061,12,false),cast));
    }
-   // A single broad magnet body, bounded by one top and one bottom steel plate.
+   // One substantial magnet stack with a flush rear plate—no projecting center shafts.
    cyl(motorR*1.12,r*.075,motorZ-r*.035,edgeMetal);
    cyl(motorR,r*.39,motorZ+r*.185,motorMat);
    torus(motorR*.99,r*.012,motorZ+r*.39,trim);
    cyl(motorR*1.10,r*.075,motorZ+r*.425,edgeMetal);
-   // Central pole/vent extends from the magnet; it is not another magnet.
-   cyl(motorR*.30,r*.28,motorZ+r*.56,cast);
-   cyl(motorR*.17,r*.22,motorZ+r*.72,edgeMetal);
-   cyl(motorR*.105,r*.018,motorZ+r*.84,rubber);
+   // Recessed center vent sits within the rear plate and does not protrude.
+   const rearFaceZ=motorZ+r*.465;
+   const vent=new THREE.Mesh(new THREE.CircleGeometry(motorR*.23,64),rubber);
+   vent.position.z=rearFaceZ+.001;driver.add(vent);
+   const ventLip=new THREE.Mesh(new THREE.TorusGeometry(motorR*.24,r*.009,12,64),accent);
+   ventLip.position.z=rearFaceZ+.003;driver.add(ventLip);
+   // Thin Enclosure Lab blue identification band around the single motor body.
+   torus(motorR*1.006,r*.009,motorZ+r*.30,accent);
    // Small recessed fasteners around the basket rim.
    for(let n=0;n<8;n++){const a=n*Math.PI/4;bolt(Math.cos(a)*r*.925,Math.sin(a)*r*.925,faceZ+r*.07)}
   }
