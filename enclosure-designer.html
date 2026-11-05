@@ -418,8 +418,8 @@ function updateModel(){
   if(round) opening.absarc(0,0,portR,0,Math.PI*2,false);
   else{
    sideSlotOpeningW=Math.min(portW,faceWidth*.62);
-   // Local negative X maps to the enclosure's front edge after the side panel is rotated.
-   const openingCenterU=-faceWidth/2+t+sideSlotOpeningW/2;
+   // Position the side slot tight against the rear vertical edge of the side panel, matching the edge-hugging front slot layout.
+   const openingCenterU=faceWidth/2-t-sideSlotOpeningW/2;
    sideSlotCenterZ=-openingCenterU;
    opening.moveTo(openingCenterU-sideSlotOpeningW/2,-portH/2);
    opening.lineTo(openingCenterU-sideSlotOpeningW/2,portH/2);
@@ -451,14 +451,16 @@ function updateModel(){
  }
  function roundTunnelFront(length,centerX=0){
   // A hollow cylindrical duct centered directly behind the circular front-panel opening.
-  const z=D/2+.012-t-length/2;
-  add(new THREE.CylinderGeometry(portR,portR,length,48,1,true),shellMat,centerX,0,z,Math.PI/2);
+  const overlap=.035;
+  const z=D/2+.012-t-(length-overlap)/2;
+  add(new THREE.CylinderGeometry(portR,portR,length+overlap,48,1,true),shellMat,centerX,0,z,Math.PI/2);
   add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length*.995,48,1,true),darkMat,centerX,0,z,Math.PI/2);
  }
  function roundTunnelSide(length){
   // The cylindrical duct shares the side-panel opening centerline and meets its inner face.
-  const centerX=W/2-t-length/2;
-  add(new THREE.CylinderGeometry(portR,portR,length,64,1,true),shellMat,centerX,0,0,0,0,Math.PI/2);
+  const overlap=.035;
+  const centerX=W/2-t-(length-overlap)/2;
+  add(new THREE.CylinderGeometry(portR,portR,length+overlap,64,1,true),shellMat,centerX,0,0,0,0,Math.PI/2);
   add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length*.995,64,1,true),darkMat,centerX,0,0,0,0,Math.PI/2);
  }
  if(type==="Ported"){
