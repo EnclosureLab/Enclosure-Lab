@@ -80,38 +80,33 @@ function orderCard(order){
  return '<article class="order" data-order-card="'+esc(order.id)+'"><div class="order-head"><div><div class="order-id">ORDER '+esc(String(order.id).slice(0,8).toUpperCase())+' · '+esc(new Date(order.created_at).toLocaleString())+'</div><h2>'+esc(order.customer_name)+'</h2><div class="muted">'+esc(order.customer_email)+'</div><div class="muted">Current status: '+esc(statusLabel(status))+'</div></div>'+(status==="fulfilled"?'<span class="fulfilled-label">✓ Fulfilled</span>':'')+'</div><div class="section"><h3>ORDER MANAGEMENT</h3><div class="manage-grid"><label>Status<select data-status>'+options+'</select></label><label>Tracking number<input data-tracking maxlength="120" value="'+esc(order.tracking_number||"")+'" placeholder="Add tracking number"></label><label style="grid-column:1/-1">Private owner notes<textarea data-notes maxlength="4000" placeholder="Internal notes — customers cannot see these">'+esc(order.internal_notes||"")+'</textarea></label></div><div class="order-actions"><button type="button" data-save="'+esc(order.id)+'">Save updates</button>'+(status==="fulfilled"?'':'<button type="button" class="secondary" data-fulfill="'+esc(order.id)+'">✓ Mark fulfilled</button>')+'</div></div><div class="section"><h3>CUSTOMER & FULFILLMENT</h3><div class="details">'+row("Name",order.customer_name)+row("Email",order.customer_email)+row("Phone",order.customer_phone)+row("Fulfillment",order.fulfillment==="pickup"?"Local pickup":"Shipping")+row("Payment preference",order.payment_method)+(order.fulfillment==="shipping"?row("Street",address.street)+row("City",address.city)+row("State",address.state)+row("ZIP",address.zip):"")+'</div></div><div class="section"><h3>ORDER ITEMS & CONFIGURATION</h3>'+itemMarkup+'</div><div class="section"><h3>PRICING SUMMARY · ESTIMATES</h3><div class="details">'+row("Subtotal",money(order.subtotal))+row("Discount",money(order.discount_amount)+(order.discount_code?" ("+order.discount_code+")":""))+row("Estimated tax",money(order.estimated_tax))+row("Estimated shipping",money(order.estimated_shipping))+row("Estimated total",money(order.estimated_total))+'</div><p class="muted">No payment is collected by this order request. Confirm final pricing and payment separately.</p></div><div class="section"><h3>CUSTOMER NOTES</h3><p>'+esc(order.customer_notes||"No additional notes")+'</p></div></article>';
 }
 function renderStats(){
- const valid=allOrders.filter(o=>o.order_status!=="cancelled");
- const active=valid.filter(o=>!["fulfilled","cancelled"].includes(o.order_status));
- const fulfilled=valid.filter(o=>o.order_status==="fulfilled");
+ const fulfilled=allOrders.filter(o=>o.order_status==="fulfilled");
  const sum=(orders,field="estimated_total")=>orders.reduce((n,o)=>n+(Number(o[field])||0),0);
- const sales=sum(valid),fulfilledSales=sum(fulfilled),avg=valid.length?sales/valid.length:0;
+ const sales=sum(fulfilled),avg=fulfilled.length?sales/fulfilled.length:0;
  let boxRevenue=0,boxCosts=0,pricedBoxCount=0;
- valid.forEach(order=>(Array.isArray(order.items)?order.items:[]).forEach(item=>{
+ fulfilled.forEach(order=>(Array.isArray(order.items)?order.items:[]).forEach(item=>{
   if(item.category!=="enclosure")return;
-  const revenue=Number(item.line_total);
-  const cost=Number(item.configuration?.costBreakdown?.total);
-  if(Number.isFinite(revenue)&&Number.isFinite(cost)&&item.configuration?.costBreakdown){
-   boxRevenue+=revenue;boxCosts+=cost;pricedBoxCount++;
-  }
+  const revenue=Number(item.line_total),cost=Number(item.configuration?.costBreakdown?.total);
+  if(Number.isFinite(revenue)&&Number.isFinite(cost)&&item.configuration?.costBreakdown){boxRevenue+=revenue;boxCosts+=cost;pricedBoxCount++}
  }));
  const boxProfit=boxRevenue-boxCosts;
  const cards=[
-  ["Estimated sales",money(sales), "All non-cancelled orders · not necessarily paid"],
-  ["Fulfilled sales",money(fulfilledSales),fulfilled.length+" fulfilled orders"],
-  ["Estimated box profit",money(boxProfit),pricedBoxCount+" box line items with recorded costs"],
-  ["Recorded box costs",money(boxCosts),"Material, finish and consumables recorded"],
-  ["Total orders",String(allOrders.length),valid.length+" excluding cancelled"],
-  ["Active orders",String(active.length),"Not yet fulfilled or cancelled"],
-  ["Fulfilled orders",String(fulfilled.length),"Completed orders"],
-  ["Average order value",money(avg),"Across non-cancelled orders"]
+  ["Fulfilled sales",money(sales),fulfilled.length+" fulfilled orders"],
+  ["Fulfilled sales",money(sales),"Completed orders only"],
+  ["Estimated box profit",money(boxProfit),pricedBoxCount+" fulfilled box line items with recorded costs"],
+  ["Recorded box costs",money(boxCosts),"Fulfilled boxes · recorded material, finish and consumables"],
+  ["Fulfilled orders",String(fulfilled.length),"Completed orders only"],
+  ["Active orders","0","Excluded from fulfilled statistics"],
+  ["Completed orders",String(fulfilled.length),"Successfully fulfilled"],
+  ["Average fulfilled order value",money(avg),"Fulfilled sales divided by fulfilled orders"]
  ];
  $("statsGrid").innerHTML=cards.map((c,i)=>'<article class="stat-card"><div class="stat-label">'+esc(c[0])+'</div><div class="stat-value '+(i===2?(boxProfit>=0?"stat-positive":"stat-negative"):"")+'">'+esc(c[1])+'</div><div class="stat-note">'+esc(c[2])+'</div></article>').join("");
  const now=new Date(),months=[];
  for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);months.push({year:d.getFullYear(),month:d.getMonth(),label:d.toLocaleDateString(undefined,{month:"short"}),value:0})}
- valid.forEach(o=>{const d=new Date(o.created_at),m=months.find(x=>x.year===d.getFullYear()&&x.month===d.getMonth());if(m)m.value+=Number(o.estimated_total)||0});
+ fulfilled.forEach(o=>{const d=new Date(o.completed_at||o.created_at),m=months.find(x=>x.year===d.getFullYear()&&x.month===d.getMonth());if(m)m.value+=Number(o.estimated_total)||0});
  const max=Math.max(1,...months.map(m=>m.value));
  $("salesChart").innerHTML=months.map(m=>'<div class="month-col"><div class="month-amount">'+esc(money(m.value))+'</div><div class="month-bar-wrap"><div class="month-bar" style="height:'+Math.max(3,m.value/max*100)+'%" title="'+esc(money(m.value))+'"></div></div><div class="month-label">'+esc(m.label)+'</div></div>').join("");
- $("statsNote").textContent="Sales use estimated order totals and exclude cancelled orders; they are not confirmed payments. Estimated box profit is calculated only for enclosure line items with a saved cost breakdown (materials, finish and consumables). It does not deduct labor, overhead, taxes, shipping expenses, or costs for other products. It is not net profit.";
+ $("statsNote").textContent="All dashboard figures and chart values include fulfilled orders only. Sales use estimated order totals, not verified payment receipts. Estimated box profit only covers fulfilled enclosure line items with saved cost breakdowns and excludes labor, overhead, taxes, shipping expenses and costs for other products.";
 }
 function renderOrders(){
  renderStats();
