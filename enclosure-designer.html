@@ -92,7 +92,7 @@
      <label class="choice"><input type="radio" name="finish" value="Raw" checked><span><strong>Raw</strong><small>No paint or wrap applied</small></span></label>
     </div>
     <div id="paintOptions" class="subchoices field-grid hidden">
-     <div class="field"><label for="paintColor">Choose paint color</label><div class="advanced-color-picker"><canvas id="paintWheel" class="color-wheel" width="240" height="240" aria-label="Interactive color wheel" tabindex="0"></canvas><div class="color-picker-controls"><label for="paintBrightness">Brightness</label><input id="paintBrightness" class="brightness-slider" type="range" min="10" max="100" value="100"><span class="selected-color"><i id="paintSwatch"></i><output id="paintHex">#202124</output></span></div><input id="paintColor" class="native-color-value" type="color" value="#202124" aria-hidden="true" tabindex="-1"></div><small>Drag on the color wheel to choose any shade. Adjust brightness below.</small></div>
+     <div class="field"><label for="paintColor">Choose paint color</label><div class="advanced-color-picker"><canvas id="paintWheel" class="color-wheel" width="240" height="240" aria-label="Interactive color wheel" tabindex="0"></canvas><div class="color-picker-controls"><label for="paintBrightness">Brightness</label><input id="paintBrightness" class="brightness-slider" type="range" min="0" max="100" value="100"><span class="selected-color"><i id="paintSwatch"></i><output id="paintHex">#202124</output></span></div><input id="paintColor" class="native-color-value" type="color" value="#202124" aria-hidden="true" tabindex="-1"></div><small>Drag on the color wheel to choose any shade. Adjust brightness below.</small></div>
      <div class="field"><label for="paintDesign">Custom design (optional)</label><select id="paintDesign"><option>No custom design</option><option>Splatter paint</option><option>Two-tone paint</option><option>Metallic / flake</option><option>Color fade / gradient</option><option>Custom graphics / lettering</option><option>Other custom design</option></select><div id="paintDesignOptions" class="design-options hidden"></div></div>
      <div class="field full hidden" id="customPaintWrap"><label for="customPaint">Custom paint color</label><input id="customPaint" maxlength="80" placeholder="Describe your custom color"></div>
      
@@ -171,7 +171,7 @@ function setupWheel(id){
  }
  function draw(){
   if(!baseImage)buildWheel();
-  const w=c.width,h=c.height,cx=w/2,cy=h/2,r=cx-2,v=Math.max(.1,Number(slider.value)/100);
+  const w=c.width,h=c.height,cx=w/2,cy=h/2,r=cx-2,v=Math.max(0,Number(slider.value)/100);
   const frame=ctx.createImageData(w,h);
   for(let i=0;i<baseImage.data.length;i+=4){frame.data[i]=Math.round(baseImage.data[i]*v);frame.data[i+1]=Math.round(baseImage.data[i+1]*v);frame.data[i+2]=Math.round(baseImage.data[i+2]*v);frame.data[i+3]=baseImage.data[i+3]}
   ctx.putImageData(frame,0,0);
@@ -196,7 +196,7 @@ function setupWheel(id){
  c.addEventListener("pointermove",e=>{if(drag)pick(e)});
  const stop=()=>{drag=false};c.addEventListener("pointerup",stop);c.addEventListener("pointercancel",stop);c.addEventListener("lostpointercapture",stop);
  slider.addEventListener("input",apply);
- slider.value=Math.max(10,Math.round(hsv.v*100));apply();
+ slider.value=Math.max(0,Math.round(hsv.v*100));apply();
 }
 function finishColor(){const finish=document.querySelector('input[name="finish"]:checked').value;if(finish==="Paint"){return $("paintColor").value}if(finish==="Wrap"){return $("wrapColor").value}return "#b58c5a"}
 function setupPreviewOnlyControls(){
