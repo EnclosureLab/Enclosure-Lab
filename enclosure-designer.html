@@ -454,14 +454,14 @@ function updateModel(){
   const overlap=.035;
   const z=D/2+.012-t-(length-overlap)/2;
   add(new THREE.CylinderGeometry(portR,portR,length+overlap,48,1,true),shellMat,centerX,0,z,Math.PI/2);
-  add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length*.995,48,1,true),darkMat,centerX,0,z,Math.PI/2);
+  add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length+overlap,48,1,true),darkMat,centerX,0,z,Math.PI/2);
  }
  function roundTunnelSide(length){
   // The cylindrical duct shares the side-panel opening centerline and meets its inner face.
   const overlap=.035;
   const centerX=W/2-t-(length-overlap)/2;
   add(new THREE.CylinderGeometry(portR,portR,length+overlap,64,1,true),shellMat,centerX,0,0,0,0,Math.PI/2);
-  add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length*.995,64,1,true),darkMat,centerX,0,0,0,0,Math.PI/2);
+  add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length+overlap,64,1,true),darkMat,centerX,0,0,0,0,Math.PI/2);
  }
  if(type==="Ported"){
   const length=Math.max(t*2,Math.min((side?W:D)*.58,Math.max(7*scale,(side?W:D)*.32)));
