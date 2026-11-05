@@ -262,7 +262,7 @@ function updateModel(){
  const w=Number($("width").value),h=Number($("height").value),d=Number($("depth").value);
  const scale=34/Math.max(w,h,d),W=w*scale,H=h*scale,D=d*scale,t=.75*scale;
  
- const finish=document.querySelector('input[name="finish"]:checked').value,color=finishColor(),type=document.querySelector('input[name="boxType"]:checked').value,style=document.querySelector('input[name="portStyle"]:checked').value,side=style.includes("side"),round=style.includes("Hole");
+ const finish=document.querySelector('input[name="finish"]:checked').value,color=finishColor(),type=document.querySelector('input[name="boxType"]:checked').value,style=document.querySelector('input[name="portStyle"]:checked').value,side=type==="Ported"&&style.includes("side"),round=type==="Ported"&&style.includes("Hole");
  const shellMat=createFinishMaterial(color,finish),innerMat=new THREE.MeshStandardMaterial({color:0x262a30,roughness:.98}),darkMat=new THREE.MeshStandardMaterial({color:0x080b10,roughness:1,side:THREE.DoubleSide});
  const add=(geo,mat,x,y,z,rx=0,ry=0,rz=0)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.rotation.set(rx,ry,rz);boxGroup.add(m);return m};
  const panel=(x,y,z,sx,sy,sz,mat=shellMat)=>add(new THREE.BoxGeometry(sx,sy,sz),mat,x,y,z);
