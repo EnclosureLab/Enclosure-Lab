@@ -208,7 +208,7 @@ function setupPreviewOnlyControls(){
   updateModel();
  }));
 }
-function init3D(){setupPreviewOnlyControls();const logoImage=new Image();logoImage.onload=()=>{const logoCanvas=document.createElement("canvas");logoCanvas.width=512;logoCanvas.height=512;const ctx=logoCanvas.getContext("2d");ctx.fillStyle="#050505";ctx.fillRect(0,0,512,512);const ratio=Math.min(460/logoImage.width,250/logoImage.height),lw=logoImage.width*ratio,lh=logoImage.height*ratio;ctx.drawImage(logoImage,(512-lw)/2,(512-lh)/2,lw,lh);enclosureLogoTexture=new THREE.CanvasTexture(logoCanvas);enclosureLogoTexture.encoding=THREE.sRGBEncoding;enclosureLogoTexture.needsUpdate=true;if(boxGroup)updateModel()};logoImage.src="enclosure-lab-logo.png";const canvas=$("modelCanvas");if(!window.THREE||!canvas)return;scene=new THREE.Scene();scene.background=new THREE.Color("#ffffff");camera=new THREE.PerspectiveCamera(34,1,.1,1000);camera.position.set(48,38,48);renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=false;controls=new THREE.OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.075;scene.add(new THREE.HemisphereLight(0xffffff,0x8c8174,1.25));const key=new THREE.DirectionalLight(0xfff5e8,2.15);key.position.set(-32,48,42);key.castShadow=false;scene.add(key);const fill=new THREE.DirectionalLight(0xffffff,.85);fill.position.set(38,22,12);scene.add(fill);const rim=new THREE.DirectionalLight(0xffffff,1.05);rim.position.set(-12,28,-42);scene.add(rim);boxGroup=new THREE.Group();scene.add(boxGroup);studioFloor=null;const resize=()=>{const w=canvas.clientWidth||600,h=canvas.clientHeight||400;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()};new ResizeObserver(resize).observe(canvas.parentElement);resize();(function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)})();updateModel()}
+function init3D(){setupPreviewOnlyControls();const logoImage=new Image();logoImage.onload=()=>{const logoCanvas=document.createElement("canvas");logoCanvas.width=512;logoCanvas.height=512;const ctx=logoCanvas.getContext("2d");ctx.fillStyle="#050505";ctx.fillRect(0,0,512,512);const ratio=Math.min(350/logoImage.width,205/logoImage.height),lw=logoImage.width*ratio,lh=logoImage.height*ratio;ctx.drawImage(logoImage,(512-lw)/2,(512-lh)/2,lw,lh);enclosureLogoTexture=new THREE.CanvasTexture(logoCanvas);enclosureLogoTexture.encoding=THREE.sRGBEncoding;enclosureLogoTexture.needsUpdate=true;if(boxGroup)updateModel()};logoImage.src="enclosure-lab-logo.png";const canvas=$("modelCanvas");if(!window.THREE||!canvas)return;scene=new THREE.Scene();scene.background=new THREE.Color("#ffffff");camera=new THREE.PerspectiveCamera(34,1,.1,1000);camera.position.set(48,38,48);renderer=new THREE.WebGLRenderer({canvas,antialias:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=false;controls=new THREE.OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.075;scene.add(new THREE.HemisphereLight(0xffffff,0x8c8174,1.25));const key=new THREE.DirectionalLight(0xfff5e8,2.15);key.position.set(-32,48,42);key.castShadow=false;scene.add(key);const fill=new THREE.DirectionalLight(0xffffff,.85);fill.position.set(38,22,12);scene.add(fill);const rim=new THREE.DirectionalLight(0xffffff,1.05);rim.position.set(-12,28,-42);scene.add(rim);boxGroup=new THREE.Group();scene.add(boxGroup);studioFloor=null;const resize=()=>{const w=canvas.clientWidth||600,h=canvas.clientHeight||400;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()};new ResizeObserver(resize).observe(canvas.parentElement);resize();(function animate(){requestAnimationFrame(animate);controls.update();renderer.render(scene,camera)})();updateModel()}
 function designOptionMarkup(){
  const type=$("paintDesign").value,wrap=$("paintDesignOptions");let html="";
  const color=(id,label,value)=>'<div class="field"><label for="'+id+'">'+label+'</label><div class="design-color"><input type="color" id="'+id+'" value="'+value+'"><span class="design-help">Choose a second color</span></div></div>';
@@ -335,90 +335,91 @@ function updateModel(){
  }
  function addPreviewSubwoofer(){
   if(!previewSubwoofer)return;
-  const outerRadius=selectedSubSize*scale*.49;
-  const frontZ=D/2+.035;
+  const r=selectedSubSize*scale*.49;
+  const faceZ=D/2+.035;
   const driver=new THREE.Group();boxGroup.add(driver);
-  const black=new THREE.MeshStandardMaterial({color:0x101215,metalness:.22,roughness:.48});
-  const rubber=new THREE.MeshStandardMaterial({color:0x080a0d,roughness:.82});
-  const coneMat=new THREE.MeshStandardMaterial({color:0x171a1e,metalness:.08,roughness:.64,side:THREE.DoubleSide});
-  const metal=new THREE.MeshStandardMaterial({color:0x343a40,metalness:.82,roughness:.3});
-  const darkMetal=new THREE.MeshStandardMaterial({color:0x171b20,metalness:.72,roughness:.38});
-  const silver=new THREE.MeshStandardMaterial({color:0x858b91,metalness:.88,roughness:.24});
-  const ring=(radius,tube,z,material,segments=96)=>{const m=new THREE.Mesh(new THREE.TorusGeometry(radius,tube,14,segments),material);m.position.z=z;driver.add(m);return m};
-  const cylinder=(radius,length,z,material,segments=64)=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(radius,radius,length,segments),material);m.rotation.x=Math.PI/2;m.position.z=z;driver.add(m);return m};
-  const screw=(x,y,z,r=outerRadius*.022)=>{
-   const head=new THREE.Mesh(new THREE.CylinderGeometry(r,r,outerRadius*.018,20),darkMetal);
-   head.rotation.x=Math.PI/2;head.position.set(x,y,z);driver.add(head);
-   const slot=new THREE.Mesh(new THREE.BoxGeometry(r*1.15,outerRadius*.006,outerRadius*.006),black);
-   slot.position.set(x,y,z+outerRadius*.011);driver.add(slot);
+  const cast=new THREE.MeshStandardMaterial({color:0x171a1e,metalness:.72,roughness:.34});
+  const edgeMetal=new THREE.MeshStandardMaterial({color:0x343a40,metalness:.86,roughness:.27});
+  const rubber=new THREE.MeshStandardMaterial({color:0x090b0e,metalness:.02,roughness:.9});
+  const coneMat=new THREE.MeshStandardMaterial({color:0x101317,metalness:.12,roughness:.76,side:THREE.DoubleSide});
+  const motorMat=new THREE.MeshStandardMaterial({color:0x20252b,metalness:.78,roughness:.32});
+  const highlight=new THREE.MeshStandardMaterial({color:0x555d65,metalness:.88,roughness:.24});
+  const torus=(rad,tube,z,mat)=>{const m=new THREE.Mesh(new THREE.TorusGeometry(rad,tube,18,120),mat);m.position.z=z;driver.add(m);return m};
+  const cyl=(rad,len,z,mat)=>{const m=new THREE.Mesh(new THREE.CylinderGeometry(rad,rad,len,80),mat);m.rotation.x=Math.PI/2;m.position.z=z;driver.add(m);return m};
+  const bolt=(x,y,z)=>{
+   const b=new THREE.Mesh(new THREE.CylinderGeometry(r*.021,r*.021,r*.018,24),edgeMetal);b.rotation.x=Math.PI/2;b.position.set(x,y,z);driver.add(b);
+   const slot=new THREE.Mesh(new THREE.BoxGeometry(r*.025,r*.006,r*.004),rubber);slot.position.set(x,y,z+r*.011);driver.add(slot);
   };
-  // Cast outer mounting flange, gasket and machined trim rings.
-  cylinder(outerRadius*.985,outerRadius*.075,frontZ,black);
-  ring(outerRadius*.965,outerRadius*.018,frontZ+outerRadius*.045,silver);
-  ring(outerRadius*.91,outerRadius*.025,frontZ+outerRadius*.052,darkMetal);
-  ring(outerRadius*.865,outerRadius*.045,frontZ+outerRadius*.065,rubber);
-  for(let n=0;n<10;n++){
-   const a=n*Math.PI*2/10,rr=outerRadius*.91;
-   screw(Math.cos(a)*rr,Math.sin(a)*rr,frontZ+outerRadius*.055);
-  }
+  // Thick stamped mounting flange with a recessed gasket channel.
+  cyl(r*.985,r*.085,faceZ,cast);
+  torus(r*.965,r*.016,faceZ+r*.048,highlight);
+  torus(r*.91,r*.026,faceZ+r*.054,rubber);
+  torus(r*.855,r*.018,faceZ+r*.065,edgeMetal);
+  for(let n=0;n<12;n++){const a=n*Math.PI/6;bolt(Math.cos(a)*r*.925,Math.sin(a)*r*.925,faceZ+r*.058)}
   if(previewMount==="regular"){
-   // Thick high-roll surround and a gently conical, pressed composite cone.
-   ring(outerRadius*.805,outerRadius*.075,frontZ+outerRadius*.105,rubber);
-   ring(outerRadius*.735,outerRadius*.018,frontZ+outerRadius*.17,black);
+   // Deep, rounded high-roll surround. Several nested radii give it a molded rubber profile.
+   torus(r*.805,r*.082,faceZ+r*.105,rubber);
+   torus(r*.805,r*.048,faceZ+r*.145,rubber);
+   torus(r*.735,r*.018,faceZ+r*.165,cast);
+   // Concave cone: outer edge is forward, center is recessed toward the enclosure.
    const profile=[
-    new THREE.Vector2(outerRadius*.78,0),
-    new THREE.Vector2(outerRadius*.70,outerRadius*.055),
-    new THREE.Vector2(outerRadius*.57,outerRadius*.15),
-    new THREE.Vector2(outerRadius*.40,outerRadius*.235),
-    new THREE.Vector2(outerRadius*.25,outerRadius*.275),
-    new THREE.Vector2(outerRadius*.17,outerRadius*.29),
-    new THREE.Vector2(0,outerRadius*.30)
+    new THREE.Vector2(0,0),
+    new THREE.Vector2(r*.12,r*.012),
+    new THREE.Vector2(r*.24,r*.035),
+    new THREE.Vector2(r*.39,r*.085),
+    new THREE.Vector2(r*.55,r*.155),
+    new THREE.Vector2(r*.68,r*.225),
+    new THREE.Vector2(r*.755,r*.255),
+    new THREE.Vector2(r*.78,r*.255)
    ];
-   const cone=new THREE.Mesh(new THREE.LatheGeometry(profile,96),coneMat);
-   cone.rotation.x=Math.PI/2;cone.position.z=frontZ+outerRadius*.12;driver.add(cone);
-   // Subtle cone reinforcement ribs and inner dust-cap landing ring.
-   ring(outerRadius*.49,outerRadius*.009,frontZ+outerRadius*.345,darkMetal);
-   ring(outerRadius*.30,outerRadius*.014,frontZ+outerRadius*.405,black);
-   const cap=new THREE.Mesh(new THREE.SphereGeometry(outerRadius*.205,48,32),black);
-   cap.scale.z=.42;cap.position.set(0,0,frontZ+outerRadius*.405);driver.add(cap);
-   // Use the actual Enclosure Lab logo on the dust cap when its texture has loaded.
+   const cone=new THREE.Mesh(new THREE.LatheGeometry(profile,128),coneMat);
+   cone.rotation.x=Math.PI/2;cone.position.z=faceZ+r*.11;driver.add(cone);
+   // Subtle concentric cone-roll detailing and recessed dust-cap seat.
+   torus(r*.47,r*.008,faceZ+r*.205,cast);
+   torus(r*.285,r*.014,faceZ+r*.135,edgeMetal);
+   const cap=new THREE.Mesh(new THREE.SphereGeometry(r*.205,64,40),rubber);
+   cap.scale.z=.34;cap.position.set(0,0,faceZ+r*.17);driver.add(cap);
+   torus(r*.207,r*.012,faceZ+r*.185,cast);
    if(enclosureLogoTexture){
-    const badge=new THREE.Mesh(new THREE.CircleGeometry(outerRadius*.172,64),new THREE.MeshBasicMaterial({map:enclosureLogoTexture,side:THREE.DoubleSide}));
-    badge.position.set(0,0,frontZ+outerRadius*.493);driver.add(badge);
-   }else{
-    const badgeRing=ring(outerRadius*.13,outerRadius*.009,frontZ+outerRadius*.49,silver);
-   }
+    const badge=new THREE.Mesh(new THREE.CircleGeometry(r*.174,80),new THREE.MeshBasicMaterial({map:enclosureLogoTexture,side:THREE.DoubleSide,toneMapped:false}));
+    badge.position.set(0,0,faceZ+r*.242);driver.add(badge);
+   }else{torus(r*.13,r*.009,faceZ+r*.24,highlight)}
   }else{
-   // Inverted mount: visible cast basket, vented motor and magnet stack.
-   ring(outerRadius*.82,outerRadius*.055,frontZ+outerRadius*.12,silver);
-   ring(outerRadius*.76,outerRadius*.025,frontZ+outerRadius*.15,black);
-   const basketTop=frontZ+outerRadius*.16,basketBottom=frontZ+outerRadius*.78;
-   const motorRadius=outerRadius*.37;
-   for(let n=0;n<12;n++){
-    const a=n*Math.PI*2/12;
-    const p1=new THREE.Vector3(Math.cos(a)*outerRadius*.76,Math.sin(a)*outerRadius*.76,basketTop);
-    const p2=new THREE.Vector3(Math.cos(a)*motorRadius,Math.sin(a)*motorRadius,basketBottom);
-    const delta=new THREE.Vector3().subVectors(p2,p1);
-    const spoke=new THREE.Mesh(new THREE.CylinderGeometry(outerRadius*.027,outerRadius*.047,delta.length(),12),metal);
-    spoke.position.copy(p1).add(p2).multiplyScalar(.5);
-    spoke.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize());driver.add(spoke);
+   // Same driver viewed from behind: heavy cast basket, broad curved spokes and stacked motor.
+   const rimZ=faceZ+r*.12, motorZ=faceZ+r*.86, motorR=r*.405;
+   torus(r*.82,r*.065,rimZ,cast);
+   torus(r*.765,r*.028,rimZ+r*.045,edgeMetal);
+   for(let n=0;n<10;n++){
+    const a=n*Math.PI*2/10;
+    const p0=new THREE.Vector3(Math.cos(a)*r*.77,Math.sin(a)*r*.77,rimZ+r*.015);
+    const p1=new THREE.Vector3(Math.cos(a)*r*.69,Math.sin(a)*r*.69,faceZ+r*.37);
+    const p2=new THREE.Vector3(Math.cos(a)*r*.52,Math.sin(a)*r*.52,faceZ+r*.65);
+    const p3=new THREE.Vector3(Math.cos(a)*motorR,Math.sin(a)*motorR,motorZ);
+    const curve=new THREE.CatmullRomCurve3([p0,p1,p2,p3]);
+    const spoke=new THREE.Mesh(new THREE.TubeGeometry(curve,32,r*.052,12,false),cast);driver.add(spoke);
+    // Narrow raised rib on each cast arm catches studio highlights.
+    const ribCurve=new THREE.CatmullRomCurve3([
+     p0.clone().multiplyScalar(.985).add(new THREE.Vector3(0,0,r*.035)),
+     p1.clone().multiplyScalar(.985).add(new THREE.Vector3(0,0,r*.035)),
+     p2.clone().multiplyScalar(.985).add(new THREE.Vector3(0,0,r*.035))
+    ]);
+    driver.add(new THREE.Mesh(new THREE.TubeGeometry(ribCurve,24,r*.012,8,false),highlight));
    }
-   ring(motorRadius*.98,outerRadius*.045,basketBottom,darkMetal);
-   cylinder(motorRadius*.92,outerRadius*.22,basketBottom+outerRadius*.13,metal);
-   cylinder(motorRadius*.78,outerRadius*.25,basketBottom+outerRadius*.32,darkMetal);
-   cylinder(motorRadius*.62,outerRadius*.12,basketBottom+outerRadius*.49,silver);
-   cylinder(motorRadius*.34,outerRadius*.24,basketBottom+outerRadius*.66,black);
-   // Cooling vent and center pole detail.
-   cylinder(motorRadius*.18,outerRadius*.30,basketBottom+outerRadius*.70,darkMetal);
-   ring(motorRadius*.54,outerRadius*.018,basketBottom+outerRadius*.555,silver);
-   ring(outerRadius*.80,outerRadius*.045,frontZ+outerRadius*.10,rubber);
-   for(let n=0;n<8;n++){
-    const a=n*Math.PI/4,rr=outerRadius*.91;
-    screw(Math.cos(a)*rr,Math.sin(a)*rr,frontZ+outerRadius*.075);
-   }
+   // Multi-stage motor stack with a wide top plate, magnet body and vented pole.
+   torus(motorR*1.12,r*.035,motorZ,edgeMetal);
+   cyl(motorR, r*.20, motorZ+r*.12, edgeMetal);
+   cyl(motorR*.91,r*.27,motorZ+r*.34,motorMat);
+   torus(motorR*.92,r*.018,motorZ+r*.22,highlight);
+   torus(motorR*.92,r*.018,motorZ+r*.46,cast);
+   cyl(motorR*.72,r*.15,motorZ+r*.55,cast);
+   cyl(motorR*.34,r*.28,motorZ+r*.72,motorMat);
+   cyl(motorR*.19,r*.34,motorZ+r*.83,edgeMetal);
+   torus(motorR*.36,r*.018,motorZ+r*.64,highlight);
+   // Rear vent opening and center pole detail.
+   cyl(motorR*.115,r*.025,motorZ+r*.99,rubber);
+   for(let n=0;n<8;n++){const a=n*Math.PI/4;bolt(Math.cos(a)*r*.925,Math.sin(a)*r*.925,faceZ+r*.07)}
   }
  }
-
  function sidePortFace(){
   const faceWidth=D,faceHeight=H;
   const shape=new THREE.Shape();
