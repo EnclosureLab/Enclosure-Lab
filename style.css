@@ -184,3 +184,17 @@ footer .brand-mark.logo-mark{width:42px;height:42px}
 
 /* Keep About and Manager Portal visually separated in the desktop navigation. */
 @media(min-width:851px){.site-header .nav nav .mobile-more-links{display:flex;flex-direction:row;align-items:center;gap:26px;white-space:nowrap}.site-header .nav nav .mobile-more-links a{display:inline-block}}
+
+/* Expanded Enclosure Lab wordmark and primary site navigation */
+.site-header{height:auto;min-height:98px}
+.nav-expanded{min-height:98px;gap:26px}
+.brand-expanded{gap:14px;min-width:290px}
+.brand-expanded .brand-mark{width:62px;height:62px;border-radius:10px;overflow:hidden;background:#000}
+.brand-expanded .brand-mark img{width:100%;height:100%;object-fit:contain;display:block}
+.brand-wordmark{font-family:Orbitron,Inter,sans-serif;font-size:23px;font-weight:800;letter-spacing:.09em;white-space:nowrap}
+.main-nav{display:flex;align-items:center;gap:8px;margin-left:auto}
+.main-nav .nav-link{padding:11px 15px;border:1px solid transparent;border-radius:9px;color:#596675;font-size:13px;font-weight:800;transition:.18s}
+.main-nav .nav-link:hover{background:#f1f4f7;border-color:#e1e6eb;color:#17202b}
+.cart-cta{display:flex;align-items:center;gap:9px;padding:12px 17px;border-radius:10px}
+.cart-cta svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:760px){.nav-expanded{padding:12px 0;flex-wrap:wrap;gap:12px}.brand-expanded{min-width:0;flex:1}.brand-expanded .brand-mark{width:50px;height:50px}.brand-wordmark{font-size:17px;letter-spacing:.06em}.main-nav{order:3;width:100%;justify-content:center;margin:0}.main-nav .nav-link{padding:9px 11px;font-size:12px}.cart-cta{padding:10px 12px}}
