@@ -198,3 +198,26 @@ footer .brand-mark.logo-mark{width:42px;height:42px}
 .cart-cta{display:flex;align-items:center;gap:9px;padding:12px 17px;border-radius:10px}
 .cart-cta svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 @media(max-width:760px){.nav-expanded{padding:12px 0;flex-wrap:wrap;gap:12px}.brand-expanded{min-width:0;flex:1}.brand-expanded .brand-mark{width:50px;height:50px}.brand-wordmark{font-size:17px;letter-spacing:.06em}.main-nav{order:3;width:100%;justify-content:center;margin:0}.main-nav .nav-link{padding:9px 11px;font-size:12px}.cart-cta{padding:10px 12px}}
+
+/* Unified storefront-style header across homepage and checkout */
+.site-header{min-height:100px!important;height:auto!important;background:#fff!important;border-bottom:1px solid #e1e6eb!important;backdrop-filter:none}
+.site-header .nav-expanded{min-height:100px!important;height:auto!important;display:flex!important;align-items:center!important;gap:26px!important}
+.site-header .brand-expanded{display:flex!important;align-items:center!important;gap:13px!important;min-width:0!important;font-size:inherit!important;font-weight:inherit!important;letter-spacing:normal!important}
+.site-header .brand-expanded .brand-mark{display:block!important;flex:0 0 62px!important;width:62px!important;height:62px!important;padding:0!important;border-radius:8px!important;overflow:hidden!important;background:#000!important}
+.site-header .brand-expanded .brand-mark img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important}
+.site-header .brand-expanded .brand-wordmark{display:block!important;font-family:Orbitron,Inter,sans-serif!important;font-size:22px!important;font-weight:800!important;letter-spacing:.09em!important;color:#788797!important;line-height:1.15!important;white-space:nowrap!important}
+.site-header .main-nav{display:flex!important;align-items:center!important;gap:8px!important;margin-left:auto!important}
+.site-header .main-nav .nav-link{display:inline-flex!important;align-items:center!important;justify-content:center!important;padding:11px 15px!important;border:1px solid #e1e6eb!important;border-radius:9px!important;background:#f1f3f5!important;color:#17202b!important;font-size:12px!important;font-weight:800!important;text-decoration:none!important;white-space:nowrap!important}
+.site-header .main-nav .nav-link:hover{background:#e7ebef!important;border-color:#d3dbe3!important}
+.site-header .cart-cta{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:9px!important;margin-left:4px!important;padding:12px 17px!important;border:1px solid #dce2e8!important;border-radius:10px!important;background:#fff!important;color:#17202b!important;font-size:13px!important;font-weight:800!important;text-decoration:none!important;white-space:nowrap!important}
+.site-header .cart-cta:hover{background:#f5f7f9!important}
+.site-header .cart-cta svg{display:block!important;width:20px!important;height:20px!important}
+@media(max-width:760px){
+.site-header .nav-expanded{padding:12px 0!important;flex-wrap:wrap!important;gap:12px!important}
+.site-header .brand-expanded{flex:1 1 auto!important}
+.site-header .brand-expanded .brand-mark{flex-basis:50px!important;width:50px!important;height:50px!important}
+.site-header .brand-expanded .brand-wordmark{font-size:16px!important;letter-spacing:.05em!important}
+.site-header .main-nav{order:3!important;width:auto!important;margin-left:0!important}
+.site-header .main-nav .nav-link{padding:9px 12px!important}
+.site-header .cart-cta{margin-left:auto!important;padding:10px 12px!important}
+}
