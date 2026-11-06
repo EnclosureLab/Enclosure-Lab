@@ -274,3 +274,12 @@ footer .brand-mark.logo-mark{width:42px;height:42px}
 .shop-brand img{width:82px!important;height:82px!important;object-fit:contain!important;filter:invert(1) brightness(1.04)!important;background:#fff!important;border-radius:0!important}
 @media(max-width:850px){.shop-brand img{width:68px!important;height:68px!important}}
 @media(max-width:560px){.shop-brand img{width:58px!important;height:58px!important}}
+
+/* Keep the header logo clean: do not invert the full image or paint a dark tile. */
+.shop-brand img{
+  filter:none!important;
+  background:transparent!important;
+  object-fit:contain!important;
+  border:0!important;
+  box-shadow:none!important;
+}
