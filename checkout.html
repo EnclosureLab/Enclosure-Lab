@@ -11,11 +11,13 @@
 @media(max-width:800px){.checkout-layout{grid-template-columns:1fr}.summary-card{position:static;grid-row:1}.checkout-card{padding:20px}}@media(max-width:520px){.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.checkout-card,.summary-card{padding:18px}}
 .discount-box{margin:18px 0 8px;padding:14px;border:1px solid #dfe4e8;border-radius:10px}.discount-box>label{display:block;font-size:13px;font-weight:800;margin-bottom:8px}.discount-controls{display:flex;gap:8px}.discount-controls input{min-width:0;flex:1;width:100%;border:1px solid #d8dfe5;border-radius:8px;padding:11px;font:inherit;font-size:14px;text-transform:uppercase}.discount-controls button{border:0;border-radius:8px;background:#17202b;color:#fff;padding:0 14px;font:inherit;font-size:13px;font-weight:800;cursor:pointer}.discount-status{margin:8px 0 0;color:#687480;font-size:12px}.discount-status.success{color:#247044}.discount-status.error{color:#a33131}
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-<header class="site-header"><div class="container nav">
-<a class="brand" href="index.html#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span>Enclosure Lab</span></a>
-<a class="nav-cta" href="index.html">Return to Homepage</a>
+<header class="site-header"><div class="container nav nav-expanded">
+<a class="brand brand-expanded" href="index.html#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span class="brand-wordmark">ENCLOSURE LAB</span></a>
+<nav class="main-nav" aria-label="Main navigation"><a class="nav-link" href="index.html#top">Home</a><a class="nav-link" href="products.html">Shop products</a><a class="nav-link" href="index.html#build">Build a box</a></nav>
+<a class="nav-cta cart-cta" href="checkout.html" aria-label="Shopping cart"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h2l2.1 11.1a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg><span>Cart</span></a>
 </div></header>
 <main>
 <section class="checkout-hero"><div class="container"><p class="eyebrow">ENCLOSURE LAB CHECKOUT</p><h1>Review your <span>order.</span></h1><p>Confirm your items and delivery preference. Payments are not enabled yet.</p></div></section>
