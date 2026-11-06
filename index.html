@@ -55,6 +55,36 @@
 .enclosure-reviews .review-pinned-label{display:inline-block;margin-bottom:8px;font-size:.8rem;font-weight:700;color:#8a6417}
 @media(max-width:760px){.enclosure-reviews .review-layout{grid-template-columns:1fr}.enclosure-reviews .review-fields{grid-template-columns:1fr}.enclosure-reviews .review-field.full{grid-column:auto}.enclosure-reviews .review-aside{padding:22px}.enclosure-reviews .review-form{padding:20px}}
 @media(max-width:560px){.enclosure-reviews .reviews-shelf-head{align-items:flex-start}.enclosure-reviews .reviews-controls button{width:38px;height:38px}.enclosure-reviews .review-card{flex-basis:88%}}
+
+/* Custom enclosure homepage hero — editorial product showcase */
+.el-hero-redesign{position:relative;isolation:isolate;overflow:hidden;padding:clamp(64px,8vw,112px) 0!important;background:linear-gradient(120deg,#fff 0%,#f6f8fa 58%,#edf1f4 100%)!important}
+.el-hero-redesign:before{content:"";position:absolute;z-index:-1;right:-9%;top:-42%;width:58vw;height:58vw;max-width:850px;max-height:850px;border:1px solid #dfe5ea;border-radius:50%;box-shadow:0 0 0 46px #ffffff55,0 0 0 92px #ffffff35}
+.el-hero-layout{display:grid;grid-template-columns:minmax(0,.92fr) minmax(420px,1.08fr);align-items:center;gap:clamp(44px,7vw,104px)}
+.el-hero-copy{position:relative;z-index:1}
+.el-hero-copy>.eyebrow{font-size:11px;letter-spacing:.22em;font-weight:900;color:#657382;margin:0 0 18px}
+.el-built-tag{display:inline-flex;align-items:center;gap:9px;margin:0 0 22px;padding:8px 11px;border:1px solid #d8e0e7;border-radius:4px;background:#fff;color:#263442;font-size:10px;font-weight:900;letter-spacing:.2em}
+.el-built-tag span{width:7px;height:7px;border-radius:50%;background:#263442;box-shadow:0 0 0 4px #e9edf1}
+.el-hero-copy h1{margin:0;color:#141a20;font-size:clamp(52px,6.2vw,88px);line-height:.98;letter-spacing:-.075em;font-weight:850}
+.el-hero-copy h1 em{font-style:normal;color:#8995a1}
+.el-hero-copy .hero-copy{max-width:510px;margin:24px 0 0;color:#596675;font-size:17px;line-height:1.75}
+.el-hero-points{display:flex;flex-wrap:wrap;gap:10px 22px;margin:25px 0 0}
+.el-hero-points span{display:flex;align-items:center;gap:7px;color:#394653;font-size:12px;font-weight:750}
+.el-hero-points b{color:#9aa5af;font-size:10px;letter-spacing:.08em}
+.el-hero-copy .hero-actions{display:flex;flex-wrap:wrap;gap:11px;margin-top:31px}
+.el-hero-copy .button{min-height:49px;padding:14px 19px;border-radius:7px;font-size:13px;font-weight:800}
+.el-hero-art{position:relative;min-width:0;padding:20px 22px 18px;background:#fff;border:1px solid #e1e6eb;border-radius:17px;box-shadow:0 26px 70px #17202b16}
+.el-art-index{display:flex;justify-content:space-between;align-items:center;padding:0 2px 14px;color:#303b46;font-size:10px;font-weight:900;letter-spacing:.18em}
+.el-art-index span{color:#9aa4ae}
+.el-art-image{height:clamp(300px,34vw,450px);overflow:hidden;display:flex;align-items:center;justify-content:center;border-radius:10px;background:radial-gradient(ellipse at 50% 45%,#fff 0%,#f0f2f4 72%,#e7ebef 100%)}
+.el-art-image img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 24px 24px #1018202b);transform:scale(1.04)}
+.el-art-caption{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px 3px 2px}
+.el-art-caption div{display:grid;gap:5px}
+.el-caption-label{color:#87929d;font-size:9px;font-weight:900;letter-spacing:.17em}
+.el-art-caption strong{color:#202a34;font-size:14px}
+.el-caption-arrow{display:grid;place-items:center;width:38px;height:38px;border:1px solid #dce2e8;border-radius:50%;color:#273440;font-size:18px}
+.el-art-side-note{position:absolute;right:-34px;top:50%;writing-mode:vertical-rl;transform:translateY(-50%);color:#9ba5ae;font-size:9px;font-weight:800;letter-spacing:.2em}
+@media(max-width:900px){.el-hero-layout{grid-template-columns:1fr;gap:38px}.el-hero-copy{max-width:700px}.el-hero-art{max-width:700px;width:100%;margin:auto}.el-hero-redesign:before{width:90vw;height:90vw;right:-35%;top:22%}}
+@media(max-width:600px){.el-hero-redesign{padding:48px 0 58px!important}.el-hero-copy h1{font-size:clamp(47px,12vw,64px)}.el-hero-copy .hero-copy{font-size:15px}.el-hero-points{display:grid;grid-template-columns:1fr 1fr;gap:12px}.el-hero-copy .hero-actions{display:grid;grid-template-columns:1fr}.el-hero-copy .hero-actions .button{justify-content:center}.el-hero-art{padding:13px;border-radius:13px}.el-art-image{height:270px}.el-art-side-note{display:none}}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
@@ -66,26 +96,33 @@
 </div></header>
 
 <main id="top">
-<section class="hero">
-  <div class="container hero-grid">
-    <div>
-      <p class="eyebrow">CUSTOM AUDIO ENCLOSURES</p><div class="slogan-tag">BUILT FOR BASS</div>
-      <h1>Your subwoofer.<br><span>Your space.</span><br>Your box.</h1>
-      <p class="hero-copy">Professionally designed custom subwoofer enclosures built around your exact equipment, vehicle, and goals.</p><div class="hero-actions"><a class="button primary" href="products.html">Shop products <span aria-hidden="true">↗</span></a><a class="button ghost" href="#build">Design your enclosure</a></div>
-      <div class="trust-row">
-        <span>✓ Custom-fit designs</span>
-        <span>✓ Built to order</span>
-        <span>✓ Shipped to you</span>
+<section class="hero el-hero-redesign">
+  <div class="container el-hero-layout">
+    <div class="el-hero-copy">
+      <p class="eyebrow">CUSTOM AUDIO ENCLOSURES</p>
+      <p class="el-built-tag"><span></span> BUILT FOR BASS</p>
+      <h1>Made for your<br><em>sound.</em> Built for<br>your setup.</h1>
+      <p class="hero-copy">Custom subwoofer enclosures designed around your equipment, your available space, and the way you want your system to perform.</p>
+      <div class="el-hero-points">
+        <span><b>01</b> Custom-fit designs</span>
+        <span><b>02</b> Built to order</span>
+        <span><b>03</b> Shipped to you</span>
+      </div>
+      <div class="hero-actions">
+        <a class="button primary" href="#build">Start your enclosure <span aria-hidden="true">↗</span></a>
+        <a class="button ghost" href="products.html">Explore products</a>
       </div>
     </div>
-    <div class="hero-card">
-      <div class="box-visual">
-        <img src="splatter-enclosure-20261106.webp?v=2" alt="Black splatter-paint Enclosure Lab subwoofer enclosure" class="box-hero-image">
+    <div class="el-hero-art">
+      <div class="el-art-index">ENCLOSURE LAB <span>— 001</span></div>
+      <div class="el-art-image">
+        <img src="splatter-enclosure-20261106.webp?v=3" alt="Black splatter-paint Enclosure Lab custom subwoofer enclosure">
       </div>
-      <div class="hero-card-bottom">
-        <div><strong>Designed for you</strong><small>Not a one-size-fits-all box.</small></div>
-        <span class="round-arrow">↗</span>
+      <div class="el-art-caption">
+        <div><span class="el-caption-label">ENGINEERED AROUND YOU</span><strong>Not a one-size-fits-all box.</strong></div>
+        <span class="el-caption-arrow">↗</span>
       </div>
+      <div class="el-art-side-note">CUSTOM DESIGN / BUILT FOR BASS</div>
     </div>
   </div>
 </section>
