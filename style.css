@@ -237,3 +237,19 @@ footer .brand-mark.logo-mark{width:42px;height:42px}
 .shop-cart svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 @media(max-width:850px){.shop-header,.shop-header-inner{height:auto;min-height:96px}.shop-header-inner{flex-wrap:wrap;padding:12px 0;gap:12px}.shop-brand{min-width:0;flex:1}.shop-brand img{width:50px;height:50px}.shop-brand .brand-wordmark{font-size:17px}.shop-nav{order:3;width:auto;margin-left:0}.shop-cart{margin-left:auto}}
 @media(max-width:560px){.shop-wrap,.shop-header-inner{width:calc(100% - 26px)}.shop-header-inner{flex-wrap:wrap}.shop-brand .brand-wordmark{font-size:15px;letter-spacing:.04em}.shop-nav a{padding:9px 11px}.shop-cart{padding:10px 12px}}
+
+
+/* Restore the light logo treatment and increase its prominence in every shared header */
+.shop-brand img{
+  width:78px!important;
+  height:78px!important;
+  object-fit:contain!important;
+  filter:invert(1)!important;
+  border-radius:0!important;
+}
+@media(max-width:850px){
+  .shop-brand img{width:66px!important;height:66px!important}
+}
+@media(max-width:560px){
+  .shop-brand img{width:58px!important;height:58px!important}
+}
