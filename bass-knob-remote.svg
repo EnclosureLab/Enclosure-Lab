@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-labelledby="title desc">
+<title id="title">Wired car audio bass level remote</title><desc id="desc">Black cylindrical bass control knob with a cable loop and red and white RCA connectors on a white studio background.</desc>
+<defs>
+ <linearGradient id="bg" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#f8fafb"/></linearGradient>
+ <linearGradient id="rubber" x2="1" y2="1"><stop stop-color="#536a78"/><stop offset=".28" stop-color="#182a35"/><stop offset=".65" stop-color="#07131c"/><stop offset="1" stop-color="#40535e"/></linearGradient>
+ <linearGradient id="body" x2="1" y2=".2"><stop stop-color="#536b78"/><stop offset=".22" stop-color="#172b36"/><stop offset=".55" stop-color="#0b1821"/><stop offset=".82" stop-color="#344b57"/><stop offset="1" stop-color="#0a141c"/></linearGradient>
+ <linearGradient id="face" x2=".85" y2="1"><stop stop-color="#526875"/><stop offset=".3" stop-color="#172833"/><stop offset=".72" stop-color="#07121a"/><stop offset="1" stop-color="#40515a"/></linearGradient>
+ <linearGradient id="metal" x2="0" y2="1"><stop stop-color="#f8fbfc"/><stop offset=".35" stop-color="#b9c4c9"/><stop offset=".7" stop-color="#68777f"/><stop offset="1" stop-color="#e3e8eb"/></linearGradient>
+ <linearGradient id="red" x2="0" y2="1"><stop stop-color="#ff8581"/><stop offset=".45" stop-color="#e7353c"/><stop offset="1" stop-color="#8e101b"/></linearGradient>
+ <linearGradient id="whiteplug" x2="0" y2="1"><stop stop-color="#fff"/><stop offset=".55" stop-color="#e7ecee"/><stop offset="1" stop-color="#9daab0"/></linearGradient>
+ <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feGaussianBlur stdDeviation="13"/></filter>
+</defs>
+<rect width="900" height="620" fill="url(#bg)"/>
+<ellipse cx="438" cy="510" rx="330" ry="35" fill="#8c9da5" opacity=".18" filter="url(#shadow)"/>
+<!-- coiled remote lead -->
+<path d="M448 369 C351 337 288 278 193 284 C95 290 48 354 61 425 C72 487 148 514 238 492 C314 474 354 436 412 429" fill="none" stroke="#06131b" stroke-width="22" stroke-linecap="round" opacity=".9"/>
+<path d="M448 365 C351 333 288 274 193 280 C95 286 48 350 61 421 C72 483 148 510 238 488 C314 470 354 432 412 425" fill="none" stroke="#294452" stroke-width="14" stroke-linecap="round"/>
+<path d="M447 360 C352 328 290 269 195 275 C100 281 55 348 68 416" fill="none" stroke="#6f8995" stroke-width="3.5" stroke-linecap="round" opacity=".7"/>
+<path d="M442 405 C344 443 263 506 178 492 C122 482 104 439 122 397 C145 343 220 333 285 349" fill="none" stroke="#07131b" stroke-width="17" stroke-linecap="round"/>
+<path d="M442 400 C344 438 263 501 178 487 C122 477 104 434 122 392 C145 338 220 328 285 344" fill="none" stroke="#263f4b" stroke-width="10" stroke-linecap="round"/>
+<path d="M431 408 C337 447 264 494 181 481" fill="none" stroke="#78909a" stroke-width="2.5" stroke-linecap="round" opacity=".65"/>
+<!-- cable tie -->
+<path d="M248 467 l18 34 -62 29 -18 -34z" fill="#f2a000" stroke="#d47c00" stroke-width="3"/>
+<path d="M251 469 l14 27 -50 24 -14 -27" fill="none" stroke="#ffd04c" stroke-width="3" opacity=".8"/>
+<!-- rear inline cylinder -->
+<g transform="translate(300 185) rotate(-19)">
+ <ellipse cx="95" cy="166" rx="120" ry="28" fill="#07131a" opacity=".2"/>
+ <path d="M0 58 Q0 10 49 0 L183 0 Q229 4 238 53 L238 170 Q230 215 185 224 L49 224 Q0 217 0 172z" fill="url(#body)" stroke="#07151e" stroke-width="5"/>
+ <path d="M12 53 Q20 15 54 11 L177 11 Q218 13 225 54" fill="none" stroke="#7c929b" stroke-width="5" opacity=".5"/>
+ <path d="M7 68 L7 164 M228 61 L228 167" stroke="#71858e" stroke-width="4" opacity=".35"/>
+ <g fill="none" stroke="#07131b" stroke-width="5" opacity=".8"><path d="M18 78h207M18 88h207M18 98h207"/></g>
+ <text x="112" y="110" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="800" letter-spacing="3" fill="#71858e" opacity=".65">BASS</text>
+ <text x="112" y="137" text-anchor="middle" font-family="Arial,sans-serif" font-size="19" font-weight="800" letter-spacing="2" fill="#81939b" opacity=".7">LEVEL</text>
+ <circle cx="25" cy="190" r="5" fill="#071018" stroke="#52636b" stroke-width="2"/>
+</g>
+<!-- forward barrel and collar -->
+<g transform="translate(472 281) rotate(12)">
+ <path d="M-10 38 Q0 0 47 0 L159 0 Q190 5 198 39 L198 139 Q190 173 156 178 L42 178 Q-2 169 -10 137z" fill="url(#body)" stroke="#07131b" stroke-width="6"/>
+ <path d="M8 25 Q20 6 47 6h111q26 2 33 22" fill="none" stroke="#72858e" stroke-width="5" opacity=".55"/>
+ <path d="M12 43h178M8 54h183" stroke="#020a10" stroke-width="5" opacity=".8"/>
+ <path d="M16 140h169" stroke="#71828a" stroke-width="4" opacity=".35"/>
+ <!-- ribbed grip -->
+ <g stroke="#526873" stroke-width="5" opacity=".65"><path d="M37 19v143M52 12v158M67 9v165M82 8v168M97 8v168M112 8v168"/></g>
+ <ellipse cx="183" cy="88" rx="23" ry="91" fill="#07131a" stroke="#607680" stroke-width="7"/>
+ <ellipse cx="196" cy="88" rx="20" ry="84" fill="url(#face)" stroke="#0b151c" stroke-width="5"/>
+ <ellipse cx="201" cy="88" rx="13" ry="70" fill="none" stroke="#526771" stroke-width="3" opacity=".7"/>
+ <path d="M197 22 Q213 85 198 153" fill="none" stroke="#8da0a7" stroke-width="2" opacity=".35"/>
+ <path d="M200 86h10" stroke="#a6b3b8" stroke-width="2" opacity=".65"/>
+ <circle cx="45" cy="16" r="4" fill="#02090e" stroke="#637781" stroke-width="2"/>
+ <circle cx="45" cy="160" r="4" fill="#02090e" stroke="#637781" stroke-width="2"/>
+</g>
+<!-- short RCA pigtails -->
+<path d="M628 380 C688 365 708 375 740 403" fill="none" stroke="#07131b" stroke-width="13" stroke-linecap="round"/>
+<path d="M630 391 C687 382 704 394 741 425" fill="none" stroke="#07131b" stroke-width="12" stroke-linecap="round"/>
+<!-- white RCA connector -->
+<g transform="translate(690 365) rotate(10)">
+ <path d="M0 11 Q0 0 15 0h77q14 0 17 13v34q-2 14-16 14H14Q0 58 0 44z" fill="url(#whiteplug)" stroke="#c5cdd1" stroke-width="3"/>
+ <path d="M90 8h58q12 0 12 12v18q0 12-12 12H90z" fill="url(#metal)" stroke="#8c999f" stroke-width="2"/>
+ <path d="M143 10h18v38h-18z" fill="#d9b64e" stroke="#a78a3e" stroke-width="2"/>
+ <path d="M13 5h74" stroke="#fff" stroke-width="4" opacity=".8"/>
+</g>
+<!-- red RCA connector -->
+<g transform="translate(675 418) rotate(8)">
+ <path d="M0 10 Q0 0 15 0h78q14 0 17 13v34q-2 14-16 14H14Q0 61 0 45z" fill="url(#red)" stroke="#a51c26" stroke-width="3"/>
+ <path d="M89 8h59q12 0 12 12v18q0 12-12 12H89z" fill="url(#metal)" stroke="#8c999f" stroke-width="2"/>
+ <path d="M143 10h18v38h-18z" fill="#d9b64e" stroke="#a78a3e" stroke-width="2"/>
+ <path d="M12 6h75" stroke="#ffb0a9" stroke-width="4" opacity=".65"/>
+ <path d="M28 14v33M35 14v33M42 14v33" stroke="#a91f28" stroke-width="2" opacity=".4"/>
+</g>
+<!-- subtle floor contact and clean studio reflection -->
+<ellipse cx="485" cy="506" rx="220" ry="12" fill="#b9c6cc" opacity=".16"/>
+</svg>
