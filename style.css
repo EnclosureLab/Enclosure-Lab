@@ -253,3 +253,24 @@ footer .brand-mark.logo-mark{width:42px;height:42px}
 @media(max-width:560px){
   .shop-brand img{width:58px!important;height:58px!important}
 }
+
+/* Homepage hero refresh: Built for Bass */
+.slogan-tag{display:inline-flex;align-items:center;margin:5px 0 20px;padding:9px 13px;border:1px solid #d9e0e6;border-radius:6px;background:#f2f5f7;color:#17202b;font-size:11px;font-weight:900;letter-spacing:.2em}
+.hero{padding:82px 0 88px!important;background:linear-gradient(115deg,#fff 0%,#f7f9fb 55%,#edf1f4 100%)!important}
+.hero-grid{align-items:center!important;gap:clamp(42px,6vw,92px)!important}
+.hero h1{font-size:clamp(52px,5.2vw,76px)!important;line-height:.99!important;letter-spacing:-.075em!important}
+.hero h1 span{color:#81909e!important}
+.hero-copy{font-size:18px!important;line-height:1.65!important;max-width:550px!important}
+.hero-actions{margin-top:28px!important;gap:12px!important}
+.hero-actions .button{min-height:48px!important;padding:14px 19px!important}
+.hero-card{padding:14px!important;border-radius:20px!important;box-shadow:0 28px 80px rgba(24,35,46,.13)!important}
+.hero-card .box-visual{height:clamp(300px,30vw,390px)!important;border-radius:13px!important;background:#111820!important}
+.hero-card-bottom{padding:18px 5px 4px!important}
+.hero-card-bottom strong{font-size:15px!important}
+.trust-row{gap:12px 22px!important;margin-top:28px!important}
+@media(max-width:850px){.hero{padding:60px 0 70px!important}.hero-grid{gap:36px!important}.hero h1{font-size:clamp(46px,8vw,64px)!important}}
+@media(max-width:600px){.hero{padding:44px 0 54px!important}.hero h1{font-size:46px!important}.hero-card .box-visual{height:260px!important}.hero-actions{display:grid!important;grid-template-columns:1fr}.hero-actions .button{justify-content:center}}
+/* Actual logo color reversal: white tile with dark artwork, enlarged */
+.shop-brand img{width:82px!important;height:82px!important;object-fit:contain!important;filter:invert(1) brightness(1.04)!important;background:#fff!important;border-radius:0!important}
+@media(max-width:850px){.shop-brand img{width:68px!important;height:68px!important}}
+@media(max-width:560px){.shop-brand img{width:58px!important;height:58px!important}}
