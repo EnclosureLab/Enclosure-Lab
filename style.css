@@ -283,3 +283,13 @@ footer .brand-mark.logo-mark{width:42px;height:42px}
   border:0!important;
   box-shadow:none!important;
 }
+
+/* Header logo: display the original artwork colors without CSS inversion or added bars. */
+.shop-header .shop-brand img{
+  filter:none!important;
+  -webkit-filter:none!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  object-fit:contain!important;
+}
