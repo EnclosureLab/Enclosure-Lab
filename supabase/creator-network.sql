@@ -21,7 +21,7 @@ create table if not exists public.creator_applications (
  manager_notes text
 );
 alter table public.creator_applications enable row level security;
-grant insert on public.creator_applications to anon,authenticated;
+revoke insert on public.creator_applications from anon,authenticated;\ngrant insert(full_name,email,social_handle,platform,follower_count,average_views,content_type,program,reason,goals,requested_products) on public.creator_applications to anon,authenticated;
 grant select,update on public.creator_applications to authenticated;
 drop policy if exists "Anyone can apply to creator network" on public.creator_applications;
 create policy "Anyone can apply to creator network" on public.creator_applications for insert to anon,authenticated with check(status='pending');
