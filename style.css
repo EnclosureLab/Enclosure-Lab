@@ -297,8 +297,7 @@ footer .brand-mark.logo-mark{width:42px;height:42px}
 
 /* Header logo color treatment: black artwork on a clean white background. */
 .shop-header .shop-brand img,
-.site-header .brand-expanded .brand-mark img,
-footer .brand-mark.logo-mark img {
+.site-header .brand-expanded .brand-mark img {
   filter: invert(1) !important;
   -webkit-filter: invert(1) !important;
   background: #fff !important;
@@ -309,9 +308,6 @@ footer .brand-mark.logo-mark img {
 .site-header .brand-expanded .brand-mark {
   background: #fff !important;
 }
-footer .brand-mark.logo-mark {
-  background: #fff !important;
-}
 
 
 /* FINAL LOGO FIX — invert only the original logo artwork; never show dark
@@ -320,9 +316,6 @@ footer .brand-mark.logo-mark {
 .shop-header .shop-brand img,
 .site-header .brand-expanded,
 .site-header .brand-expanded .brand-mark,
-footer .brand-mark.logo-mark {
-  background: #fff !important;
-}
 .shop-header .shop-brand {
   display: flex !important;
   align-items: center !important;
@@ -348,8 +341,7 @@ footer .brand-mark.logo-mark {
   overflow: visible !important;
   border-radius: 0 !important;
 }
-.site-header .brand-expanded .brand-mark img,
-footer .brand-mark.logo-mark img {
+.site-header .brand-expanded .brand-mark img {
   display: block !important;
   width: 100% !important;
   height: auto !important;
@@ -358,14 +350,6 @@ footer .brand-mark.logo-mark img {
   filter: invert(1) !important;
   -webkit-filter: invert(1) !important;
   background: transparent !important;
-}
-footer .brand-mark.logo-mark {
-  display: inline-block !important;
-  width: 164px !important;
-  height: auto !important;
-  overflow: visible !important;
-  border-radius: 0 !important;
-  vertical-align: middle !important;
 }
 @media(max-width:850px) {
   .shop-header .shop-brand img { width: 142px !important; max-height: 72px !important; }
@@ -380,8 +364,33 @@ footer .brand-mark.logo-mark {
 /* Remove the two dark side slivers visible at the edges of the header logo.
    Keep the centered EL mark and wordmark untouched. */
 .shop-header .shop-brand img,
-.site-header .brand-expanded .brand-mark img,
-footer .brand-mark.logo-mark img {
+.site-header .brand-expanded .brand-mark img {
   clip-path: inset(0 7% 0 7%) !important;
   -webkit-clip-path: inset(0 7% 0 7%) !important;
+}
+
+
+/* Footer logo is independent from the header's inversion and crop. */
+footer .brand-mark.logo-mark {
+  display: inline-block !important;
+  flex: 0 0 164px !important;
+  width: 164px !important;
+  height: auto !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  vertical-align: middle !important;
+}
+footer .brand-mark.logo-mark img {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: 82px !important;
+  object-fit: contain !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  clip-path: none !important;
+  -webkit-clip-path: none !important;
+  background: transparent !important;
 }
