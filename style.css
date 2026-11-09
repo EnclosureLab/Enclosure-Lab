@@ -293,3 +293,22 @@ footer .brand-mark.logo-mark{width:42px;height:42px}
   box-shadow:none!important;
   object-fit:contain!important;
 }
+
+
+/* Header logo color treatment: black artwork on a clean white background. */
+.shop-header .shop-brand img,
+.site-header .brand-expanded .brand-mark img,
+footer .brand-mark.logo-mark img {
+  filter: invert(1) !important;
+  -webkit-filter: invert(1) !important;
+  background: #fff !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.shop-header .shop-brand img,
+.site-header .brand-expanded .brand-mark {
+  background: #fff !important;
+}
+footer .brand-mark.logo-mark {
+  background: #fff !important;
+}
