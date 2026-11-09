@@ -375,3 +375,13 @@ footer .brand-mark.logo-mark {
   .shop-header .shop-brand img { width: 124px !important; max-height: 62px !important; }
   .site-header .brand-expanded .brand-mark { flex-basis: 124px !important; width: 124px !important; }
 }
+
+
+/* Remove the two dark side slivers visible at the edges of the header logo.
+   Keep the centered EL mark and wordmark untouched. */
+.shop-header .shop-brand img,
+.site-header .brand-expanded .brand-mark img,
+footer .brand-mark.logo-mark img {
+  clip-path: inset(0 7% 0 7%) !important;
+  -webkit-clip-path: inset(0 7% 0 7%) !important;
+}
