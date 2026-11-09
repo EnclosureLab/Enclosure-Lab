@@ -52,7 +52,7 @@ create table if not exists public.creator_profiles (
  created_at timestamptz not null default now()
 );
 alter table public.creator_profiles enable row level security;
-grant select on public.creator_profiles to authenticated;
+grant select,insert,update,delete on public.creator_profiles to authenticated;
 drop policy if exists "Creators see own profile managers see all" on public.creator_profiles;
 create policy "Creators see own profile managers see all" on public.creator_profiles for select to authenticated using (
  user_id=auth.uid() or exists(select 1 from public.employee_profiles p where p.user_id=auth.uid() and p.role='manager' and p.approved=true)
@@ -76,7 +76,7 @@ create table if not exists public.creator_sales (
  notes text
 );
 alter table public.creator_sales enable row level security;
-grant select on public.creator_sales to authenticated;
+grant select,insert,update,delete on public.creator_sales to authenticated;
 drop policy if exists "Creators see own sales managers see all" on public.creator_sales;
 create policy "Creators see own sales managers see all" on public.creator_sales for select to authenticated using (
  exists(select 1 from public.creator_profiles c where c.id=creator_id and c.user_id=auth.uid())
@@ -101,7 +101,7 @@ create table if not exists public.creator_payouts (
  created_at timestamptz not null default now()
 );
 alter table public.creator_payouts enable row level security;
-grant select on public.creator_payouts to authenticated;
+grant select,insert,update,delete on public.creator_payouts to authenticated;
 drop policy if exists "Creators see own payouts managers manage all" on public.creator_payouts;
 create policy "Creators see own payouts managers manage all" on public.creator_payouts for select to authenticated using (
  exists(select 1 from public.creator_profiles c where c.id=creator_id and c.user_id=auth.uid())
