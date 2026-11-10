@@ -412,34 +412,29 @@ function updateModel(){
  }
  function sidePortFace(){
   const faceWidth=D,faceHeight=H;
-  if(!round){
-   // Build the slotted side wall from four solid frame panels. This keeps the
-   // complete right wall visible while leaving only the intended port opening.
-   sideSlotOpeningW=Math.min(portW,faceWidth*.62);
-   const openingCenterU=faceWidth/2-t-sideSlotOpeningW/2;
-   sideSlotCenterZ=openingCenterU;
-   const openingMin=sideSlotCenterZ-sideSlotOpeningW/2;
-   const openingMax=sideSlotCenterZ+sideSlotOpeningW/2;
-   const x=W/2-t/2;
-   const topBottomHeight=Math.max(.01,(faceHeight-portH)/2);
-   const sideRailFront=Math.max(0,faceWidth/2-openingMax);
-   const sideRailRear=Math.max(0,openingMin+faceWidth/2);
-   panel(x,(portH/2+faceHeight/2)/2,0,t,topBottomHeight,faceWidth,shellMat);
-   panel(x,-(portH/2+faceHeight/2)/2,0,t,topBottomHeight,faceWidth,shellMat);
-   if(sideRailFront>.01)panel(x,0,(openingMax+faceWidth/2)/2,t,portH,sideRailFront,shellMat);
-   if(sideRailRear>.01)panel(x,0,(-faceWidth/2+openingMin)/2,t,portH,sideRailRear,shellMat);
-   return;
-  }
-  // Round side ports retain a true circular cutout through the side panel.
   const shape=new THREE.Shape();
   shape.moveTo(-faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,faceHeight/2);shape.lineTo(-faceWidth/2,faceHeight/2);shape.closePath();
-  const opening=new THREE.Path();
-  opening.absarc(0,0,portR,0,Math.PI*2,false);
-  shape.holes.push(opening);
+  if(!round){
+   // Continuous right-side wall with only the intended rectangular slot cut out.
+   sideSlotOpeningW=Math.min(portW,faceWidth*.62);
+   sideSlotCenterZ=faceWidth/2-t-sideSlotOpeningW/2;
+   const slotHole=new THREE.Path();
+   slotHole.moveTo(sideSlotCenterZ-sideSlotOpeningW/2,-portH/2);
+   slotHole.lineTo(sideSlotCenterZ-sideSlotOpeningW/2,portH/2);
+   slotHole.lineTo(sideSlotCenterZ+sideSlotOpeningW/2,portH/2);
+   slotHole.lineTo(sideSlotCenterZ+sideSlotOpeningW/2,-portH/2);
+   slotHole.closePath();
+   shape.holes.push(slotHole);
+  }else{
+   const opening=new THREE.Path();
+   opening.absarc(0,0,portR,0,Math.PI*2,false);
+   shape.holes.push(opening);
+  }
   const sideGeometry=normalizePanelUV(new THREE.ExtrudeGeometry(shape,{depth:t,bevelEnabled:false,curveSegments:64}),faceWidth,faceHeight);
-  add(sideGeometry,shellMat,W/2-t,0,0,0,Math.PI/2,0);
+  // Rotate the continuous panel onto the right side of the enclosure.
+  add(sideGeometry,shellMat,W/2,0,0,0,-Math.PI/2,0);
  }
- function slotTunnelFront(length,centerX=0,openingWidth=portW,openingHeight=portH){
+function slotTunnelFront(length,centerX=0,openingWidth=portW,openingHeight=portH){
   const wall=Math.min(t*.72,openingWidth*.18,openingHeight*.12);
   const ductZ=D/2+.012-t-length/2;
   // Four open-ended duct walls line up with the vertical slot cut into the front face.
