@@ -73,6 +73,20 @@
   background:#f1f3f5!important;border-color:#8793a0!important
 }
 @media(max-width:600px){.slogan-tag{font-size:14px!important;letter-spacing:.2em!important}}
+
+/* Homepage partnership cards */
+.partnerships{background:#f5f7f9}
+.partnership-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.partnership-card{padding:28px;border:1px solid #dce2e8;border-radius:14px;background:#fff;box-shadow:0 10px 28px rgba(23,32,43,.05)}
+.partnership-kicker{font-size:11px;font-weight:900;letter-spacing:.16em;color:#9a742d}
+.partnership-card h3{margin:12px 0 8px;font-size:22px;letter-spacing:-.03em}
+.partnership-card p{color:#687480;max-width:520px}
+.partnership-card a{display:inline-block;margin-top:10px;font-weight:800;border-bottom:1px solid #c99a3d;padding-bottom:4px}
+@media(max-width:650px){.partnership-grid{grid-template-columns:1fr}.partnership-card{padding:22px}}
+/* Render the homepage product image cleanly without pixel-art scaling. */
+.hero-card .box-visual{background:linear-gradient(145deg,#f1f3f5,#dfe4e9)}
+.hero-card .box-hero-image{width:100%;height:100%;object-fit:contain;object-position:center;image-rendering:auto;transform:translateZ(0)}
+
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
@@ -115,7 +129,7 @@
 
 <section id="quote" class="quote-section" style="padding:56px 0;background:#f4f6f8">
   <div class="container">
-    <iframe id="enclosureDesignerFrame" src="enclosure-designer.html?embed=1&v=20261109-side-slot-wall-fix" title="Enclosure Lab custom box order form" loading="lazy" scrolling="no" style="display:block;width:100%;height:1900px;border:0;background:transparent;overflow:hidden"></iframe>
+    <iframe id="enclosureDesignerFrame" src="enclosure-designer.html?embed=1&v=20261110-side-slot-correction" title="Enclosure Lab custom box order form" loading="lazy" scrolling="no" style="display:block;width:100%;height:1900px;border:0;background:transparent;overflow:hidden"></iframe>
 <script>
 (()=>{const frame=document.getElementById("enclosureDesignerFrame");if(!frame)return;window.addEventListener("message",event=>{if(event.origin!==location.origin||event.source!==frame.contentWindow||!event.data)return;if(event.data.type==="enclosure-designer-height"){const h=Number(event.data.height);if(Number.isFinite(h)&&h>0)frame.style.height=Math.ceil(h)+"px";}else if(event.data.type==="el-open-checkout"){window.location.href=new URL("checkout.html",location.href).href;}});})();
 </script>
