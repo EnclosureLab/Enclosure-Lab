@@ -417,7 +417,7 @@ function updateModel(){
    // complete right wall visible while leaving only the intended port opening.
    sideSlotOpeningW=Math.min(portW,faceWidth*.62);
    const openingCenterU=faceWidth/2-t-sideSlotOpeningW/2;
-   sideSlotCenterZ=-openingCenterU;
+   sideSlotCenterZ=openingCenterU;
    const openingMin=sideSlotCenterZ-sideSlotOpeningW/2;
    const openingMax=sideSlotCenterZ+sideSlotOpeningW/2;
    const x=W/2-t/2;
