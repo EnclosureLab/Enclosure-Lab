@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=footer-logo-fix-20261109">
+  <link rel="stylesheet" href="style.css?v=reviews-moved-20261110">
 <style>
 /* Enclosure Lab customer reviews, matched to the Lawson's Landscaping review experience */
 .enclosure-reviews{background:#f6f8fb;padding:72px 0}
@@ -64,7 +64,7 @@
 <body>
 <header class="shop-header"><div class="shop-wrap shop-header-inner">
 <a class="shop-brand" href="index.html#top"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"><span class="brand-wordmark">ENCLOSURE LAB</span></a>
-<nav class="shop-nav" aria-label="Main navigation"><a href="index.html#top" aria-current="page">Home</a><a href="products.html">Shop</a><a href="creator-portal.html">Partners</a></nav>
+<nav class="shop-nav" aria-label="Main navigation"><a href="index.html#top" aria-current="page">Home</a><a href="products.html">Shop</a><a href="index.html#reviews">Reviews</a><a href="creator-portal.html">Partners</a></nav>
 <a class="shop-cart" href="checkout.html" aria-label="Shopping cart"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h2l2.1 11.1a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg><span>Cart</span></a>
 </div></header>
 
@@ -92,21 +92,6 @@
     </div>
   </div>
 </section>
-
-
-
-<section id="quote" class="quote-section" style="padding:56px 0;background:#f4f6f8">
-  <div class="container">
-    <iframe id="enclosureDesignerFrame" src="enclosure-designer.html?embed=1&v=20261109-side-slot-wall-fix" title="Enclosure Lab custom box order form" loading="lazy" scrolling="no" style="display:block;width:100%;height:1900px;border:0;background:transparent;overflow:hidden"></iframe>
-<script>
-(()=>{const frame=document.getElementById("enclosureDesignerFrame");if(!frame)return;window.addEventListener("message",event=>{if(event.origin!==location.origin||event.source!==frame.contentWindow||!event.data)return;if(event.data.type==="enclosure-designer-height"){const h=Number(event.data.height);if(Number.isFinite(h)&&h>0)frame.style.height=Math.ceil(h)+"px";}else if(event.data.type==="el-open-checkout"){window.location.href=new URL("checkout.html",location.href).href;}});})();
-</script>
-    <p style="margin:12px 0 0;color:#687480;font-size:12px;line-height:1.5">Note: This is a design prototype. Verify port tuning, net airspace, driver clearances, and all panel measurements before cutting material.</p>
-  </div>
-</section>
-  </div>
-</section>
-
 
 <section id="reviews" class="section enclosure-reviews">
   <div class="container">
@@ -137,6 +122,24 @@
     </div>
   </div>
 </section>
+
+
+
+
+<section id="quote" class="quote-section" style="padding:56px 0;background:#f4f6f8">
+  <div class="container">
+    <iframe id="enclosureDesignerFrame" src="enclosure-designer.html?embed=1&v=20261109-side-slot-wall-fix" title="Enclosure Lab custom box order form" loading="lazy" scrolling="no" style="display:block;width:100%;height:1900px;border:0;background:transparent;overflow:hidden"></iframe>
+<script>
+(()=>{const frame=document.getElementById("enclosureDesignerFrame");if(!frame)return;window.addEventListener("message",event=>{if(event.origin!==location.origin||event.source!==frame.contentWindow||!event.data)return;if(event.data.type==="enclosure-designer-height"){const h=Number(event.data.height);if(Number.isFinite(h)&&h>0)frame.style.height=Math.ceil(h)+"px";}else if(event.data.type==="el-open-checkout"){window.location.href=new URL("checkout.html",location.href).href;}});})();
+</script>
+    <p style="margin:12px 0 0;color:#687480;font-size:12px;line-height:1.5">Note: This is a design prototype. Verify port tuning, net airspace, driver clearances, and all panel measurements before cutting material.</p>
+  </div>
+</section>
+  </div>
+</section>
+
+
+
 <section id="about" class="section about">
   <div class="container about-grid">
     <div><p class="eyebrow">WHY CUSTOM?</p><h2>Built around your equipment — not the other way around.</h2></div>
