@@ -2,3 +2,12 @@ project_id = "lblrmljsjimrrighqbdo"
 
 [functions.enclosure-assistant]
 verify_jwt = false
+
+[functions.create-checkout-session]
+verify_jwt = false
+
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.verify-checkout-session]
+verify_jwt = false
