@@ -138,7 +138,7 @@ Deno.serve(async (req) => {
     const order=Array.isArray(inserted)?inserted[0]:inserted;
     if(!order?.id) throw new Error("Could not create the order record.");
     const form=new URLSearchParams();
-    form.set("mode","payment");form.set("success_url",`${SITE}/checkout.html?payment=success&order_id=${order.id}`);
+    form.set("mode","payment");form.set("success_url",`${SITE}/checkout.html?payment=success&order_id=${order.id}&session_id={CHECKOUT_SESSION_ID}`);
     form.set("cancel_url",`${SITE}/checkout.html?payment=cancelled&order_id=${order.id}`);
     form.set("customer_email",String(p.customer_email).trim());
     form.set("client_reference_id",order.id);form.set("metadata[order_id]",order.id);
