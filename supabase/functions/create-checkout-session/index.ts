@@ -142,21 +142,20 @@ Deno.serve(async (req) => {
     form.set("cancel_url",`${SITE}/checkout.html?payment=cancelled&order_id=${order.id}`);
     form.set("customer_email",String(p.customer_email).trim());
     form.set("client_reference_id",order.id);form.set("metadata[order_id]",order.id);
+    let remainingDiscount=discount;
     normalized.forEach((it,i)=>{
-      const cents=Math.round(Number(it.unit_price)*100);
-      form.set(`line_items[${i}][price_data][currency]`,"usd");
-      form.set(`line_items[${i}][price_data][unit_amount]`,String(cents));
-      form.set(`line_items[${i}][price_data][product_data][name]`,it.name);
-      form.set(`line_items[${i}][quantity]`,String(it.quantity));
+      const original=Math.round(Number(it.line_total)*100);
+      const allocation=i===normalized.length-1?remainingDiscount:Math.min(remainingDiscount,Math.round(original*pct/100));
+      remainingDiscount-=allocation;
+      const discounted=Math.max(50,original-allocation);
+      const index=i;
+      form.set(`line_items[${index}][price_data][currency]`,"usd");
+      form.set(`line_items[${index}][price_data][unit_amount]`,String(discounted));
+      form.set(`line_items[${index}][price_data][product_data][name]`,it.quantity>1?`${it.name} (quantity: ${it.quantity})`:it.name);
+      form.set(`line_items[${index}][quantity]`,"1");
     });
     let next=normalized.length;
     if(shipping>0){form.set(`line_items[${next}][price_data][currency]`,"usd");form.set(`line_items[${next}][price_data][unit_amount]`,String(Math.round(shipping*100)));form.set(`line_items[${next}][price_data][product_data][name]`,"Estimated shipping");form.set(`line_items[${next}][quantity]`,"1");next++;}
-    let couponId="";
-    if(pct>0){
-      const cForm=new URLSearchParams();cForm.set("percent_off",String(pct));cForm.set("duration","once");cForm.set("name",`Enclosure Lab ${code} discount`);
-      const cr=await fetch("https://api.stripe.com/v1/coupons",{method:"POST",headers:{"Authorization":`Bearer ${STRIPE_SECRET_KEY}`,"Content-Type":"application/x-www-form-urlencoded"},body:cForm});
-      const cj=await cr.json();if(!cr.ok) throw new Error(cj.error?.message||"Could not apply discount.");couponId=cj.id;form.set("discounts[0][coupon]",couponId);
-    }
     const sr=await fetch("https://api.stripe.com/v1/checkout/sessions",{method:"POST",headers:{"Authorization":`Bearer ${STRIPE_SECRET_KEY}`,"Content-Type":"application/x-www-form-urlencoded"},body:form});
     const session=await sr.json();
     if(!sr.ok) throw new Error(session.error?.message||"Stripe could not start checkout.");
