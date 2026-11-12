@@ -30,7 +30,7 @@ Deno.serve(async(req)=>{
           order_status:"new"
         };
         const r=await fetch(`${SUPABASE_URL}/rest/v1/enclosure_orders?stripe_checkout_session_id=eq.${encodeURIComponent(session.id)}&payment_status=eq.unpaid`,{
-          method:"PATCH",headers:{"apikey":SERVICE_ROLE_KEY,"Authorization":`Bearer ${SERVICE_ROLE_KEY}`,"Content-Type":"application/json","Prefer":"return=minimal"},body:JSON.stringify(patch)
+          method:"PATCH",headers:{"apikey":SERVICE_ROLE_KEY,"Content-Type":"application/json","Prefer":"return=minimal"},body:JSON.stringify(patch)
         });
         if(!r.ok) throw new Error(`Order update failed: ${await r.text()}`);
       }
