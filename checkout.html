@@ -44,8 +44,8 @@
 <div class="field full"><label for="paymentMethod">Preferred payment method *</label><select id="paymentMethod" name="paymentMethod" required><option value="">Choose a preferred method</option><option value="Venmo">Venmo</option><option value="Cash App">Cash App</option><option value="Credit/debit card (secure payment link requested)">Credit/debit card (secure payment link requested)</option><option value="Cash (local pickup only)">Cash (local pickup only)</option></select><small class="muted">This records your order and delivery preference. Online payment is not active yet; Enclosure Lab will provide payment instructions after reviewing the order.</small></div>
 <div class="field full"><label for="notes">Order notes (optional)</label><textarea id="notes" name="notes" placeholder="Vehicle, subwoofer details, preferred pickup timing, or other order notes"></textarea></div>
 </div>
-<div class="notice">No quote is required. This submits your order with the displayed temporary prices. Payment is not processed on this page yet.</div>
-<button class="checkout-submit" id="submitOrder" type="submit">Confirm My Order</button><p id="formStatus" class="form-status" aria-live="polite"></p>
+<div class="notice">No quote is required. Prices are verified securely before Stripe checkout. Tax is not currently calculated; the business owner must review tax requirements before live payments.</div>
+<button class="checkout-submit" id="submitOrder" type="submit">Continue to Secure Payment</button><p id="formStatus" class="form-status" aria-live="polite"></p>
 </form></div>
 <aside class="summary-card"><h2>Order summary</h2><div class="summary-row"><span>Items</span><strong id="itemCount">0</strong></div><div class="summary-row"><span>Subtotal</span><strong id="subtotal">$0.00</strong></div><div class="summary-row" id="discountRow" hidden><span>Discount <span id="discountLabel"></span></span><strong id="discountAmount">-$0.00</strong></div><div class="summary-row"><span>Estimated tax</span><strong id="tax">$0.00</strong></div><div class="summary-row"><span>Other items</span><span class="muted" id="quoteItems">No quote required</span></div><div class="summary-row"><span>Estimated enclosure weight</span><strong id="enclosureWeight">—</strong></div><div class="summary-row"><span>Estimated shipping</span><strong id="shippingCost">$0.00</strong></div><p id="shippingNote" class="discount-status">Enter your ZIP code for an estimate. Custom enclosures are excluded.</p><div class="summary-row total"><span>Amount due today</span><strong id="amountDue">$0.00</strong></div><div class="discount-box"><label for="discountCode">Discount code</label><div class="discount-controls"><input id="discountCode" type="text" placeholder="Enter discount code" autocomplete="off"><button id="applyDiscount" type="button">Apply</button></div><p id="discountStatus" class="discount-status" role="status" aria-live="polite">Have a code? Enter it above.</p></div><div class="notice">Payment preference only — no card details or money transfers are collected on this page.</div><a class="back-link" href="products.html">← Back to products</a></aside>
 </section></main>
@@ -112,7 +112,7 @@ function renderCart(){
  document.getElementById("discountRow").hidden=discountAmount<=0;
  document.getElementById("discountLabel").textContent=discountAmount>0?"("+discount.code+")":"";
  document.getElementById("discountAmount").textContent="-"+money(discountAmount);
- const taxable=Math.max(0,subtotal-discountAmount),tax=Math.round(taxable*0.0925*100)/100;
+ const taxable=Math.max(0,subtotal-discountAmount),tax=0;
  document.getElementById("tax").textContent=money(tax);
  const shipping=estimateShipping(cart,document.getElementById("zip").value,delivery.value);
  document.getElementById("shippingCost").textContent=shipping===null?"Enter ZIP code":money(shipping);
@@ -134,27 +134,37 @@ document.getElementById("checkoutForm").addEventListener("submit",async e=>{
  const form=e.currentTarget,button=document.getElementById("submitOrder"),status=document.getElementById("formStatus"),cart=getCart();
  if(!cart.length){status.textContent="Your cart is empty.";return;}
  if(!form.reportValidity())return;
- if(!orderDb){status.textContent="Order submission is temporarily unavailable. Please try again later.";return;}
+ if(!orderDb){status.textContent="Secure checkout is temporarily unavailable. Please try again later.";return;}
  const f=new FormData(form),subtotal=cart.reduce((sum,item)=>sum+(Number(item.price)||0)*(Number(item.qty)||1),0);
- const discount=getAppliedDiscount(subtotal),discountAmount=discount.amount,taxable=Math.max(0,subtotal-discountAmount),tax=Math.round(taxable*.0925*100)/100;
+ const discount=getAppliedDiscount(subtotal);
  const shipping=estimateShipping(cart,f.get("zip"),f.get("delivery"));
- if(shipping===null){status.textContent="Please enter a valid ZIP code to calculate shipping.";document.getElementById("zip").focus();return;}
- const total=Math.round((taxable+tax+shipping)*100)/100;
- const items=cart.map(item=>({name:String(item.name||"Item"),category:String(item.category||"product"),quantity:Math.max(1,Number(item.qty)||1),unit_price:item.price==null?null:Number(item.price),line_total:item.price==null?null:Math.round(Number(item.price)*(Number(item.qty)||1)*100)/100,estimated_weight_lb:Number(item.weightLb||item.configuration?.weightLb)||null,configuration:item.configuration||null}));
+ if(shipping===null){status.textContent="Please enter a valid ZIP code to estimate shipping.";document.getElementById("zip").focus();return;}
+ const items=cart.map(item=>({
+  name:String(item.name||"Item"),category:String(item.category||"product"),
+  productId:item.productId||null,quantity:Math.max(1,Number(item.qty)||1),
+  estimated_weight_lb:Number(item.weightLb||item.configuration?.weightLb)||null,
+  configuration:item.configuration||null
+ }));
  const payload={
-  customer_name:String(f.get("name")||"").trim(),customer_email:String(f.get("email")||"").trim(),customer_phone:String(f.get("phone")||"").trim()||null,
-  fulfillment:String(f.get("delivery")),shipping_address:f.get("delivery")==="shipping"?{street:f.get("address"),city:f.get("city"),state:f.get("state"),zip:f.get("zip")}:null,
-  payment_method:String(f.get("paymentMethod")),items,subtotal,discount_code:discountAmount>0?discount.code:null,discount_amount:discountAmount,creator_code:discount.creatorCode,
-  estimated_tax:tax,estimated_shipping:shipping,estimated_total:total,customer_notes:String(f.get("notes")||"").trim()||null
+  customer_name:String(f.get("name")||"").trim(),customer_email:String(f.get("email")||"").trim(),
+  customer_phone:String(f.get("phone")||"").trim()||null,
+  fulfillment:String(f.get("delivery")),
+  shipping_address:f.get("delivery")==="shipping"?{street:f.get("address"),city:f.get("city"),state:f.get("state"),zip:f.get("zip")}:null,
+  items,discount_code:discount.code||null,creator_code:discount.creatorCode||null,
+  customer_notes:String(f.get("notes")||"").trim()||null
  };
- button.disabled=true;button.textContent="Submitting order…";status.textContent="Securely saving your order…";
- const {error}=await orderDb.from("enclosure_orders").insert(payload);
- if(error){console.error("Order submission failed:",error);status.textContent="We couldn't save your order. Please try again. If the problem continues, contact Enclosure Lab.";button.disabled=false;button.textContent="Confirm My Order";return;}
- localStorage.removeItem(CART_KEY);localStorage.removeItem("enclosureLabCustomBoxConfig");localStorage.removeItem("enclosureLabDiscountCode");localStorage.removeItem("enclosureLabCreatorDiscount");
- document.getElementById("cartList").innerHTML='<div class="empty-cart">Your order has been submitted successfully.</div>';
- status.textContent="Your order has been submitted! Enclosure Lab will contact you to confirm the details and payment. No payment has been collected.";
- button.textContent="Order submitted";
- renderCart();
+ button.disabled=true;button.textContent="Opening secure checkout…";status.textContent="Creating your secure Stripe checkout session…";
+ try{
+  const {data,error}=await orderDb.functions.invoke("create-checkout-session",{body:payload});
+  if(error)throw error;
+  if(!data||!data.url)throw new Error(data?.error||"Stripe did not return a checkout link.");
+  status.textContent="Redirecting to secure Stripe checkout…";
+  window.location.assign(data.url);
+ }catch(error){
+  console.error("Stripe checkout failed:",error);
+  status.textContent=error?.message||"We couldn't start secure checkout. Please try again.";
+  button.disabled=false;button.textContent="Continue to Secure Payment";
+ }
 });
 document.getElementById("year").textContent=new Date().getFullYear();renderCart();
 </script>
