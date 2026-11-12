@@ -129,6 +129,27 @@ delivery.addEventListener("change",updateDelivery);
 ["zip","state"].forEach(id=>document.getElementById(id).addEventListener("input",renderCart));
 updateDelivery();
 const orderDb=window.supabase?.createClient("https://lblrmljsjimrrighqbdo.supabase.co","sb_publishable_s2YnH1DT5diDmM781NXxqw_gIJVxPRx");
+const returnParams=new URLSearchParams(window.location.search);
+if(returnParams.get("payment")==="success"){
+ const returnedOrder=returnParams.get("order_id"),returnedSession=returnParams.get("session_id");
+ const status=document.getElementById("formStatus");
+ status.textContent="Verifying your Stripe payment…";
+ if(orderDb&&returnedOrder&&returnedSession){
+  orderDb.functions.invoke("verify-checkout-session",{body:{order_id:returnedOrder,session_id:returnedSession}})
+   .then(({data,error})=>{
+    if(!error&&data?.paid){
+     localStorage.removeItem(CART_KEY);localStorage.removeItem("enclosureLabCustomBoxConfig");
+     localStorage.removeItem("enclosureLabDiscountCode");localStorage.removeItem("enclosureLabCreatorDiscount");
+     document.getElementById("cartList").innerHTML='<div class="empty-cart">Your payment is confirmed. Thank you for ordering from Enclosure Lab.</div>';
+     status.textContent="Payment confirmed! Your order has been received.";
+     const b=document.getElementById("submitOrder");b.disabled=true;b.textContent="Payment confirmed";renderCart();
+    }else{status.textContent="Your checkout returned, but payment is not confirmed yet. Please refresh in a moment or contact Enclosure Lab if you were charged.";}
+   }).catch(()=>{status.textContent="We could not verify the payment yet. Please refresh in a moment."});
+ }else{status.textContent="Payment return details are missing. Please contact Enclosure Lab before trying again.";}
+}else if(returnParams.get("payment")==="cancelled"){
+ document.getElementById("formStatus").textContent="Checkout was cancelled. Your cart is still saved, and no order payment was confirmed.";
+}
+
 document.getElementById("checkoutForm").addEventListener("submit",async e=>{
  e.preventDefault();
  const form=e.currentTarget,button=document.getElementById("submitOrder"),status=document.getElementById("formStatus"),cart=getCart();
