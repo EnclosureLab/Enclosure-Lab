@@ -16,7 +16,7 @@ Deno.serve(async(req)=>{
   if(session.client_reference_id!==orderId||session.metadata?.order_id!==orderId)throw new Error("Checkout reference does not match this order.");
   if(session.payment_status!=="paid")return Response.json({paid:false},{headers:cors});
   const update=await fetch(`${SUPABASE_URL}/rest/v1/enclosure_orders?id=eq.${encodeURIComponent(orderId)}&stripe_checkout_session_id=eq.${encodeURIComponent(sessionId)}&payment_status=eq.unpaid`,{
-   method:"PATCH",headers:{"apikey":SERVICE_ROLE_KEY,"Authorization":`Bearer ${SERVICE_ROLE_KEY}`,"Content-Type":"application/json","Prefer":"return=minimal"},
+   method:"PATCH",headers:{"apikey":SERVICE_ROLE_KEY,"Content-Type":"application/json","Prefer":"return=minimal"},
    body:JSON.stringify({payment_status:"paid",paid_at:new Date().toISOString(),stripe_payment_intent_id:typeof session.payment_intent==="string"?session.payment_intent:null,order_status:"new"})
   });
   if(!update.ok)throw new Error("Could not update verified order status.");
