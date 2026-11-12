@@ -3,6 +3,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "https://lblrmljsjimrrighqbdo.supabase.co";
 const SERVICE_ROLE_KEY = Deno.env.get("SERVICE_ROLE_KEY")!;
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY")!;
+const PUBLISHABLE_KEY = "sb_publishable_s2YnH1DT5diDmM781NXxqw_gIJVxPRx";
 const SITE = "https://enclosurelab.github.io/Enclosure-Lab";
 const cors = {
   "Access-Control-Allow-Origin": "https://enclosurelab.github.io",
@@ -92,6 +93,7 @@ Deno.serve(async (req) => {
   if (req.method!=="POST") return json({error:"Method not allowed."},405);
   try {
     if (!SERVICE_ROLE_KEY||!STRIPE_SECRET_KEY) throw new Error("Payment service is not configured.");
+    if (req.headers.get("apikey") !== PUBLISHABLE_KEY) return json({error:"Unauthorized request."},401);
     const origin=req.headers.get("origin");
     if (origin && origin!=="https://enclosurelab.github.io") return json({error:"Origin not allowed."},403);
     const p=await req.json();
