@@ -49,7 +49,7 @@ function priceEnclosure(q:any) {
 }
 async function supabase(path:string, method="GET", body?:unknown) {
   const res=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{
-    method, headers:{"apikey":SERVICE_ROLE_KEY,"Authorization":`Bearer ${SERVICE_ROLE_KEY}`,"Content-Type":"application/json","Prefer":"return=representation"},
+    method, headers:{"apikey":SERVICE_ROLE_KEY,"Content-Type":"application/json","Prefer":"return=representation"},
     body:body===undefined?undefined:JSON.stringify(body)
   });
   const raw=await res.text();
