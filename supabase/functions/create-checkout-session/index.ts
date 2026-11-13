@@ -22,6 +22,14 @@ const catalog: Record<string, {name:string; cents:number; category:string}> = {
 function json(data: unknown, status=200) {
   return new Response(JSON.stringify(data), {status, headers:{...cors,"Content-Type":"application/json"}});
 }
+const STATE_ABBREVIATIONS:Record<string,string>={
+ "alabama":"AL","alaska":"AK","arizona":"AZ","arkansas":"AR","california":"CA","colorado":"CO","connecticut":"CT","delaware":"DE","florida":"FL","georgia":"GA","hawaii":"HI","idaho":"ID","illinois":"IL","indiana":"IN","iowa":"IA","kansas":"KS","kentucky":"KY","louisiana":"LA","maine":"ME","maryland":"MD","massachusetts":"MA","michigan":"MI","minnesota":"MN","mississippi":"MS","missouri":"MO","montana":"MT","nebraska":"NE","nevada":"NV","new hampshire":"NH","new jersey":"NJ","new mexico":"NM","new york":"NY","north carolina":"NC","north dakota":"ND","ohio":"OH","oklahoma":"OK","oregon":"OR","pennsylvania":"PA","rhode island":"RI","south carolina":"SC","south dakota":"SD","tennessee":"TN","texas":"TX","utah":"UT","vermont":"VT","virginia":"VA","washington":"WA","west virginia":"WV","wisconsin":"WI","wyoming":"WY","district of columbia":"DC"
+};
+function normalizeState(value:unknown):string{
+ const state=String(value??"").trim().toLowerCase();
+ return STATE_ABBREVIATIONS[state]??state.toUpperCase();
+}
+
 function round(n:number) { return Math.round(n*100)/100; }
 function priceEnclosure(q:any) {
   const w=Number(q?.width), h=Number(q?.height), d=Number(q?.depth);
@@ -50,7 +58,7 @@ function priceEnclosure(q:any) {
 }
 async function supabase(path:string, method="GET", body?:unknown) {
   const res=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{
-    method, headers:{"apikey":SERVICE_ROLE_KEY,"Content-Type":"application/json","Prefer":"return=representation"},
+    method, headers:{"apikey":SERVICE_ROLE_KEY,"Authorization":`Bearer ${SERVICE_ROLE_KEY}`,"Content-Type":"application/json","Prefer":"return=representation"},
     body:body===undefined?undefined:JSON.stringify(body)
   });
   const raw=await res.text();
@@ -102,8 +110,14 @@ Deno.serve(async (req) => {
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(p.customer_email))) throw new Error("Enter a valid email address.");
     if(!Array.isArray(p.items)||p.items.length<1||p.items.length>30) throw new Error("Your cart is empty or contains too many items.");
     if(!["shipping","pickup"].includes(p.fulfillment)) throw new Error("Choose shipping or local pickup.");
-    const state=String(p.shipping_address?.state||"").toUpperCase();
-    if(p.fulfillment==="shipping" && (!p.shipping_address?.street||!p.shipping_address?.city||!/^[A-Z]{2}$/.test(state)||!/^\d{5}$/.test(String(p.shipping_address?.zip||"")))) throw new Error("Complete the shipping address.");
+    const address=p.shipping_address??{};
+    const state=normalizeState(address.state);
+    const street=String(address.street??address.address??"").trim();
+    const city=String(address.city??"").trim();
+    const zip=String(address.zip??address.postal_code??"").replace(/\D/g,"").slice(0,5);
+    if(p.fulfillment==="shipping" && (!street||!city||!/^[A-Z]{2}$/.test(state)||!/^[0-9]{5}$/.test(zip))) {
+      throw new Error("Complete the shipping address using a street, city, valid state (for example TN or Tennessee), and 5-digit ZIP code.");
+    }
     let subtotal=0,weight=0;
     const normalized=[];
     for(const item of p.items) {
@@ -131,7 +145,7 @@ Deno.serve(async (req) => {
     const orderPayload={
       customer_name:String(p.customer_name).trim().slice(0,120),customer_email:String(p.customer_email).trim().slice(0,254),
       customer_phone:String(p.customer_phone||"").trim().slice(0,40)||null,fulfillment:p.fulfillment,
-      shipping_address:p.fulfillment==="shipping"?p.shipping_address:null,payment_method:"stripe",
+      shipping_address:p.fulfillment==="shipping"?{street,city,state,zip}:null,payment_method:"stripe",
       items:normalized,subtotal:subtotal/100,discount_code:code||null,discount_amount:discount/100,creator_code:p.creator_code||null,
       estimated_tax:0,estimated_shipping:shipping,estimated_total:total/100,customer_notes:String(p.customer_notes||"").slice(0,2000)||null,
       payment_status:"unpaid",order_status:"awaiting_payment"
