@@ -78,7 +78,7 @@ function estimateShipping(cart, zip, fulfillment){
  if(!enclosures.length&&!shippable.length)return 0;
  const z=String(zip||"").replace(/\D/g,"").slice(0,5);
  if(z.length!==5)return null;
- const state=document.getElementById("state").value.trim().toUpperCase();
+ const state=normalizeState(document.getElementById("state").value);
  const localStates=["TN","AL","GA","NC","SC","KY","VA","MS"];
  const nearbyStates=["FL","WV","OH","IN","IL","MO","AR"];
  const zone=state==="TN"||localStates.includes(state)?7:nearbyStates.includes(state)?12:18;
