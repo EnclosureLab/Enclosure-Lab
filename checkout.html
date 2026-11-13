@@ -29,7 +29,7 @@
 <a class="shop-cart" href="checkout.html" aria-label="Shopping cart"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h2l2.1 11.1a2 2 0 0 0 2 1.6h8.8a2 2 0 0 0 1.9-1.4L22 8H6"/><circle cx="10" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg><span>Cart</span></a>
 </div></header>
 <main>
-<section class="checkout-hero"><div class="container"><p class="eyebrow">ENCLOSURE LAB CHECKOUT</p><h1>Review your <span>order.</span></h1><p>Confirm your items and delivery preference. Your order total is estimated using the prices shown. Secure online payment will be added separately.</p></div></section>
+<section class="checkout-hero"><div class="container"><p class="eyebrow">ENCLOSURE LAB CHECKOUT</p><h1>Review your <span>order.</span></h1><p>Confirm your items and delivery preference. Your order total is verified before you pay securely by card through Stripe.</p></div></section>
 <section class="container checkout-layout">
 <div class="checkout-card">
 <h2>Your items</h2><div id="cartList" class="cart-list"></div>
@@ -41,13 +41,13 @@
 <div class="field"><label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
 <div class="field"><label for="delivery">Fulfillment *</label><select id="delivery" name="delivery" required><option value="shipping">Ship to a U.S. address</option><option value="pickup">Local pickup</option></select></div>
 <div class="field full" id="addressFields"><label for="address">Street address *</label><input id="address" name="address" autocomplete="street-address"><div class="form-grid"><div class="field"><label for="city">City *</label><input id="city" name="city" autocomplete="address-level2"></div><div class="field"><label for="state">State *</label><input id="state" name="state" autocomplete="address-level1"></div><div class="field"><label for="zip">ZIP code *</label><input id="zip" name="zip" autocomplete="postal-code" inputmode="numeric"></div></div></div>
-<div class="field full"><label for="paymentMethod">Preferred payment method *</label><select id="paymentMethod" name="paymentMethod" required><option value="">Choose a preferred method</option><option value="Venmo">Venmo</option><option value="Cash App">Cash App</option><option value="Credit/debit card (secure payment link requested)">Credit/debit card (secure payment link requested)</option><option value="Cash (local pickup only)">Cash (local pickup only)</option></select><small class="muted">This records your order and delivery preference. Online payment is not active yet; Enclosure Lab will provide payment instructions after reviewing the order.</small></div>
+<div class="field full"><div class="notice" style="margin:0"><strong>Secure card payment:</strong> After you submit your order, Stripe will open a secure payment page for credit or debit card checkout.</div></div>
 <div class="field full"><label for="notes">Order notes (optional)</label><textarea id="notes" name="notes" placeholder="Vehicle, subwoofer details, preferred pickup timing, or other order notes"></textarea></div>
 </div>
 <div class="notice">No quote is required. Prices are verified securely before Stripe checkout. Tax is not currently calculated; the business owner must review tax requirements before live payments.</div>
 <button class="checkout-submit" id="submitOrder" type="submit">Continue to Secure Payment</button><p id="formStatus" class="form-status" aria-live="polite"></p>
 </form></div>
-<aside class="summary-card"><h2>Order summary</h2><div class="summary-row"><span>Items</span><strong id="itemCount">0</strong></div><div class="summary-row"><span>Subtotal</span><strong id="subtotal">$0.00</strong></div><div class="summary-row" id="discountRow" hidden><span>Discount <span id="discountLabel"></span></span><strong id="discountAmount">-$0.00</strong></div><div class="summary-row"><span>Estimated tax</span><strong id="tax">$0.00</strong></div><div class="summary-row"><span>Other items</span><span class="muted" id="quoteItems">No quote required</span></div><div class="summary-row"><span>Estimated enclosure weight</span><strong id="enclosureWeight">—</strong></div><div class="summary-row"><span>Estimated shipping</span><strong id="shippingCost">$0.00</strong></div><p id="shippingNote" class="discount-status">Enter your ZIP code for an estimate. Custom enclosures are excluded.</p><div class="summary-row total"><span>Amount due today</span><strong id="amountDue">$0.00</strong></div><div class="discount-box"><label for="discountCode">Discount code</label><div class="discount-controls"><input id="discountCode" type="text" placeholder="Enter discount code" autocomplete="off"><button id="applyDiscount" type="button">Apply</button></div><p id="discountStatus" class="discount-status" role="status" aria-live="polite">Have a code? Enter it above.</p></div><div class="notice">Payment preference only — no card details or money transfers are collected on this page.</div><a class="back-link" href="products.html">← Back to products</a></aside>
+<aside class="summary-card"><h2>Order summary</h2><div class="summary-row"><span>Items</span><strong id="itemCount">0</strong></div><div class="summary-row"><span>Subtotal</span><strong id="subtotal">$0.00</strong></div><div class="summary-row" id="discountRow" hidden><span>Discount <span id="discountLabel"></span></span><strong id="discountAmount">-$0.00</strong></div><div class="summary-row"><span>Estimated tax</span><strong id="tax">$0.00</strong></div><div class="summary-row"><span>Other items</span><span class="muted" id="quoteItems">No quote required</span></div><div class="summary-row"><span>Estimated enclosure weight</span><strong id="enclosureWeight">—</strong></div><div class="summary-row"><span>Estimated shipping</span><strong id="shippingCost">$0.00</strong></div><p id="shippingNote" class="discount-status">Enter your ZIP code for an estimate. Custom enclosures are excluded.</p><div class="summary-row total"><span>Amount due today</span><strong id="amountDue">$0.00</strong></div><div class="discount-box"><label for="discountCode">Discount code</label><div class="discount-controls"><input id="discountCode" type="text" placeholder="Enter discount code" autocomplete="off"><button id="applyDiscount" type="button">Apply</button></div><p id="discountStatus" class="discount-status" role="status" aria-live="polite">Have a code? Enter it above.</p></div><div class="notice">Your card details are entered securely on Stripe. Enclosure Lab does not collect or store your card number on this website.</div><a class="back-link" href="products.html">← Back to products</a></aside>
 </section></main>
 <footer><div class="container footer-grid"><div><a class="brand" href="index.html#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span>Enclosure Lab</span></a><p>Custom subwoofer enclosures, designed and built to order.</p></div><div><span class="footer-label">CONTACT</span><a href="mailto:lawsonhughes53@gmail.com">lawsonhughes53@gmail.com</a></div><div><span class="footer-label">SHOP</span><a href="products.html">Products →</a></div></div><div class="container copyright">© <span id="year"></span> Enclosure Lab. All rights reserved.</div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -64,6 +64,13 @@ async function applyDiscountCode(){const input=document.getElementById("discount
 document.getElementById("applyDiscount").addEventListener("click",applyDiscountCode);
 document.getElementById("discountCode").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();applyDiscountCode();}});
 document.getElementById("discountCode").value=localStorage.getItem("enclosureLabDiscountCode")||"";
+const STATE_ABBREVIATIONS={
+ "alabama":"AL","alaska":"AK","arizona":"AZ","arkansas":"AR","california":"CA","colorado":"CO","connecticut":"CT","delaware":"DE","florida":"FL","georgia":"GA","hawaii":"HI","idaho":"ID","illinois":"IL","indiana":"IN","iowa":"IA","kansas":"KS","kentucky":"KY","louisiana":"LA","maine":"ME","maryland":"MD","massachusetts":"MA","michigan":"MI","minnesota":"MN","mississippi":"MS","missouri":"MO","montana":"MT","nebraska":"NE","nevada":"NV","new hampshire":"NH","new jersey":"NJ","new mexico":"NM","new york":"NY","north carolina":"NC","north dakota":"ND","ohio":"OH","oklahoma":"OK","oregon":"OR","pennsylvania":"PA","rhode island":"RI","south carolina":"SC","south dakota":"SD","tennessee":"TN","texas":"TX","utah":"UT","vermont":"VT","virginia":"VA","washington":"WA","west virginia":"WV","wisconsin":"WI","wyoming":"WY","district of columbia":"DC"
+};
+function normalizeState(value){
+ const state=String(value||"").trim().toLowerCase();
+ return STATE_ABBREVIATIONS[state]||state.toUpperCase();
+}
 function estimateShipping(cart, zip, fulfillment){
  if(fulfillment==="pickup") return 0;
  const enclosures=cart.filter(i=>i.category==="enclosure"&&i.configuration&&Number(i.weightLb||i.configuration.weightLb)>0);
@@ -170,7 +177,12 @@ document.getElementById("checkoutForm").addEventListener("submit",async e=>{
   customer_name:String(f.get("name")||"").trim(),customer_email:String(f.get("email")||"").trim(),
   customer_phone:String(f.get("phone")||"").trim()||null,
   fulfillment:String(f.get("delivery")),
-  shipping_address:f.get("delivery")==="shipping"?{street:f.get("address"),city:f.get("city"),state:f.get("state"),zip:f.get("zip")}:null,
+  shipping_address:f.get("delivery")==="shipping"?{
+   street:String(f.get("address")||"").trim(),
+   city:String(f.get("city")||"").trim(),
+   state:normalizeState(f.get("state")),
+   zip:String(f.get("zip")||"").replace(/\D/g,"").slice(0,5)
+  }:null,
   items,discount_code:discount.code||null,creator_code:discount.creatorCode||null,
   customer_notes:String(f.get("notes")||"").trim()||null
  };
@@ -183,7 +195,15 @@ document.getElementById("checkoutForm").addEventListener("submit",async e=>{
   window.location.assign(data.url);
  }catch(error){
   console.error("Stripe checkout failed:",error);
-  status.textContent=error?.message||"We couldn't start secure checkout. Please try again.";
+  let message=error?.message||"We couldn't start secure checkout. Please try again.";
+  try{
+   const response=error?.context;
+   if(response&&typeof response.clone==="function"){
+    const body=await response.clone().json();
+    if(body?.error)message=body.error;
+   }
+  }catch(_){}
+  status.textContent=message;
   button.disabled=false;button.textContent="Continue to Secure Payment";
  }
 });
