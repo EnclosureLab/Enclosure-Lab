@@ -67,6 +67,13 @@
 @media(max-width:680px){.page{padding:18px 12px 36px}.intro h1{font-size:clamp(32px,8vw,42px)}.section{padding:18px 15px}.field-grid,.choices{grid-template-columns:repeat(2,minmax(0,1fr))}.field.full{grid-column:1/-1}.finish-choices{grid-template-columns:repeat(2,minmax(0,1fr))}.port-style-choices{grid-template-columns:repeat(2,minmax(0,1fr))}.preview-head{padding:16px 15px 10px;flex-wrap:wrap}.canvas-wrap{height:300px;margin:0 10px 12px}.preview-foot{padding:0 15px 16px}.preview-specs{padding:0 15px 16px}.submit-row{padding:18px 15px;gap:12px}.submit-row button{width:100%;min-height:46px}}
 @media(max-width:420px){.field-grid,.choices,.finish-choices{grid-template-columns:1fr}.field.full{grid-column:auto}.port-style-choices{grid-template-columns:repeat(2,minmax(0,1fr))}.canvas-wrap{height:260px}.preview-specs{grid-template-columns:1fr 1fr}.advanced-color-picker{max-width:100%}}
 
+
+.model-search-field{position:relative}
+.model-suggestions{position:absolute;z-index:30;top:calc(100% - 22px);left:0;right:0;max-height:260px;overflow:auto;border:1px solid #cfd7de;border-radius:10px;background:#fff;box-shadow:0 14px 30px #17202b20;padding:5px}
+.model-suggestions button{display:block;width:100%;padding:10px 12px;border:0;border-radius:7px;background:#fff;color:#17202b;text-align:left;font:inherit;font-size:13px;cursor:pointer}
+.model-suggestions button:hover,.model-suggestions button:focus{background:#f0f5fa;outline:none}
+.model-suggestions button.custom-model-option{border-top:1px solid #e5eaf0;margin-top:4px;padding-top:12px;color:#1769aa;font-weight:750}
+.model-suggestions .no-model-match{padding:10px 12px;color:#687480;font-size:12px}
 </style>
 </head>
 <body>
@@ -120,7 +127,7 @@
    <section class="section">
     <h2>4. Subwoofer information</h2>
     <div class="field-grid">
-     <div class="field full"><label for="model">Subwoofer model</label><input id="model" maxlength="140" placeholder="Enter the brand and exact model" required></div>
+     <div class="field full model-search-field"><label for="model">Subwoofer model</label><input id="model" maxlength="140" placeholder="Search brand or exact subwoofer model" autocomplete="off" aria-autocomplete="list" aria-controls="modelSuggestions" aria-expanded="false" required><div id="modelSuggestions" class="model-suggestions hidden" role="listbox" aria-label="Matching subwoofer models"></div><div class="help">Search verified subwoofer models or choose “Custom / not listed” to enter another model.</div></div>
      <div class="field"><label for="size">Subwoofer size</label><select id="size"><option value="6.5">6.5 inches</option><option value="8">8 inches</option><option value="10">10 inches</option><option value="12" selected>12 inches</option><option value="15">15 inches</option><option value="18">18 inches</option></select></div>
      <div class="field"><label for="quantity">Quantity of subwoofers</label><select id="quantity"><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
      <div class="field full" id="tuningField"><label for="tuning">Target port tuning <span class="unit">(Hz)</span></label><select id="tuning"></select><div class="help">Required for ported boxes only. This field is hidden for sealed boxes.</div></div>
@@ -155,6 +162,62 @@
 "use strict";
 const $=id=>document.getElementById(id);
 const cartKey="enclosureLabCart";
+const verifiedSubwooferModels=[
+ "Sundown Audio SA-Classic 10-inch Subwoofer",
+ "Sundown Audio SA-Classic 12-inch Subwoofer",
+ "Sundown Audio SA-Classic 15-inch Subwoofer",
+ "Sundown Audio SA-Series v.2 12-inch Subwoofer",
+ "Sundown Audio SA-Series v.2 15-inch Subwoofer",
+ "Sundown Audio SA-Series v.3 12-inch Subwoofer",
+ "Sundown Audio SA-Series v.3 15-inch Subwoofer",
+ "Sundown Audio U-Series v.2 10-inch Subwoofer",
+ "Sundown Audio U-Series v.2 12-inch Subwoofer",
+ "Sundown Audio U-Series v.2 15-inch Subwoofer",
+ "Sundown Audio U-Series v.2 18-inch Subwoofer",
+ "Sundown Audio M-Series M8 8-inch Subwoofer",
+ "Sundown Audio M-Series M10 10-inch Subwoofer",
+ "Sundown Audio M-Series M12 12-inch Subwoofer",
+ "Sundown Audio M-Series M15 15-inch Subwoofer",
+ "Sundown Audio M-Series M18 18-inch Subwoofer",
+ "Sundown Audio X-Series v.3 12-inch Subwoofer",
+ "Sundown Audio X-Series v.3 15-inch Subwoofer",
+ "Sundown Audio X-Series v.3 18-inch Subwoofer",
+ "Sundown Audio Nightshade NS-Series NS6 15-inch Subwoofer",
+ "Sundown Audio E-Series v.4 12-inch Subwoofer",
+ "Sundown Audio E-Series v.4 15-inch Subwoofer",
+ "Sundown Audio LCS v.2 10-inch Subwoofer",
+ "Sundown Audio LCS v.2 12-inch Subwoofer",
+ "Resilient Sounds Gold 15 v2 Subwoofer"
+];
+const modelInput=$("model"),modelSuggestions=$("modelSuggestions");
+let activeModelSuggestion=-1,visibleModelSuggestions=[];
+function closeModelSuggestions(){modelSuggestions.classList.add("hidden");modelInput.setAttribute("aria-expanded","false");activeModelSuggestion=-1}
+function chooseModelSuggestion(value){
+ if(value==="__custom__"){modelInput.value="";modelInput.placeholder="Enter your brand and exact subwoofer model";modelInput.dataset.customModel="true";closeModelSuggestions();modelInput.focus();return}
+ modelInput.value=value;modelInput.dataset.customModel="false";closeModelSuggestions();update();
+}
+function renderModelSuggestions(){
+ const query=modelInput.value.trim().toLowerCase();
+ const matches=verifiedSubwooferModels.filter(name=>!query||name.toLowerCase().includes(query));
+ visibleModelSuggestions=matches.slice(0,9);
+ modelSuggestions.replaceChildren();
+ if(visibleModelSuggestions.length){
+  visibleModelSuggestions.forEach((name,index)=>{const button=document.createElement("button");button.type="button";button.role="option";button.textContent=name;button.setAttribute("aria-selected",String(index===activeModelSuggestion));button.addEventListener("mousedown",event=>event.preventDefault());button.addEventListener("click",()=>chooseModelSuggestion(name));modelSuggestions.append(button)});
+ }else{const empty=document.createElement("div");empty.className="no-model-match";empty.textContent="No matching model in this starter list. You can enter it manually.";modelSuggestions.append(empty)}
+ const custom=document.createElement("button");custom.type="button";custom.className="custom-model-option";custom.textContent="Custom / not listed — enter model manually";custom.addEventListener("mousedown",event=>event.preventDefault());custom.addEventListener("click",()=>chooseModelSuggestion("__custom__"));modelSuggestions.append(custom);
+ modelSuggestions.classList.remove("hidden");modelInput.setAttribute("aria-expanded","true");
+}
+modelInput.addEventListener("focus",renderModelSuggestions);
+modelInput.addEventListener("input",()=>{modelInput.dataset.customModel="true";renderModelSuggestions()});
+modelInput.addEventListener("keydown",event=>{
+ const options=[...modelSuggestions.querySelectorAll('button[role="option"]')];
+ if(event.key==="ArrowDown"&&options.length){event.preventDefault();activeModelSuggestion=Math.min(activeModelSuggestion+1,options.length-1);options.forEach((b,i)=>b.setAttribute("aria-selected",String(i===activeModelSuggestion)));options[activeModelSuggestion].scrollIntoView({block:"nearest"})}
+ else if(event.key==="ArrowUp"&&options.length){event.preventDefault();activeModelSuggestion=Math.max(activeModelSuggestion-1,0);options.forEach((b,i)=>b.setAttribute("aria-selected",String(i===activeModelSuggestion)));options[activeModelSuggestion].scrollIntoView({block:"nearest"})}
+ else if(event.key==="Enter"&&activeModelSuggestion>=0&&options[activeModelSuggestion]){event.preventDefault();options[activeModelSuggestion].click()}
+ else if(event.key==="Escape")closeModelSuggestions();
+});
+document.addEventListener("click",event=>{if(!event.target.closest(".model-search-field"))closeModelSuggestions()});
+
 // Explicit estimate inputs used by the live weight and material calculators.
 // MDF sheet price reflects the previously selected $49.98, 3/4-in 4x8 sheet.
 const MATERIAL_DENSITY_LB_SQFT={"Birch":1.80,"MDF (Suggested)":2.30,"Plywood":1.70};
