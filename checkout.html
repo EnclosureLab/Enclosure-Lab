@@ -112,7 +112,7 @@ function renderCart(){
    ...(q.finish==="Wrap"?["Wrap type: "+(q.wrapType||"Not specified"),"Wrap color: "+(q.wrapColor||"Not specified"),...(q.wrapNotes?["Wrap notes: "+q.wrapNotes]:[])]:[]),
    ...(q.finish==="Raw"?["Raw material: "+(q.rawMaterial||"Not specified")]:[]),
    "Subwoofer model: "+(q.model||"Not provided"),
-   "Subwoofer size: "+(q.size||"Not specified")+" inches",
+   "Driver size (identified from selected model): "+(q.size?q.size+" inches":"Not specified"),
    "Quantity of subwoofers: "+(q.quantity||1),
    "Target port tuning: "+(q.tuning==null?"Not applicable (sealed)":q.tuning+" Hz")
  ].join("\n");details.append(meta);}
