@@ -17,7 +17,7 @@ Deno.serve(async(req)=>{
   if(session.payment_status!=="paid")return Response.json({paid:false},{headers:cors});
   const update=await fetch(`${SUPABASE_URL}/rest/v1/enclosure_orders?id=eq.${encodeURIComponent(orderId)}&stripe_checkout_session_id=eq.${encodeURIComponent(sessionId)}&payment_status=eq.unpaid`,{
    method:"PATCH",headers:{"apikey":SERVICE_ROLE_KEY,"Authorization":`Bearer ${SERVICE_ROLE_KEY}`,"Content-Type":"application/json","Prefer":"return=minimal"},
-   body:JSON.stringify({payment_status:"paid",paid_at:new Date().toISOString(),stripe_payment_intent_id:typeof session.payment_intent==="string"?session.payment_intent:null,order_status:"new"})
+   body:JSON.stringify({payment_status:"paid",paid_at:new Date().toISOString(),stripe_payment_intent_id:typeof session.payment_intent==="string"?session.payment_intent:null,order_status:"new",estimated_tax:Number(session.total_details?.amount_tax||0)/100,tax_amount:Number(session.total_details?.amount_tax||0)/100,final_total:Number(session.amount_total||0)/100,tax_jurisdiction:{address_source:session.shipping_details?.address?"shipping":"billing",address:session.shipping_details?.address||session.customer_details?.address||null},tax_breakdown:session.total_details?.breakdown?.taxes||[]})
   });
   if(!update.ok)throw new Error("Could not update verified order status.");
   return Response.json({paid:true},{headers:cors});
