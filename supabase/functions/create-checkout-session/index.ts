@@ -1,8 +1,8 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "https://lblrmljsjimrrighqbdo.supabase.co";
-const SERVICE_ROLE_KEY = Deno.env.get("SERVICE_ROLE_KEY")!;
-const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY")!;
+const SERVICE_ROLE_KEY = Deno.env.get("SERVICE_ROLE_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY") ?? "";
 const PUBLISHABLE_KEY = "sb_publishable_s2YnH1DT5diDmM781NXxqw_gIJVxPRx";
 const SITE = "https://enclosurelab.github.io/Enclosure-Lab";
 const cors = {
@@ -33,7 +33,8 @@ function normalizeState(value:unknown):string{
 function round(n:number) { return Math.round(n*100)/100; }
 function priceEnclosure(q:any) {
   const w=Number(q?.width), h=Number(q?.height), d=Number(q?.depth);
-  if (![w,h,d].every(Number.isFinite) || w<6 || h<6 || d<6 || w>60 || h>48 || d>36) throw new Error("Custom enclosure dimensions are invalid.");
+  // Keep server-side limits aligned with the live designer selectors: width 8–60, height 8–60, depth 8–48.
+  if (![w,h,d].every(Number.isFinite) || w<8 || h<8 || d<8 || w>60 || h>60 || d>48) throw new Error("Custom enclosure dimensions are invalid. Width and height must be 8–60 inches; depth must be 8–48 inches.");
   const sheets:Record<string,number>={"Birch":79.98,"MDF (Suggested)":49.98,"Plywood":54.98};
   const sheet=sheets[String(q.material)];
   if (!sheet) throw new Error("Choose a valid enclosure material.");
@@ -54,7 +55,10 @@ function priceEnclosure(q:any) {
   const labor=60*factor, waste=15*factor, consumables=12*factor;
   const direct=wood+finishCost+labor+waste+consumables;
   const retail=(direct+direct*.10)*1.25;
-  return {priceCents:Math.round(retail*100), weightLb:Math.max(1,Number(q.weightLb)||1), area:round(surface)};
+  const density:Record<string,number>={"Birch":1.80,"MDF (Suggested)":2.30,"Plywood":1.70};
+  const calculatedWeight=round(surface*.75*(density[String(q.material)]||2.30)*1.25);
+  const weightLb=Math.max(1,Number(q.weightLb)>0?Number(q.weightLb):calculatedWeight);
+  return {priceCents:Math.round(retail*100), weightLb, area:round(surface), dimensions:{width:w,height:h,depth:d}};
 }
 async function supabase(path:string, method="GET", body?:unknown) {
   const res=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{
@@ -126,7 +130,7 @@ Deno.serve(async (req) => {
       if(item.category==="enclosure") {
         const calc=priceEnclosure(item.configuration);
         const line=calc.priceCents*qty; subtotal+=line; weight+=calc.weightLb*qty;
-        normalized.push({name:"Custom Subwoofer Enclosure",category:"enclosure",quantity:qty,unit_price:calc.priceCents/100,line_total:line/100,estimated_weight_lb:calc.weightLb,configuration:item.configuration});
+        normalized.push({name:"Custom Subwoofer Enclosure",category:"enclosure",quantity:qty,unit_price:calc.priceCents/100,line_total:line/100,estimated_weight_lb:calc.weightLb,dimensions_in:calc.dimensions,configuration:{...item.configuration,width:calc.dimensions.width,height:calc.dimensions.height,depth:calc.dimensions.depth,weightLb:calc.weightLb}});
       } else {
         const product=catalog[String(item.productId||"")];
         if(!product) throw new Error("A cart product could not be verified. Remove it and add it again.");
