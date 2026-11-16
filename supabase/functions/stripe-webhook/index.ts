@@ -27,7 +27,15 @@ Deno.serve(async(req)=>{
         const patch={
           payment_status:"paid",paid_at:new Date().toISOString(),
           stripe_payment_intent_id:typeof session.payment_intent==="string"?session.payment_intent:null,
-          order_status:"new"
+          order_status:"new",
+          estimated_tax:Number(session.total_details?.amount_tax||0)/100,
+          tax_amount:Number(session.total_details?.amount_tax||0)/100,
+          final_total:Number(session.amount_total||0)/100,
+          tax_jurisdiction:{
+            address_source:session.shipping_details?.address?"shipping":"billing",
+            address:session.shipping_details?.address||session.customer_details?.address||null
+          },
+          tax_breakdown:session.total_details?.breakdown?.taxes||[]
         };
         const r=await fetch(`${SUPABASE_URL}/rest/v1/enclosure_orders?stripe_checkout_session_id=eq.${encodeURIComponent(session.id)}&payment_status=eq.unpaid`,{
           method:"PATCH",headers:{"apikey":SERVICE_ROLE_KEY,"Authorization":`Bearer ${SERVICE_ROLE_KEY}`,"Content-Type":"application/json","Prefer":"return=minimal"},body:JSON.stringify(patch)
