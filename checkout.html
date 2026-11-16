@@ -174,16 +174,16 @@ delivery.addEventListener("change",updateDelivery);
 ["zip","state"].forEach(id=>document.getElementById(id).addEventListener("input",renderCart));
 updateDelivery();
 
-// Live U.S. address suggestions using Photon geocoding.
+// Free U.S. address autocomplete using Photon, with broader searches and city/state context.
 (()=> {
  const street=document.getElementById("address"),city=document.getElementById("city"),state=document.getElementById("state"),zip=document.getElementById("zip"),box=document.getElementById("addressSuggestions");
  if(!street||!box)return;
  let timer=null,controller=null,requestNumber=0;
  const close=()=>{box.classList.add("hidden");box.replaceChildren();street.setAttribute("aria-expanded","false");};
  const streetLine=p=>[p.housenumber,p.street||p.name].filter(Boolean).join(" ").trim();
- const cityName=p=>p.city||p.locality||p.town||p.village||p.municipality||"";
+ const cityName=p=>p.city||p.locality||p.town||p.village||p.municipality||p.county||"";
  const stateName=p=>p.state||p.statecode||"";
- const postal=p=>String(p.postcode||"").match(/\\d{5}/)?.[0]||"";
+ const postal=p=>(String(p.postcode||"").match(/\b\d{5}(?:-\d{4})?\b/)||[])[0]?.slice(0,5)||"";
  function choose(p){
   const line=streetLine(p);
   if(!line)return;
@@ -208,9 +208,9 @@ updateDelivery();
    seen.add(key);
    return true;
   }).sort((a,b)=>{
-   const score=p=>(p.housenumber?4:0)+(p.street?3:0)+(postal(p)?2:0)+(cityName(p)?1:0)+(stateName(p)?1:0);
+   const score=p=>(p.housenumber?5:0)+(p.street?3:0)+(postal(p)?2:0)+(cityName(p)?1:0)+(stateName(p)?1:0);
    return score(b)-score(a);
-  }).slice(0,8);
+  }).slice(0,12);
   results.forEach(p=>{
    const line=streetLine(p),details=[cityName(p),stateName(p),postal(p)].filter(Boolean).join(", ");
    const b=document.createElement("button");b.type="button";b.setAttribute("role","option");
@@ -223,7 +223,7 @@ updateDelivery();
   });
   if(!box.children.length){
    const empty=document.createElement("div");empty.className="address-empty";
-   empty.textContent="No matching street address found yet. Add the city or ZIP code, or enter the address manually.";
+   empty.textContent="No exact match in the free address database. Try adding the city and state below, then search again, or enter the address manually.";
    box.append(empty);
   }
   box.classList.remove("hidden");street.setAttribute("aria-expanded","true");
@@ -232,12 +232,20 @@ updateDelivery();
   if(controller)controller.abort();
   controller=new AbortController();
   try{
-   const url="https://photon.komoot.io/api/?"+new URLSearchParams({q:query,limit:"12",lang:"en"});
-   const response=await fetch(url,{signal:controller.signal,headers:{Accept:"application/json"}});
-   if(!response.ok)throw new Error("Address search unavailable");
-   const data=await response.json();
+   const context=[city.value.trim(),state.value.trim(),zip.value.trim(),"United States"].filter(Boolean).join(", ");
+   const queries=[context?query+", "+context:query+", United States",query];
+   const requests=queries.map(q=>{
+    const url="https://photon.komoot.io/api/?"+new URLSearchParams({q,limit:"30",lang:"en"});
+    return fetch(url,{signal:controller.signal,headers:{Accept:"application/json"}}).then(response=>{
+     if(!response.ok)throw new Error("Address search unavailable");
+     return response.json();
+    });
+   });
+   const responses=await Promise.allSettled(requests);
    if(number!==requestNumber)return;
-   show(data.features||[]);
+   const features=responses.flatMap(result=>result.status==="fulfilled"?(result.value.features||[]):[]);
+   if(!features.length&&responses.every(result=>result.status==="rejected"))throw new Error("Address search unavailable");
+   show(features);
   }catch(error){
    if(error.name!=="AbortError"&&number===requestNumber){
     box.replaceChildren();
@@ -250,12 +258,18 @@ updateDelivery();
  street.addEventListener("input",()=>{
   const query=street.value.trim();clearTimeout(timer);requestNumber++;
   if(controller)controller.abort();
-  if(query.length<4){close();return;}
+  if(query.length<3){close();return;}
   const number=requestNumber;
-  timer=setTimeout(()=>search(query,number),220);
+  timer=setTimeout(()=>search(query,number),350);
  });
+ [city,state,zip].forEach(field=>field.addEventListener("input",()=>{
+  const query=street.value.trim();
+  if(query.length<3)return;
+  clearTimeout(timer);const number=++requestNumber;
+  timer=setTimeout(()=>search(query,number),350);
+ }));
  street.addEventListener("focus",()=>{
-  if(street.value.trim().length>=4&&!box.children.length){
+  if(street.value.trim().length>=3&&!box.children.length){
    const number=++requestNumber;search(street.value.trim(),number);
   }
  });
