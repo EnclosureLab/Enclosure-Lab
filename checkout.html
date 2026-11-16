@@ -180,13 +180,17 @@ updateDelivery();
  if(!street||!box)return;
  let timer=null,controller=null,requestNumber=0;
  const close=()=>{box.classList.add("hidden");box.replaceChildren();street.setAttribute("aria-expanded","false");};
- const streetLine=p=>[p.housenumber,p.street||p.name].filter(Boolean).join(" ").trim();
+ const streetLine=p=>[p.housenumber,p.street||p.name].filter(Boolean).join(" ").replace(/\s+\d{5}(?:-\d{4})?\s*$/,"").trim();
  const cityName=p=>p.city||p.locality||p.town||p.village||p.municipality||p.county||"";
  const stateName=p=>p.state||p.statecode||"";
  const postal=p=>(String(p.postcode||"").match(/\b\d{5}(?:-\d{4})?\b/)||[])[0]?.slice(0,5)||"";
  function choose(p){
-  const line=streetLine(p);
+  let line=streetLine(p);
   if(!line)return;
+  // Preserve the customer's typed house number if Photon only returns a street-level match.
+  const typedNumber=(street.value.trim().match(/^\s*(\d+[A-Za-z]?(?:-\d+[A-Za-z]?)?)\b/)||[])[1]||"";
+  if(typedNumber&&!/^\d/.test(line))line=typedNumber+" "+line;
+  else if(typedNumber&&p.housenumber&&String(p.housenumber)!==typedNumber)line=typedNumber+" "+String(p.street||p.name||line);
   street.value=line;
   city.value=cityName(p);
   state.value=stateName(p);
