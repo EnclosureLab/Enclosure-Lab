@@ -143,6 +143,8 @@ function renderOrders(){
 async function saveOrder(id,markFulfilled=false){
  const card=document.querySelector('[data-order-card="'+CSS.escape(id)+'"]');if(!card)return;
  const status=markFulfilled?"fulfilled":card.querySelector("[data-status]").value;
+ const order=allOrders.find(item=>String(item.id)===String(id));
+ if(status==="fulfilled"&&order?.payment_status!=="paid"){say("This order cannot be marked fulfilled until Stripe confirms payment.");return}
  const payload={order_status:status,internal_notes:card.querySelector("[data-notes]").value.trim(),tracking_number:card.querySelector("[data-tracking]").value.trim()||null,completed_at:status==="fulfilled"?new Date().toISOString():null};
  say("Saving order updates…");
  const {error}=await db.from("enclosure_orders").update(payload).eq("id",id);
