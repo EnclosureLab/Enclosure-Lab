@@ -19,7 +19,7 @@
 @media(max-width:800px){.checkout-layout{grid-template-columns:minmax(0,1fr)}.summary-card{position:static;grid-row:1}.checkout-card{padding:20px}}
 @media(max-width:520px){.checkout-hero{padding:36px 0 24px}.checkout-hero h1{font-size:clamp(36px,10vw,48px)}.checkout-card,.summary-card{padding:16px}.cart-line{grid-template-columns:minmax(0,1fr)}.cart-line>div:last-child{display:flex;justify-content:space-between;align-items:center}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.checkout-card button,.checkout-card input,.checkout-card select{min-height:44px}}
 
-</style>
+\n.address-autocomplete{position:relative;display:grid;gap:6px}.address-help{font-size:11px;color:#74808c}.address-suggestions{position:absolute;z-index:60;top:100%;left:0;right:0;max-height:270px;overflow:auto;border:1px solid #cfd7de;border-radius:10px;background:#fff;box-shadow:0 14px 30px rgba(23,32,43,.16);padding:5px}.address-suggestions button{display:block;width:100%;padding:11px 12px;border:0;border-radius:7px;background:#fff;color:#17202b;text-align:left;font:inherit;font-size:13px;cursor:pointer}.address-suggestions button:hover,.address-suggestions button:focus{background:#f0f5fa;outline:none}.address-suggestions small{display:block;color:#74808c;font-size:11px;margin-top:3px}.address-suggestions .address-empty{padding:11px 12px;color:#687480;font-size:12px}\n</style>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -40,7 +40,7 @@
 <div class="field"><label for="email">Email *</label><input id="email" name="email" type="email" autocomplete="email" required></div>
 <div class="field"><label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
 <div class="field"><label for="delivery">Fulfillment *</label><select id="delivery" name="delivery" required><option value="shipping">Ship to a U.S. address</option><option value="pickup">Local pickup</option></select></div>
-<div class="field full" id="addressFields"><label for="address">Street address *</label><input id="address" name="address" autocomplete="street-address"><div class="form-grid"><div class="field"><label for="city">City *</label><input id="city" name="city" autocomplete="address-level2"></div><div class="field"><label for="state">State *</label><input id="state" name="state" autocomplete="address-level1"></div><div class="field"><label for="zip">ZIP code *</label><input id="zip" name="zip" autocomplete="postal-code" inputmode="numeric"></div></div></div>
+<div class="field full" id="addressFields"><div class="address-autocomplete"><label for="address">Street address *</label><input id="address" name="address" autocomplete="off" aria-autocomplete="list" aria-controls="addressSuggestions" aria-expanded="false" placeholder="Start typing your street address"><div id="addressSuggestions" class="address-suggestions hidden" role="listbox" aria-label="Address suggestions"></div><small class="address-help">Choose a matching address from the suggestions to fill in the city, state, and ZIP code.</small></div><div class="form-grid"><div class="field"><label for="city">City *</label><input id="city" name="city" autocomplete="address-level2"></div><div class="field"><label for="state">State *</label><input id="state" name="state" autocomplete="address-level1"></div><div class="field"><label for="zip">ZIP code *</label><input id="zip" name="zip" autocomplete="postal-code" inputmode="numeric"></div></div></div>
 <div class="field full"><div class="notice" style="margin:0"><strong>Secure card payment:</strong> After you submit your order, Stripe will open a secure payment page for credit or debit card checkout.</div></div>
 <div class="field full"><label for="notes">Order notes (optional)</label><textarea id="notes" name="notes" placeholder="Vehicle, subwoofer details, preferred pickup timing, or other order notes"></textarea></div>
 </div>
@@ -148,6 +148,67 @@ function updateDelivery(){const shipping=delivery.value==="shipping";addressFiel
 delivery.addEventListener("change",updateDelivery);
 ["zip","state"].forEach(id=>document.getElementById(id).addEventListener("input",renderCart));
 updateDelivery();
+
+// Live U.S. address suggestions (Photon geocoding).
+// Suggestions are selectable; selecting one fills the structured address fields.
+(()=>{
+ const street=document.getElementById("address"),city=document.getElementById("city"),state=document.getElementById("state"),zip=document.getElementById("zip"),box=document.getElementById("addressSuggestions");
+ if(!street||!box)return;
+ let timer=null,controller=null,items=[];
+ const close=()=>{box.classList.add("hidden");box.replaceChildren();street.setAttribute("aria-expanded","false");};
+ const stateName=value=>String(value||"").trim();
+ const format=p=>[p.housenumber,p.street||p.name].filter(Boolean).join(" ");
+ const display=p=>[format(p),p.city||p.locality||p.county,p.state,p.postcode].filter(Boolean).join(", ");
+ function choose(p){
+  const streetLine=format(p);
+  if(!streetLine)return;
+  street.value=streetLine;
+  city.value=p.city||p.locality||"";
+  state.value=stateName(p.state);
+  zip.value=String(p.postcode||"").match(/\d{5}/)?.[0]||"";
+  [street,city,state,zip].forEach(el=>el.dispatchEvent(new Event("input",{bubbles:true})));
+  close();
+ }
+ function show(results){
+  box.replaceChildren();items=results;
+  results.forEach((feature,index)=>{
+   const p=feature.properties||{},line=format(p);
+   if(!line)return;
+   const b=document.createElement("button");b.type="button";b.setAttribute("role","option");
+   const title=document.createElement("span");title.textContent=line;
+   const detail=document.createElement("small");detail.textContent=[p.city||p.locality,p.state,p.postcode].filter(Boolean).join(", ");
+   b.append(title,detail);b.addEventListener("mousedown",e=>e.preventDefault());b.addEventListener("click",()=>choose(p));box.append(b);
+  });
+  if(!box.children.length){const empty=document.createElement("div");empty.className="address-empty";empty.textContent="No matching U.S. street addresses found. Keep typing or enter the address manually.";box.append(empty);}
+  box.classList.remove("hidden");street.setAttribute("aria-expanded","true");
+ }
+ async function search(query){
+  if(controller)controller.abort();
+  controller=new AbortController();
+  try{
+   const url="https://photon.komoot.io/api/?"+new URLSearchParams({q:query,limit:"7",lang:"en",lat:"35.0456",lon:"-85.3097"});
+   const response=await fetch(url,{signal:controller.signal,headers:{Accept:"application/json"}});
+   if(!response.ok)throw new Error("Address search unavailable");
+   const data=await response.json();
+   const results=(data.features||[]).filter(f=>{
+    const p=f.properties||{};
+    return String(p.countrycode||"").toLowerCase()==="us"&&!!(p.housenumber&&p.street||p.street&&p.postcode);
+   });
+   show(results);
+  }catch(error){if(error.name!=="AbortError"){box.replaceChildren();const empty=document.createElement("div");empty.className="address-empty";empty.textContent="Live address suggestions are temporarily unavailable. You can still enter the address manually.";box.append(empty);box.classList.remove("hidden");street.setAttribute("aria-expanded","true");}}
+ }
+ street.addEventListener("input",()=>{
+  const q=street.value.trim();clearTimeout(timer);
+  if(q.length<4){close();return;}
+  timer=setTimeout(()=>search(q),300);
+ });
+ street.addEventListener("keydown",e=>{
+  const options=[...box.querySelectorAll("button")];
+  if(e.key==="Escape"){close();return;}
+  if(e.key==="ArrowDown"&&options.length){e.preventDefault();options[0].focus();}
+ });
+ document.addEventListener("click",e=>{if(!e.target.closest(".address-autocomplete"))close();});
+})();
 const orderDb=window.supabase?.createClient("https://lblrmljsjimrrighqbdo.supabase.co","sb_publishable_s2YnH1DT5diDmM781NXxqw_gIJVxPRx");
 const returnParams=new URLSearchParams(window.location.search);
 if(returnParams.get("payment")==="success"){
