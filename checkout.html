@@ -54,7 +54,14 @@
 <script>
 const CART_KEY="enclosureLabCart";
 const STICKER_PRICES={"Large EL Enclosure Lab":5,"Circular EL Logo":4,"Brush Style EL":3,"Rectangle Logo":2,"Small EL Logo":1};
-function getCart(){try{let cart=JSON.parse(localStorage.getItem(CART_KEY)||"[]");if(!Array.isArray(cart))cart=[];if(!cart.some(item=>item&&item.category==="enclosure"&&item.configuration)){const savedConfig=JSON.parse(localStorage.getItem("enclosureLabCustomBoxConfig")||"null");if(savedConfig&&savedConfig.width&&savedConfig.height&&savedConfig.depth){const details="Custom subwoofer enclosure — "+(savedConfig.type||"Box")+" — "+(savedConfig.quantity||1)+" × "+(savedConfig.size||"")+" in ("+(savedConfig.material||"Material")+")";cart=cart.filter(item=>item&&item.category!=="enclosure");cart.push({name:details,category:"enclosure",price:null,qty:1,weightLb:Number(savedConfig.weightLb)||0,configuration:savedConfig});localStorage.setItem(CART_KEY,JSON.stringify(cart));}}const speakerPrices=[[/DS18.*6PRO500MR-4/i,94.95],[/DS18.*PRO-X6\.4M/i,44.95],[/DS18.*PRO-ZT6/i,94.95],[/DS18.*PRO-HY6\.4B/i,114.95]];let changed=false;cart.forEach(item=>{if(item&&item.category==="enclosure"&&item.configuration&&item.price==null&&Number.isFinite(Number(item.configuration.buildCost))){item.price=Number(item.configuration.buildCost);changed=true;}if(item.price==null){const match=speakerPrices.find(([pattern])=>pattern.test(item.name||""));if(match){item.price=match[1];changed=true}}});if(changed)localStorage.setItem(CART_KEY,JSON.stringify(cart));return cart}catch(e){return[]}}
+function getEnclosureWeight(configuration){
+ const q=configuration||{},w=Number(q.width),h=Number(q.height),d=Number(q.depth);
+ if(![w,h,d].every(Number.isFinite)||w<=0||h<=0||d<=0)return 0;
+ const area=2*(w*h+w*d+h*d)/144;
+ const density={"Birch":1.80,"MDF (Suggested)":2.30,"Plywood":1.70};
+ return Math.max(1,Math.round(area*.75*(density[q.material]||2.30)*1.25*10)/10);
+}
+function getCart(){try{let cart=JSON.parse(localStorage.getItem(CART_KEY)||"[]");if(!Array.isArray(cart))cart=[];if(!cart.some(item=>item&&item.category==="enclosure"&&item.configuration)){const savedConfig=JSON.parse(localStorage.getItem("enclosureLabCustomBoxConfig")||"null");if(savedConfig&&savedConfig.width&&savedConfig.height&&savedConfig.depth){const details="Custom subwoofer enclosure — "+(savedConfig.type||"Box")+" — "+(savedConfig.quantity||1)+" × "+(savedConfig.size||"")+" in ("+(savedConfig.material||"Material")+")";cart=cart.filter(item=>item&&item.category!=="enclosure");cart.push({name:details,category:"enclosure",price:null,qty:1,weightLb:Number(savedConfig.weightLb)||0,configuration:savedConfig});localStorage.setItem(CART_KEY,JSON.stringify(cart));}}cart.forEach(item=>{if(item&&item.category==="enclosure"&&item.configuration){const q=item.configuration;const weight=Number(item.weightLb||q.weightLb)||getEnclosureWeight(q);if(weight>0){item.weightLb=weight;q.weightLb=weight;}if(item.price==null&&Number.isFinite(Number(q.buildCost))&&Number(q.buildCost)>0)item.price=Number(q.buildCost);}});const speakerPrices=[[/DS18.*6PRO500MR-4/i,94.95],[/DS18.*PRO-X6\.4M/i,44.95],[/DS18.*PRO-ZT6/i,94.95],[/DS18.*PRO-HY6\.4B/i,114.95]];let changed=false;cart.forEach(item=>{if(item&&item.category==="enclosure"&&item.configuration&&item.price==null&&Number.isFinite(Number(item.configuration.buildCost))){item.price=Number(item.configuration.buildCost);changed=true;}if(item.price==null){const match=speakerPrices.find(([pattern])=>pattern.test(item.name||""));if(match){item.price=match[1];changed=true}}});if(changed)localStorage.setItem(CART_KEY,JSON.stringify(cart));return cart}catch(e){return[]}}
 function saveCart(cart){localStorage.setItem(CART_KEY,JSON.stringify(cart));if(!cart.some(item=>item&&item.category==="enclosure"&&item.configuration)){localStorage.removeItem("enclosureLabCustomBoxConfig")}}
 function money(n){return "$"+Number(n).toFixed(2)}
 
@@ -104,6 +111,7 @@ function renderCart(){
   const details=document.createElement("div");const title=document.createElement("strong");title.textContent=item.name;const sub=document.createElement("small");sub.textContent=item.price!=null?money(item.price)+" each":"Temporary estimate pending";details.append(title,sub);
   if(item.category==="enclosure"&&item.configuration){if(item.previewImage){const preview=document.createElement("img");preview.className="custom-box-preview";preview.src=item.previewImage;preview.alt="3D preview of your custom enclosure";preview.loading="lazy";details.append(preview);}const q=item.configuration,meta=document.createElement("small");meta.style.display="block";meta.style.whiteSpace="pre-line";meta.style.marginTop="6px";meta.textContent=[
    "Maximum dimensions: "+q.width+" W × "+q.height+" H × "+q.depth+" D inches",
+   "Estimated enclosure weight: "+(Number(item.weightLb||q.weightLb)||getEnclosureWeight(q)).toFixed(1)+" lb",
    "Material: "+(q.material||"Not specified"),
    "Box type: "+(q.type||"Not specified"),
    ...(q.type==="Ported"&&q.portStyle?["Port style: "+q.portStyle]:[]),
@@ -124,7 +132,7 @@ function renderCart(){
   controls.append(minus,qty,plus,remove);line.append(details,controls);list.append(line);
  });
  const qty=cart.reduce((s,i)=>s+i.qty,0),subtotal=cart.reduce((s,i)=>s+(i.price||0)*i.qty,0);
- const enclosureWeight=cart.filter(i=>i.category==="enclosure"&&i.weightLb).reduce((sum,i)=>sum+Number(i.weightLb)*Math.max(1,Number(i.qty)||1),0);
+ const enclosureWeight=cart.filter(i=>i.category==="enclosure"&&i.configuration).reduce((sum,i)=>sum+(Number(i.weightLb||i.configuration.weightLb)||getEnclosureWeight(i.configuration))*Math.max(1,Number(i.qty)||1),0);
  document.getElementById("enclosureWeight").textContent=enclosureWeight>0?enclosureWeight.toFixed(1)+" lb (estimate)":"Not added";
  document.getElementById("itemCount").textContent=qty;
  document.getElementById("subtotal").textContent=money(subtotal);
@@ -244,8 +252,8 @@ document.getElementById("checkoutForm").addEventListener("submit",async e=>{
  const items=cart.map(item=>({
   name:String(item.name||"Item"),category:String(item.category||"product"),
   productId:item.productId||null,quantity:Math.max(1,Number(item.qty)||1),
-  estimated_weight_lb:Number(item.weightLb||item.configuration?.weightLb)||null,
-  configuration:item.configuration||null
+  estimated_weight_lb:Number(item.weightLb||item.configuration?.weightLb)||(item.category==="enclosure"?getEnclosureWeight(item.configuration):null),
+  configuration:item.category==="enclosure"&&item.configuration?{...item.configuration,weightLb:Number(item.weightLb||item.configuration.weightLb)||getEnclosureWeight(item.configuration)}:item.configuration||null
  }));
  const payload={
   customer_name:String(f.get("name")||"").trim(),customer_email:String(f.get("email")||"").trim(),
