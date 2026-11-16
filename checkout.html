@@ -20,6 +20,21 @@
 @media(max-width:520px){.checkout-hero{padding:36px 0 24px}.checkout-hero h1{font-size:clamp(36px,10vw,48px)}.checkout-card,.summary-card{padding:16px}.cart-line{grid-template-columns:minmax(0,1fr)}.cart-line>div:last-child{display:flex;justify-content:space-between;align-items:center}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.checkout-card button,.checkout-card input,.checkout-card select{min-height:44px}}
 
 
+
+.payment-security-primary{display:flex;align-items:flex-start;gap:13px;padding:17px 18px;border:2px solid #1d5d3b;border-radius:12px;background:#eff8f2;color:#163d29;box-shadow:0 5px 16px rgba(24,86,51,.10)}
+.payment-security-primary .payment-security-icon{font-size:25px;line-height:1.2}
+.payment-security-primary strong{display:block;font-size:16px;font-weight:800;margin-bottom:5px}
+.payment-security-primary p,.payment-security-secondary p{margin:0;font-size:13px;line-height:1.5}
+.payment-security-secondary{margin:17px 0;padding:15px 16px;border:1px solid #b9c9d6;border-left:5px solid #285a7a;border-radius:10px;background:#f1f6fa;color:#1b3447}
+.payment-security-secondary strong{display:block;font-size:14px;font-weight:800;margin-bottom:6px}
+.payment-security-secondary strong span{margin-right:5px}
+.address-suggestions{max-height:320px;border:2px solid #8b9aa8;box-shadow:0 16px 34px rgba(23,32,43,.22)}
+.address-suggestions button{padding:13px 12px;border-bottom:1px solid #e6ebef}
+.address-suggestions button:last-child{border-bottom:0}
+.address-suggestions button span{display:block;font-weight:700}
+.address-suggestions button small{font-size:12px;color:#536575}
+.address-suggestions button:focus{background:#eaf2f8;outline:2px solid #285a7a;outline-offset:-2px}
+
 .address-autocomplete{position:relative;display:grid;gap:6px}.address-help{font-size:11px;color:#74808c}.address-suggestions{position:absolute;z-index:60;top:100%;left:0;right:0;max-height:270px;overflow:auto;border:1px solid #cfd7de;border-radius:10px;background:#fff;box-shadow:0 14px 30px rgba(23,32,43,.16);padding:5px}.address-suggestions button{display:block;width:100%;padding:11px 12px;border:0;border-radius:7px;background:#fff;color:#17202b;text-align:left;font:inherit;font-size:13px;cursor:pointer}.address-suggestions button:hover,.address-suggestions button:focus{background:#f0f5fa;outline:none}.address-suggestions small{display:block;color:#74808c;font-size:11px;margin-top:3px}.address-suggestions .address-empty{padding:11px 12px;color:#687480;font-size:12px}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&display=swap" rel="stylesheet">
@@ -43,13 +58,13 @@
 <div class="field"><label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
 <div class="field"><label for="delivery">Fulfillment *</label><select id="delivery" name="delivery" required><option value="shipping">Ship to a U.S. address</option><option value="pickup">Local pickup</option></select></div>
 <div class="field full" id="addressFields"><div class="address-autocomplete"><label for="address">Street address *</label><input id="address" name="address" autocomplete="off" aria-autocomplete="list" aria-controls="addressSuggestions" aria-expanded="false" placeholder="Start typing your street address"><div id="addressSuggestions" class="address-suggestions hidden" role="listbox" aria-label="Address suggestions"></div><small class="address-help">Choose a matching address from the suggestions to fill in the city, state, and ZIP code.</small></div><div class="form-grid"><div class="field"><label for="city">City *</label><input id="city" name="city" autocomplete="address-level2"></div><div class="field"><label for="state">State *</label><input id="state" name="state" autocomplete="address-level1"></div><div class="field"><label for="zip">ZIP code *</label><input id="zip" name="zip" autocomplete="postal-code" inputmode="numeric"></div></div></div>
-<div class="field full"><div class="notice" style="margin:0"><strong>Secure card payment:</strong> After you submit your order, Stripe will open a secure payment page for credit or debit card checkout.</div></div>
+<div class="field full"><div class="payment-security-primary"><span class="payment-security-icon" aria-hidden="true">🔒</span><div><strong>Secure card payment</strong><p>After you submit your order, Stripe will open a secure payment page for credit or debit card checkout.</p></div></div></div>
 <div class="field full"><label for="notes">Order notes (optional)</label><textarea id="notes" name="notes" placeholder="Vehicle, subwoofer details, preferred pickup timing, or other order notes"></textarea></div>
 </div>
 <div class="notice">No quote is required. Prices are verified securely before Stripe checkout. Tax is not currently calculated; the business owner must review tax requirements before live payments.</div>
 <button class="checkout-submit" id="submitOrder" type="submit">Continue to Secure Payment</button><p id="formStatus" class="form-status" aria-live="polite"></p>
 </form></div>
-<aside class="summary-card"><h2>Order summary</h2><div class="summary-row"><span>Items</span><strong id="itemCount">0</strong></div><div class="summary-row"><span>Subtotal</span><strong id="subtotal">$0.00</strong></div><div class="summary-row" id="discountRow" hidden><span>Discount <span id="discountLabel"></span></span><strong id="discountAmount">-$0.00</strong></div><div class="summary-row"><span>Sales tax (not calculated)</span><strong id="tax">$0.00</strong></div><p class="discount-status">Sales tax is not currently calculated by this checkout. The store owner must configure and verify tax collection before accepting live orders.</p><div class="summary-row"><span>Other items</span><span class="muted" id="quoteItems">No quote required</span></div><div class="summary-row"><span>Estimated enclosure weight</span><strong id="enclosureWeight">—</strong></div><div class="summary-row"><span>Estimated shipping</span><strong id="shippingCost">$0.00</strong></div><p id="shippingNote" class="discount-status">Enter your ZIP code for an estimate. Custom enclosures are excluded.</p><div class="summary-row total"><span>Amount due today</span><strong id="amountDue">$0.00</strong></div><div class="discount-box"><label for="discountCode">Discount / Creator Code</label><div class="discount-controls"><input id="discountCode" type="text" placeholder="Enter discount or creator code" autocomplete="off"><button id="applyDiscount" type="button">Apply</button></div><p id="discountStatus" class="discount-status" role="status" aria-live="polite">Have a code? Enter it above.</p></div><div class="notice">Your card details are entered securely on Stripe. Enclosure Lab does not collect or store your card number on this website.</div><a class="back-link" href="products.html">← Back to products</a></aside>
+<aside class="summary-card"><h2>Order summary</h2><div class="summary-row"><span>Items</span><strong id="itemCount">0</strong></div><div class="summary-row"><span>Subtotal</span><strong id="subtotal">$0.00</strong></div><div class="summary-row" id="discountRow" hidden><span>Discount <span id="discountLabel"></span></span><strong id="discountAmount">-$0.00</strong></div><div class="summary-row"><span>Sales tax (not calculated)</span><strong id="tax">$0.00</strong></div><p class="discount-status">Sales tax is not currently calculated by this checkout. The store owner must configure and verify tax collection before accepting live orders.</p><div class="summary-row"><span>Other items</span><span class="muted" id="quoteItems">No quote required</span></div><div class="summary-row"><span>Estimated enclosure weight</span><strong id="enclosureWeight">—</strong></div><div class="summary-row"><span>Estimated shipping</span><strong id="shippingCost">$0.00</strong></div><p id="shippingNote" class="discount-status">Enter your ZIP code for an estimate. Custom enclosures are excluded.</p><div class="summary-row total"><span>Amount due today</span><strong id="amountDue">$0.00</strong></div><div class="discount-box"><label for="discountCode">Discount / Creator Code</label><div class="discount-controls"><input id="discountCode" type="text" placeholder="Enter discount or creator code" autocomplete="off"><button id="applyDiscount" type="button">Apply</button></div><p id="discountStatus" class="discount-status" role="status" aria-live="polite">Have a code? Enter it above.</p></div><div class="payment-security-secondary"><strong><span aria-hidden="true">🔐</span> Your card information stays on Stripe</strong><p>Your card details are entered securely on Stripe. Enclosure Lab does not collect or store your card number on this website.</p></div><a class="back-link" href="products.html">← Back to products</a></aside>
 </section></main>
 <footer><div class="container footer-grid"><div><a class="brand" href="index.html#top"><span class="brand-mark logo-mark"><img src="enclosure-lab-logo.png" alt="Enclosure Lab logo"></span><span>Enclosure Lab</span></a><p>Custom subwoofer enclosures, designed and built to order.</p></div><div><span class="footer-label">CONTACT</span><a href="mailto:lawsonhughes53@gmail.com">lawsonhughes53@gmail.com</a></div><div><span class="footer-label">SHOP</span><a href="products.html">Products →</a></div></div><div class="container copyright">© <span id="year"></span> Enclosure Lab. All rights reserved.</div></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -146,7 +161,7 @@ function renderCart(){
  document.getElementById("tax").textContent=money(tax);
  const shipping=estimateShipping(cart,document.getElementById("zip").value,delivery.value);
  document.getElementById("shippingCost").textContent=shipping===null?"Enter ZIP code":money(shipping);
- document.getElementById("shippingNote").textContent=delivery.value==="pickup"?"Local pickup is free.":shipping===null?"Enter a valid 5-digit ZIP code to see estimated shipping.":"Planning estimate only — this is not a UPS quote. UPS Ground live rating is not connected yet; the final charge depends on the packed package dimensions, packed weight, and destination.";
+ document.getElementById("shippingNote").textContent=delivery.value==="pickup"?"Local pickup is free.":shipping===null?"Enter a valid 5-digit ZIP code to see estimated shipping.":"Estimated shipping only; live UPS Ground rates are not connected yet.";
  document.getElementById("amountDue").textContent=money(taxable+tax+(shipping||0));
  document.getElementById("quoteItems").textContent=cart.some(i=>i.price==null)?"Temporary estimate assigned":"None";
  document.getElementById("submitOrder").disabled=!cart.length;
@@ -159,63 +174,96 @@ delivery.addEventListener("change",updateDelivery);
 ["zip","state"].forEach(id=>document.getElementById(id).addEventListener("input",renderCart));
 updateDelivery();
 
-// Live U.S. address suggestions (Photon geocoding).
-// Suggestions are selectable; selecting one fills the structured address fields.
-(()=>{
+// Live U.S. address suggestions using Photon geocoding.
+(()=> {
  const street=document.getElementById("address"),city=document.getElementById("city"),state=document.getElementById("state"),zip=document.getElementById("zip"),box=document.getElementById("addressSuggestions");
  if(!street||!box)return;
- let timer=null,controller=null,items=[];
+ let timer=null,controller=null,requestNumber=0;
  const close=()=>{box.classList.add("hidden");box.replaceChildren();street.setAttribute("aria-expanded","false");};
- const stateName=value=>String(value||"").trim();
- const format=p=>[p.housenumber,p.street||p.name].filter(Boolean).join(" ");
- const display=p=>[format(p),p.city||p.locality||p.county,p.state,p.postcode].filter(Boolean).join(", ");
+ const streetLine=p=>[p.housenumber,p.street||p.name].filter(Boolean).join(" ").trim();
+ const cityName=p=>p.city||p.locality||p.town||p.village||p.municipality||"";
+ const stateName=p=>p.state||p.statecode||"";
+ const postal=p=>String(p.postcode||"").match(/\\d{5}/)?.[0]||"";
  function choose(p){
-  const streetLine=format(p);
-  if(!streetLine)return;
-  street.value=streetLine;
-  city.value=p.city||p.locality||"";
-  state.value=stateName(p.state);
-  zip.value=String(p.postcode||"").match(/\d{5}/)?.[0]||"";
+  const line=streetLine(p);
+  if(!line)return;
+  street.value=line;
+  city.value=cityName(p);
+  state.value=stateName(p);
+  zip.value=postal(p);
   [street,city,state,zip].forEach(el=>el.dispatchEvent(new Event("input",{bubbles:true})));
   close();
+  city.focus();
  }
- function show(results){
-  box.replaceChildren();items=results;
-  results.forEach((feature,index)=>{
-   const p=feature.properties||{},line=format(p);
-   if(!line)return;
+ function show(features){
+  box.replaceChildren();
+  const seen=new Set();
+  const results=features.map(f=>f.properties||{}).filter(p=>{
+   const line=streetLine(p),country=String(p.countrycode||"").toLowerCase(),countryName=String(p.country||"").toLowerCase();
+   if(!line)return false;
+   if(country&&country!=="us")return false;
+   if(!country&&countryName&&!countryName.includes("united states"))return false;
+   const key=[line,cityName(p),stateName(p),postal(p)].join("|").toLowerCase();
+   if(seen.has(key))return false;
+   seen.add(key);
+   return true;
+  }).sort((a,b)=>{
+   const score=p=>(p.housenumber?4:0)+(p.street?3:0)+(postal(p)?2:0)+(cityName(p)?1:0)+(stateName(p)?1:0);
+   return score(b)-score(a);
+  }).slice(0,8);
+  results.forEach(p=>{
+   const line=streetLine(p),details=[cityName(p),stateName(p),postal(p)].filter(Boolean).join(", ");
    const b=document.createElement("button");b.type="button";b.setAttribute("role","option");
    const title=document.createElement("span");title.textContent=line;
-   const detail=document.createElement("small");detail.textContent=[p.city||p.locality,p.state,p.postcode].filter(Boolean).join(", ");
-   b.append(title,detail);b.addEventListener("mousedown",e=>e.preventDefault());b.addEventListener("click",()=>choose(p));box.append(b);
+   const detail=document.createElement("small");detail.textContent=details||"United States";
+   b.append(title,detail);
+   b.addEventListener("pointerdown",e=>e.preventDefault());
+   b.addEventListener("click",()=>choose(p));
+   box.append(b);
   });
-  if(!box.children.length){const empty=document.createElement("div");empty.className="address-empty";empty.textContent="No matching U.S. street addresses found. Keep typing or enter the address manually.";box.append(empty);}
+  if(!box.children.length){
+   const empty=document.createElement("div");empty.className="address-empty";
+   empty.textContent="No matching street address found yet. Add the city or ZIP code, or enter the address manually.";
+   box.append(empty);
+  }
   box.classList.remove("hidden");street.setAttribute("aria-expanded","true");
  }
- async function search(query){
+ async function search(query,number){
   if(controller)controller.abort();
   controller=new AbortController();
   try{
-   const url="https://photon.komoot.io/api/?"+new URLSearchParams({q:query,limit:"7",lang:"en"});
+   const url="https://photon.komoot.io/api/?"+new URLSearchParams({q:query,limit:"12",lang:"en"});
    const response=await fetch(url,{signal:controller.signal,headers:{Accept:"application/json"}});
    if(!response.ok)throw new Error("Address search unavailable");
    const data=await response.json();
-   const results=(data.features||[]).filter(f=>{
-    const p=f.properties||{};
-    return String(p.countrycode||"").toLowerCase()==="us"&&!!(p.housenumber&&p.street||p.street&&p.postcode);
-   });
-   show(results);
-  }catch(error){if(error.name!=="AbortError"){box.replaceChildren();const empty=document.createElement("div");empty.className="address-empty";empty.textContent="Live address suggestions are temporarily unavailable. You can still enter the address manually.";box.append(empty);box.classList.remove("hidden");street.setAttribute("aria-expanded","true");}}
+   if(number!==requestNumber)return;
+   show(data.features||[]);
+  }catch(error){
+   if(error.name!=="AbortError"&&number===requestNumber){
+    box.replaceChildren();
+    const empty=document.createElement("div");empty.className="address-empty";
+    empty.textContent="Address suggestions are temporarily unavailable. You can still enter the address manually.";
+    box.append(empty);box.classList.remove("hidden");street.setAttribute("aria-expanded","true");
+   }
+  }
  }
  street.addEventListener("input",()=>{
-  const q=street.value.trim();clearTimeout(timer);
-  if(q.length<4){close();return;}
-  timer=setTimeout(()=>search(q),300);
+  const query=street.value.trim();clearTimeout(timer);requestNumber++;
+  if(controller)controller.abort();
+  if(query.length<4){close();return;}
+  const number=requestNumber;
+  timer=setTimeout(()=>search(query,number),220);
+ });
+ street.addEventListener("focus",()=>{
+  if(street.value.trim().length>=4&&!box.children.length){
+   const number=++requestNumber;search(street.value.trim(),number);
+  }
  });
  street.addEventListener("keydown",e=>{
   const options=[...box.querySelectorAll("button")];
   if(e.key==="Escape"){close();return;}
   if(e.key==="ArrowDown"&&options.length){e.preventDefault();options[0].focus();}
+  if(e.key==="Enter"&&options.length){e.preventDefault();options[0].click();}
  });
  document.addEventListener("click",e=>{if(!e.target.closest(".address-autocomplete"))close();});
 })();
