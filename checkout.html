@@ -186,7 +186,7 @@ updateDelivery();
   if(controller)controller.abort();
   controller=new AbortController();
   try{
-   const url="https://photon.komoot.io/api/?"+new URLSearchParams({q:query,limit:"7",lang:"en",lat:"35.0456",lon:"-85.3097"});
+   const url="https://photon.komoot.io/api/?"+new URLSearchParams({q:query,limit:"7",lang:"en"});
    const response=await fetch(url,{signal:controller.signal,headers:{Accept:"application/json"}});
    if(!response.ok)throw new Error("Address search unavailable");
    const data=await response.json();
