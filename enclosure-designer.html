@@ -396,7 +396,8 @@ function updateModel(){
  const portW=Math.min(D*.62,Math.max(3.0*scale,D*.22));
  const portH=Math.min((H-2*t)*.72,Math.max(3.6*scale,(H-2*t)*.50));
  const portR=Math.min((H-2*t)*.22,(D-2*t)*.18,2.7*scale);
- // The standalone size selector was removed; derive the driver size from the selected model or custom-size field. Use 12 in only as a temporary preview fallback until a custom size is entered.\n const selectedSubSize=getSelectedSubwooferSize()||12;
+ // The standalone size selector was removed; derive the driver size from the selected model or custom-size field. Use 12 in only as a temporary preview fallback until a custom size is entered.
+ const selectedSubSize=getSelectedSubwooferSize()||12;
  const cutoutDiameter=Math.max(1,selectedSubSize-1);
  const wooferRadius=cutoutDiameter*scale/2;
  function normalizePanelUV(geometry,width,height){const p=geometry.attributes.position,uv=geometry.attributes.uv;for(let i=0;i<p.count;i++)uv.setXY(i,(p.getX(i)+width/2)/width,(p.getY(i)+height/2)/height);uv.needsUpdate=true;return geometry}
