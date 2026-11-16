@@ -7,7 +7,7 @@ const PUBLISHABLE_KEY = "sb_publishable_s2YnH1DT5diDmM781NXxqw_gIJVxPRx";
 const SITE = "https://enclosurelab.github.io/Enclosure-Lab";
 const cors = {
   "Access-Control-Allow-Origin": "https://enclosurelab.github.io",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-api-version",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Vary": "Origin",
 };
