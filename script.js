@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("quoteForm");
   const status = document.getElementById("formStatus");
 
-  form.addEventListener("submit", async e => {
+  if (form && status) form.addEventListener("submit", async e => {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(form).entries());
     const required = ["name","email","brand","model","size","quantity","type","goal"];
