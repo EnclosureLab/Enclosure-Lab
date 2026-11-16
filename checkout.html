@@ -136,7 +136,7 @@ function renderCart(){
  document.getElementById("tax").textContent=money(tax);
  const shipping=estimateShipping(cart,document.getElementById("zip").value,delivery.value);
  document.getElementById("shippingCost").textContent=shipping===null?"Enter ZIP code":money(shipping);
- document.getElementById("shippingNote").textContent=delivery.value==="pickup"?"Local pickup is free.":shipping===null?"Enter a valid 5-digit ZIP code to see estimated shipping.":"Rough weight-based estimate; final carrier pricing and packaging may change the cost.";
+ document.getElementById("shippingNote").textContent=delivery.value==="pickup"?"Local pickup is free.":shipping===null?"Enter a valid 5-digit ZIP code to see estimated shipping.":"Planning estimate only — this is not a UPS quote. UPS Ground live rating is not connected yet; the final charge depends on the packed package dimensions, packed weight, and destination.";
  document.getElementById("amountDue").textContent=money(taxable+tax+(shipping||0));
  document.getElementById("quoteItems").textContent=cart.some(i=>i.price==null)?"Temporary estimate assigned":"None";
  document.getElementById("submitOrder").disabled=!cart.length;
