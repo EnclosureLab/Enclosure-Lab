@@ -3,6 +3,14 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "https://lblrmljsjimrrighqbdo.supabase.co";
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? Deno.env.get("SERVICE_ROLE_KEY") ?? "";
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY") ?? "";
+const STRIPE_TAX_ENABLED = Deno.env.get("STRIPE_TAX_ENABLED") === "true";
+const TAX_CODES:Record<string,string> = {
+  enclosure:Deno.env.get("STRIPE_TAX_CODE_ENCLOSURE") ?? "",
+  knobs:Deno.env.get("STRIPE_TAX_CODE_KNOBS") ?? "",
+  kits:Deno.env.get("STRIPE_TAX_CODE_KITS") ?? "",
+  prefab:Deno.env.get("STRIPE_TAX_CODE_PREFAB") ?? ""
+};
+const SHIPPING_TAX_CODE = "txcd_92010001";
 const PUBLISHABLE_KEY = "sb_publishable_s2YnH1DT5diDmM781NXxqw_gIJVxPRx";
 const SITE = "https://enclosurelab.github.io/Enclosure-Lab";
 const cors = {
@@ -105,6 +113,10 @@ Deno.serve(async (req) => {
   if (req.method!=="POST") return json({error:"Method not allowed."},405);
   try {
     if (!SERVICE_ROLE_KEY||!STRIPE_SECRET_KEY) throw new Error("Payment service is not configured.");
+    if (!STRIPE_TAX_ENABLED) throw new Error("Tax checkout is paused until the business account owner completes Stripe Tax registration and configuration.");
+    for (const [category,code] of Object.entries(TAX_CODES)) {
+      if (!/^txcd_[A-Za-z0-9]+$/.test(code)) throw new Error(`Stripe Tax classification is missing for ${category}. Checkout is paused until the business account owner configures it.`);
+    }
     if (req.headers.get("apikey") !== PUBLISHABLE_KEY) return json({error:"Unauthorized request."},401);
     const origin=req.headers.get("origin");
     if (origin && origin!=="https://enclosurelab.github.io") return json({error:"Origin not allowed."},403);
@@ -143,15 +155,14 @@ Deno.serve(async (req) => {
     const pct=await creatorDiscount(code);
     const discount=Math.round(subtotal*pct/100);
     const shipping=shippingEstimate(normalized,p.fulfillment,state);
-    // Tax remains zero until the business owner has reviewed tax obligations and configured a compliant tax calculation.
-    const tax=0;
-    const total=subtotal-discount+Math.round(shipping*100)+tax;
+    // Stripe Tax calculates the final tax after the customer confirms their address in hosted Checkout.
+    const totalBeforeTax=subtotal-discount+Math.round(shipping*100);
     const orderPayload={
       customer_name:String(p.customer_name).trim().slice(0,120),customer_email:String(p.customer_email).trim().slice(0,254),
       customer_phone:String(p.customer_phone||"").trim().slice(0,40)||null,fulfillment:p.fulfillment,
       shipping_address:p.fulfillment==="shipping"?{street,city,state,zip}:null,payment_method:"stripe",
       items:normalized,subtotal:subtotal/100,discount_code:code||null,discount_amount:discount/100,creator_code:p.creator_code||null,
-      estimated_tax:0,estimated_shipping:shipping,estimated_total:total/100,customer_notes:String(p.customer_notes||"").slice(0,2000)||null,
+      estimated_tax:null,tax_amount:0,tax_jurisdiction:null,tax_breakdown:null,estimated_shipping:shipping,estimated_total:totalBeforeTax/100,final_total:null,customer_notes:String(p.customer_notes||"").slice(0,2000)||null,
       payment_status:"unpaid",order_status:"awaiting_payment"
     };
     const inserted=await supabase("enclosure_orders","POST",orderPayload);
@@ -161,6 +172,9 @@ Deno.serve(async (req) => {
     form.set("mode","payment");form.set("success_url",`${SITE}/checkout.html?payment=success&order_id=${order.id}&session_id={CHECKOUT_SESSION_ID}`);
     form.set("cancel_url",`${SITE}/checkout.html?payment=cancelled&order_id=${order.id}`);
     form.set("customer_email",String(p.customer_email).trim());
+    form.set("automatic_tax[enabled]","true");
+    form.set("billing_address_collection","required");
+    if (p.fulfillment==="shipping") form.set("shipping_address_collection[allowed_countries][0]","US");
     form.set("client_reference_id",order.id);form.set("metadata[order_id]",order.id);
     let remainingDiscount=discount;
     normalized.forEach((it,i)=>{
@@ -169,13 +183,24 @@ Deno.serve(async (req) => {
       remainingDiscount-=allocation;
       const discounted=Math.max(50,original-allocation);
       const index=i;
+      const taxCategory=it.category==="enclosure"?"enclosure":it.category;
+      const taxCode=TAX_CODES[taxCategory];
+      if (!taxCode) throw new Error(`No approved Stripe Tax classification is configured for ${taxCategory}.`);
       form.set(`line_items[${index}][price_data][currency]`,"usd");
+      form.set(`line_items[${index}][price_data][tax_behavior]`,"exclusive");
+      form.set(`line_items[${index}][price_data][product_data][tax_code]`,taxCode);
       form.set(`line_items[${index}][price_data][unit_amount]`,String(discounted));
       form.set(`line_items[${index}][price_data][product_data][name]`,it.quantity>1?`${it.name} (quantity: ${it.quantity})`:it.name);
       form.set(`line_items[${index}][quantity]`,"1");
     });
-    let next=normalized.length;
-    if(shipping>0){form.set(`line_items[${next}][price_data][currency]`,"usd");form.set(`line_items[${next}][price_data][unit_amount]`,String(Math.round(shipping*100)));form.set(`line_items[${next}][price_data][product_data][name]`,"Estimated shipping");form.set(`line_items[${next}][quantity]`,"1");next++;}
+    if(shipping>0){
+      form.set("shipping_options[0][shipping_rate_data][type]","fixed_amount");
+      form.set("shipping_options[0][shipping_rate_data][display_name]","Estimated shipping");
+      form.set("shipping_options[0][shipping_rate_data][fixed_amount][amount]",String(Math.round(shipping*100)));
+      form.set("shipping_options[0][shipping_rate_data][fixed_amount][currency]","usd");
+      form.set("shipping_options[0][shipping_rate_data][tax_behavior]","exclusive");
+      form.set("shipping_options[0][shipping_rate_data][tax_code]",SHIPPING_TAX_CODE);
+    }
     const sr=await fetch("https://api.stripe.com/v1/checkout/sessions",{method:"POST",headers:{"Authorization":`Bearer ${STRIPE_SECRET_KEY}`,"Content-Type":"application/x-www-form-urlencoded"},body:form});
     const session=await sr.json();
     if(!sr.ok) throw new Error(session.error?.message||"Stripe could not start checkout.");
