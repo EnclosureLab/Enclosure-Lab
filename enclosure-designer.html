@@ -579,8 +579,7 @@ function slotTunnelFront(length,centerX=0,openingWidth=portW,openingHeight=portH
   const maxLengthInches=Math.max(1,(side?w:d)-1.5);
   const portLengthFits=Number.isFinite(portLengthInches)&&portLengthInches>0&&portLengthInches<=maxLengthInches;
   if(!portLengthFits)modelWarnings.push("Estimated port length is "+Math.max(0,portLengthInches).toFixed(1)+" in; only about "+maxLengthInches.toFixed(1)+" in fits. This layout cannot confirm the selected tuning.");
-  const length=Math.max(t*2,Math.min(maxLengthInches*scale,Math.max(0,portLengthInches)*scale)); if(type==="Ported"){
-  const length=Math.max(t*2,Math.min((side?W:D)*.58,Math.max(7*scale,(side?W:D)*.32)));
+  const length=Math.max(t*2,Math.min(maxLengthInches*scale,Math.max(0,portLengthInches)*scale));
   if(side){subwooferFrontPanel();sidePortFace();if(round)roundTunnelSide(length);else slotTunnelSide(length)}
   else if(round){
    // Keep the round port separate from the centered subwoofer cutout, toward the left edge.
