@@ -150,7 +150,7 @@
      <button type="button" class="preview-mount" data-mount="inverted" aria-pressed="false">Inverted Mount</button>
     </div>
    </section>
-   <div class="preview-foot">Drag to rotate the enclosure. The preview updates as you change dimensions, box style, port, and finish. Visual preview only: port length is illustrative and is not calculated from the selected tuning frequency.</div>
+   <div class="preview-foot">Drag to rotate the enclosure. The preview updates as you change dimensions, box style, port, and finish. Visual preview only: port length is illustrative and is not calculated from the selected tuning frequency.</div><div id="modelWarnings" role="status" aria-live="polite" style="margin:0 16px 14px;padding:10px 12px;border-radius:8px;background:#fff7e8;color:#704b12;font-size:12px;line-height:1.5"></div>
    <div class="preview-specs"><div class="spec"><span>Dimensions</span><strong id="specDimensions">—</strong></div><div class="spec"><span>Box style</span><strong id="specType">Ported</strong></div><div class="spec"><span>Material</span><strong id="specMaterial">MDF (Suggested)</strong></div><div class="spec"><span>Finish</span><strong id="specFinish">Raw · Unfinished MDF</strong></div></div>
   </aside>
  </div>
@@ -404,11 +404,18 @@ function updateModel(){
  const selectedSubSize=getSelectedSubwooferSize()||12;
  const cutoutDiameter=Math.max(1,selectedSubSize-1);
  const wooferRadius=cutoutDiameter*scale/2;
+ const driverCount=Math.max(1,Math.min(4,Number($("quantity").value)||1));
+ const driverSpacing=(selectedSubSize+1.25)*scale;
+ const driverPositions=driverCount===1?[[0,0]]:driverCount===2?[[-driverSpacing/2,0],[driverSpacing/2,0]]:driverCount===3?[[-driverSpacing/2,-driverSpacing*.28],[driverSpacing/2,-driverSpacing*.28],[0,driverSpacing*.52]]:[[-driverSpacing/2,-driverSpacing/2],[driverSpacing/2,-driverSpacing/2],[-driverSpacing/2,driverSpacing/2],[driverSpacing/2,driverSpacing/2]];
+ const modelWarnings=[];
+ const edgeClearance=t+selectedSubSize*scale*.49;
+ driverPositions.forEach(([x,y],i)=>{if(Math.abs(x)+edgeClearance>W/2||Math.abs(y)+edgeClearance>H/2)modelWarnings.push("Subwoofer "+(i+1)+" does not fit on the front panel with safe edge clearance.");});
  function normalizePanelUV(geometry,width,height){const p=geometry.attributes.position,uv=geometry.attributes.uv;for(let i=0;i<p.count;i++)uv.setXY(i,(p.getX(i)+width/2)/width,(p.getY(i)+height/2)/height);uv.needsUpdate=true;return geometry}
  function frontFaceWithCutouts(faceWidth,faceHeight,x,y,z,portKind="",portX=0,portY=0,slotWidth=portW,slotHeight=portH){
   const shape=new THREE.Shape();
   shape.moveTo(-faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,-faceHeight/2);shape.lineTo(faceWidth/2,faceHeight/2);shape.lineTo(-faceWidth/2,faceHeight/2);shape.closePath();
-  // Centered subwoofer mounting cutout. Diameter is exactly one inch smaller than selected woofer size.
+  // Create a separate cutout for every selected subwoofer.
+  driverPositions.forEach(([driverX,driverY])=>{const wooferHole=new THREE.Path();wooferHole.absarc(driverX,driverY,wooferRadius,0,Math.PI*2,false);shape.holes.push(wooferHole)});  // Centered subwoofer mounting cutout. Diameter is exactly one inch smaller than selected woofer size.
   const wooferHole=new THREE.Path();
   wooferHole.absarc(0,0,wooferRadius,0,Math.PI*2,false);
   shape.holes.push(wooferHole);
@@ -504,6 +511,8 @@ function updateModel(){
    for(let n=0;n<8;n++){const a=n*Math.PI/4;bolt(Math.cos(a)*r*.925,Math.sin(a)*r*.925,faceZ+r*.07)}
   }
  }
+  driver.position.set(driverPositions[0][0],driverPositions[0][1],0);
+  for(let i=1;i<driverPositions.length;i++){const copy=driver.clone(true);copy.position.set(driverPositions[i][0],driverPositions[i][1],0);boxGroup.add(copy)}
  function sidePortFace(){
   const faceWidth=D,faceHeight=H;
   const shape=new THREE.Shape();
@@ -560,12 +569,23 @@ function slotTunnelFront(length,centerX=0,openingWidth=portW,openingHeight=portH
   add(new THREE.CylinderGeometry(portR,portR,length+overlap,64,1,true),shellMat,centerX,0,0,0,0,Math.PI/2);
   add(new THREE.CylinderGeometry(Math.max(.1,portR-t*.62),Math.max(.1,portR-t*.62),length+overlap,64,1,true),darkMat,centerX,0,0,0,0,Math.PI/2);
  }
+ let portLengthInches=0;
  if(type==="Ported"){
+  const targetHz=Number($("tuning").value)||32;
+  const portAreaIn2=round?Math.PI*Math.pow(portR/scale,2):(side?Math.max(1,portH/scale)*Math.max(1,Math.min(portW/scale,(D/scale)*.62)):Math.max(1,Math.min(W/scale*.16,Math.max(2,W/scale*.12)))*(H/scale-1.5));
+  const grossVolumeIn3=Math.max(1,(w-1.5)*(h-1.5)*(d-1.5));
+  let netVolumeIn3=grossVolumeIn3;
+  for(let i=0;i<8;i++){portLengthInches=(13503*13503*portAreaIn2)/(4*Math.PI*Math.PI*targetHz*targetHz*netVolumeIn3)-.732*Math.sqrt(portAreaIn2);netVolumeIn3=Math.max(grossVolumeIn3-portAreaIn2*Math.max(0,portLengthInches),grossVolumeIn3*.35)}
+  const maxLengthInches=Math.max(1,(side?w:d)-1.5);
+  const portLengthFits=Number.isFinite(portLengthInches)&&portLengthInches>0&&portLengthInches<=maxLengthInches;
+  if(!portLengthFits)modelWarnings.push("Estimated port length is "+Math.max(0,portLengthInches).toFixed(1)+" in; only about "+maxLengthInches.toFixed(1)+" in fits. This layout cannot confirm the selected tuning.");
+  const length=Math.max(t*2,Math.min(maxLengthInches*scale,Math.max(0,portLengthInches)*scale)); if(type==="Ported"){
   const length=Math.max(t*2,Math.min((side?W:D)*.58,Math.max(7*scale,(side?W:D)*.32)));
   if(side){subwooferFrontPanel();sidePortFace();if(round)roundTunnelSide(length);else slotTunnelSide(length)}
   else if(round){
    // Keep the round port separate from the centered subwoofer cutout, toward the left edge.
    const frontRoundPortX=-(W-2*t)/2+portR+t;
+   if(driverPositions.some(([x,y])=>Math.hypot(x-frontRoundPortX,y)<wooferRadius+portR+t*.35))modelWarnings.push("The round front port overlaps a subwoofer mounting area.");
    frontFaceWithCutouts(W,H,0,0,D/2+.012,"round",frontRoundPortX,0);
    roundTunnelFront(length,frontRoundPortX);
   }
@@ -574,6 +594,7 @@ function slotTunnelFront(length,centerX=0,openingWidth=portW,openingHeight=portH
    const frontSlotWidth=Math.min(W*.16,Math.max(2*scale,W*.12));
    const frontSlotHeight=H-2*t;
    const frontSlotX=W/2-t-frontSlotWidth/2;
+   if(driverPositions.some(([x,y])=>x+wooferRadius>frontSlotX-frontSlotWidth/2&&x-wooferRadius<frontSlotX+frontSlotWidth/2&&Math.abs(y)<(H-2*t)/2+wooferRadius))modelWarnings.push("The front slot overlaps a subwoofer mounting area.");
    frontFaceWithCutouts(W,H,0,0,D/2+.012,"slot",frontSlotX,0,frontSlotWidth,frontSlotHeight);
    slotTunnelFront(length,frontSlotX,frontSlotWidth,frontSlotHeight);
   }
@@ -593,7 +614,8 @@ function slotTunnelFront(length,centerX=0,openingWidth=portW,openingHeight=portH
  shadowPlane.rotation.x=-Math.PI/2;shadowPlane.position.set(0,-H/2-.045,0);scene.add(shadowPlane);
  boxGroup.rotation.set(0,-.10,0);
  const maxDim=Math.max(W,H,D);camera.position.set(maxDim*1.75,maxDim*1.25,maxDim*2.05);controls.target.set(0,0,0);controls.update();
- $("specDimensions").textContent=w+" × "+h+" × "+d+" in";
+ $("modelWarnings").textContent=modelWarnings.length?modelWarnings.join(" "):"Basic fit checks passed. Port length is an estimate; final tuning must be verified with actual driver displacement and port end correction.";
+ $("specDimensions").textContent= $("specDimensions").textContent=w+" × "+h+" × "+d+" in";
  $("specType").textContent=type;
  $("specMaterial").textContent=$("material").value;
  $("specFinish").textContent=finish+(finish==="Paint"?" · "+$("paintColor").value+" · "+$("paintDesign").value:finish==="Wrap"?" · "+$("wrapType").value+" / "+$("wrapColor").value:"");
@@ -608,7 +630,7 @@ function update(){const finish=document.querySelector('input[name="finish"]:chec
 document.querySelectorAll("input,select,textarea").forEach(el=>{el.addEventListener("input",update);el.addEventListener("change",update)});$("paintDesign").addEventListener("change",()=>{designOptionMarkup();update()});designOptionMarkup();
 document.addEventListener("change",event=>{if(event.target.matches('input[name="finish"],input[name="boxType"]'))requestAnimationFrame(update)},true);
 document.addEventListener("input",event=>{if(event.target.matches('input[type="color"]')){requestAnimationFrame(update)}},true);$("paintColor").addEventListener("input",update);$("paintColor").addEventListener("change",update);$("wrapColor").addEventListener("input",update);$("wrapColor").addEventListener("change",update);
-$("boxForm").addEventListener("submit",function(e){e.preventDefault();const status=$("status");if(!$("model").value.trim()){status.textContent="Enter your subwoofer brand and model before adding the box.";status.classList.add("error");$("model").focus();return}if(!getSelectedSubwooferSize()){status.textContent="Enter the exact subwoofer size for this custom model.";status.classList.add("error");$("customSubwooferSize").focus();return}const q=config();const details="Custom subwoofer enclosure — "+q.type+" — "+q.quantity+" × "+q.size+" in ("+q.material+")";const item={name:details,category:"enclosure",price:Number(q.buildCost)||0,qty:1,weightLb:q.weightLb,configuration:q,previewImage:previewImage()};try{const cart=JSON.parse(localStorage.getItem(cartKey)||"[]");if(!Array.isArray(cart))throw new Error("Invalid cart");cart.push(item);localStorage.setItem(cartKey,JSON.stringify(cart));localStorage.setItem("enclosureLabCustomBoxConfig",JSON.stringify(q));if(JSON.parse(localStorage.getItem(cartKey)||"[]").length!==cart.length)throw new Error("Cart verification failed");status.classList.remove("error");status.textContent="Box added. Taking you to checkout…";if(window.parent&&window.parent!==window){window.parent.postMessage({type:"el-open-checkout"},location.origin)}else{window.location.href=new URL("checkout.html",location.href).href}}catch(err){status.textContent="Your browser could not save this box. Please allow site storage and try again.";status.classList.add("error")}});
+$("boxForm").addEventListener("submit",function(e){e.preventDefault();const status=$("status");if(!$("model").value.trim()){status.textContent="Enter your subwoofer brand and model before adding the box.";status.classList.add("error");$("model").focus();return}if(!getSelectedSubwooferSize()){status.textContent="Enter the exact subwoofer size for this custom model.";status.classList.add("error");$("customSubwooferSize").focus();return}if($("modelWarnings").textContent.includes("does not fit")||$("modelWarnings").textContent.includes("overlaps")||$("modelWarnings").textContent.includes("cannot confirm")){status.textContent="This design needs adjustment before it can be added. Review the preview warnings.";status.classList.add("error");return}const q=config();if(!getSelectedSubwooferSize()){status.textContent="Enter the exact subwoofer size for this custom model.";status.classList.add("error");$("customSubwooferSize").focus();return}const q=config();const details="Custom subwoofer enclosure — "+q.type+" — "+q.quantity+" × "+q.size+" in ("+q.material+")";const item={name:details,category:"enclosure",price:Number(q.buildCost)||0,qty:1,weightLb:q.weightLb,configuration:q,previewImage:previewImage()};try{const cart=JSON.parse(localStorage.getItem(cartKey)||"[]");if(!Array.isArray(cart))throw new Error("Invalid cart");cart.push(item);localStorage.setItem(cartKey,JSON.stringify(cart));localStorage.setItem("enclosureLabCustomBoxConfig",JSON.stringify(q));if(JSON.parse(localStorage.getItem(cartKey)||"[]").length!==cart.length)throw new Error("Cart verification failed");status.classList.remove("error");status.textContent="Box added. Taking you to checkout…";if(window.parent&&window.parent!==window){window.parent.postMessage({type:"el-open-checkout"},location.origin)}else{window.location.href=new URL("checkout.html",location.href).href}}catch(err){status.textContent="Your browser could not save this box. Please allow site storage and try again.";status.classList.add("error")}});
 init3D();update();setupWheel('paint');setupWheel('wrap');
 function reportHeight(){if(window.parent===window)return;const body=document.body,root=document.documentElement;const h=Math.ceil(Math.max(body.scrollHeight,body.offsetHeight,root.scrollHeight,root.offsetHeight,body.getBoundingClientRect().bottom+window.scrollY));window.parent.postMessage({type:"enclosure-designer-height",height:h},location.origin)}
 const heightObserver=new ResizeObserver(()=>requestAnimationFrame(reportHeight));heightObserver.observe(document.body);heightObserver.observe(document.documentElement);new MutationObserver(()=>requestAnimationFrame(reportHeight)).observe(document.body,{childList:true,subtree:true,attributes:true});window.addEventListener("load",reportHeight);window.addEventListener("resize",reportHeight);document.addEventListener("input",()=>requestAnimationFrame(reportHeight));document.addEventListener("change",()=>requestAnimationFrame(reportHeight));if(document.fonts&&document.fonts.ready)document.fonts.ready.then(reportHeight);[100,400,900,1600].forEach(ms=>setTimeout(reportHeight,ms));
