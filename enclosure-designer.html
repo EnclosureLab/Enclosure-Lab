@@ -510,9 +510,9 @@ function updateModel(){
    // Small recessed fasteners around the basket rim.
    for(let n=0;n<8;n++){const a=n*Math.PI/4;bolt(Math.cos(a)*r*.925,Math.sin(a)*r*.925,faceZ+r*.07)}
   }
- }
   driver.position.set(driverPositions[0][0],driverPositions[0][1],0);
   for(let i=1;i<driverPositions.length;i++){const copy=driver.clone(true);copy.position.set(driverPositions[i][0],driverPositions[i][1],0);boxGroup.add(copy)}
+ }
  function sidePortFace(){
   const faceWidth=D,faceHeight=H;
   const shape=new THREE.Shape();
