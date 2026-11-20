@@ -62,15 +62,6 @@ create policy "creator reads own clicks" on public.el_referral_clicks for select
 drop policy if exists "creator reads own attributed orders" on public.el_creator_order_attribution;
 create policy "creator reads own attributed orders" on public.el_creator_order_attribution for select to authenticated using (exists(select 1 from public.el_creators c where c.id=creator_id and c.user_id=auth.uid()));
 
-create or replace function public.validate_creator_code(p_code text)
-returns jsonb language sql stable security definer set search_path=public as $$
- select case when c.id is null then jsonb_build_object('valid',false)
- else jsonb_build_object('valid',true,'discount_percent',c.discount_percent,'creator_id',c.id)
- end
- from (select upper(trim(coalesce(p_code,''))) as code) q
- left join public.el_creators c on c.code=q.code and c.active=true
-$$;
-
 create or replace function public.record_creator_click(p_code text,p_visitor_token text default null)
 returns boolean language plpgsql security definer set search_path=public as $$
 declare cid uuid;
@@ -97,6 +88,5 @@ create policy "admin manages attributed orders" on public.el_creator_order_attri
 
 grant insert on public.el_creator_applications to anon, authenticated;
 grant select on public.el_creators,public.el_referral_clicks,public.el_creator_order_attribution to authenticated;
-grant execute on function public.validate_creator_code(text) to anon,authenticated;
 grant execute on function public.record_creator_click(text,text) to anon,authenticated;
 grant execute on function public.el_is_creator_admin() to authenticated;
